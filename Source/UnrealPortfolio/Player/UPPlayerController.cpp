@@ -43,16 +43,71 @@ void AUPPlayerController::SetupInputComponent()
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
+		EnhancedInputComponent->ClearActionBindings();
+
 		// Setup mouse input events
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Started, this, &AUPPlayerController::OnInputStarted);
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Triggered, this, &AUPPlayerController::OnSetDestinationTriggered);
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Completed, this, &AUPPlayerController::OnSetDestinationReleased);
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Canceled, this, &AUPPlayerController::OnSetDestinationReleased);
+
+		//SKill
+		for (auto& skill : PlayerSkillRegistDictionary)
+		{
+			EnhancedInputComponent->BindAction(skill.Key, ETriggerEvent::Started, this, &AUPPlayerController::OnSkillStart, skill.Value);
+			EnhancedInputComponent->BindAction(skill.Key, ETriggerEvent::Completed, this, &AUPPlayerController::OnSkillRelease, skill.Value);
+		}
+
+		//Consumable
+		for (auto& item : ConsumableItemDictionary)
+		{
+			EnhancedInputComponent->BindAction(item.Key, ETriggerEvent::Started, this, &AUPPlayerController::OnConsumableItemStart, item.Value);
+		}
+
+		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AUPPlayerController::OnAttackStart);
+		EnhancedInputComponent->BindAction(AvoidAction, ETriggerEvent::Started, this, &AUPPlayerController::OnAvoidStart);
+		EnhancedInputComponent->BindAction(MenuAction, ETriggerEvent::Started, this, &AUPPlayerController::OnMenuStart);
+		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AUPPlayerController::OnInventoryStart);
 	}
 	else
 	{
 		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
+}
+
+void AUPPlayerController::OnSkillStart(int32 InputId)
+{
+	UE_LOG(LogTemplateCharacter, Log, TEXT("Start : %d") , InputId);
+}
+
+void AUPPlayerController::OnSkillRelease(int32 InputId)
+{
+	UE_LOG(LogTemplateCharacter, Log, TEXT("Release : %d"), InputId);
+}
+
+void AUPPlayerController::OnAttackStart()
+{
+	UE_LOG(LogTemplateCharacter, Log, TEXT("Attack"));
+}
+
+void AUPPlayerController::OnConsumableItemStart(int32 InputId)
+{
+	UE_LOG(LogTemplateCharacter, Log, TEXT("ConsumableItem : %d"), InputId);
+}
+
+void AUPPlayerController::OnAvoidStart()
+{
+	UE_LOG(LogTemplateCharacter, Log, TEXT("AvoidStart"));
+}
+
+void AUPPlayerController::OnMenuStart()
+{
+	UE_LOG(LogTemplateCharacter, Log, TEXT("MenuStart"));
+}
+
+void AUPPlayerController::OnInventoryStart()
+{
+	UE_LOG(LogTemplateCharacter, Log, TEXT("InventoryStart"));
 }
 
 void AUPPlayerController::OnInputStarted()
