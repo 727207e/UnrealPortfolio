@@ -42,8 +42,21 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Input)
 	TMap<TObjectPtr<class UInputAction>, int32> PlayerSkillRegistDictionary;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> AttackAction;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> AvoidAction;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> MenuAction;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> InventoryAction;
 
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Input)
+	TMap<TObjectPtr<class UInputAction>, int32> ConsumableItemDictionary;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> TestInput;
 
@@ -68,6 +81,14 @@ protected:
 private:
 	void OnSkillStart(int32 InputId);
 	void OnSkillRelease(int32 InputId);
+
+	void OnAttackStart();
+	void OnConsumableItemStart(int32 InputID);
+
+	void OnAvoidStart();
+
+	void OnMenuStart();
+	void OnInventoryStart();
 
 	FVector CachedDestination;
 
