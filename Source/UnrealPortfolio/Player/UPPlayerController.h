@@ -19,7 +19,7 @@ class AUPPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
-	public:
+public:
 	AUPPlayerController();
 
 	/** Time Threshold to know if it was a short press */
@@ -37,7 +37,18 @@ class AUPPlayerController : public APlayerController
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> SetDestinationClickAction;
+	
+	/** Skill System */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Input)
+	TMap<TObjectPtr<class UInputAction>, int32> PlayerSkillRegistDictionary;
 
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> TestInput;
+
+	void teeee();
+	
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
 	uint32 bMoveToMouseCursor : 1;
@@ -55,6 +66,9 @@ protected:
 	void OnTouchReleased();
 
 private:
+	void OnSkillStart(int32 InputId);
+	void OnSkillRelease(int32 InputId);
+
 	FVector CachedDestination;
 
 	bool bIsTouch; // Is it a touch device
