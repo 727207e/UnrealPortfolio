@@ -1,20 +1,21 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "UnrealPortfolioPlayerController.h"
+#include "UPPlayerController.h"
 #include "GameFramework/Pawn.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "NiagaraSystem.h"
 #include "NiagaraFunctionLibrary.h"
-#include "UnrealPortfolioCharacter.h"
+#include "Character/UPCharacter.h"
 #include "Engine/World.h"
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
 #include "Engine/LocalPlayer.h"
+#include "InputMappingContext.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
-AUnrealPortfolioPlayerController::AUnrealPortfolioPlayerController()
+AUPPlayerController::AUPPlayerController()
 {
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;
@@ -22,7 +23,7 @@ AUnrealPortfolioPlayerController::AUnrealPortfolioPlayerController()
 	FollowTime = 0.f;
 }
 
-void AUnrealPortfolioPlayerController::BeginPlay()
+void AUPPlayerController::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
@@ -34,7 +35,7 @@ void AUnrealPortfolioPlayerController::BeginPlay()
 	}
 }
 
-void AUnrealPortfolioPlayerController::SetupInputComponent()
+void AUPPlayerController::SetupInputComponent()
 {
 	// set up gameplay key bindings
 	Super::SetupInputComponent();
@@ -43,10 +44,10 @@ void AUnrealPortfolioPlayerController::SetupInputComponent()
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
 		// Setup mouse input events
-		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Started, this, &AUnrealPortfolioPlayerController::OnInputStarted);
-		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Triggered, this, &AUnrealPortfolioPlayerController::OnSetDestinationTriggered);
-		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Completed, this, &AUnrealPortfolioPlayerController::OnSetDestinationReleased);
-		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Canceled, this, &AUnrealPortfolioPlayerController::OnSetDestinationReleased);
+		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Started, this, &AUPPlayerController::OnInputStarted);
+		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Triggered, this, &AUPPlayerController::OnSetDestinationTriggered);
+		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Completed, this, &AUPPlayerController::OnSetDestinationReleased);
+		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Canceled, this, &AUPPlayerController::OnSetDestinationReleased);
 	}
 	else
 	{
@@ -54,17 +55,17 @@ void AUnrealPortfolioPlayerController::SetupInputComponent()
 	}
 }
 
-void AUnrealPortfolioPlayerController::OnInputStarted()
+void AUPPlayerController::OnInputStarted()
 {
 	StopMovement();
 }
 
 // Triggered every frame when the input is held down
-void AUnrealPortfolioPlayerController::OnSetDestinationTriggered()
+void AUPPlayerController::OnSetDestinationTriggered()
 {
 	// We flag that the input is being pressed
 	FollowTime += GetWorld()->GetDeltaSeconds();
-	
+
 	// We look for the location in the world where the player has pressed the input
 	FHitResult Hit;
 	bool bHitSuccessful = false;
@@ -82,7 +83,7 @@ void AUnrealPortfolioPlayerController::OnSetDestinationTriggered()
 	{
 		CachedDestination = Hit.Location;
 	}
-	
+
 	// Move towards mouse pointer or touch
 	APawn* ControlledPawn = GetPawn();
 	if (ControlledPawn != nullptr)
@@ -92,7 +93,7 @@ void AUnrealPortfolioPlayerController::OnSetDestinationTriggered()
 	}
 }
 
-void AUnrealPortfolioPlayerController::OnSetDestinationReleased()
+void AUPPlayerController::OnSetDestinationReleased()
 {
 	// If it was a short press
 	if (FollowTime <= ShortPressThreshold)
@@ -106,13 +107,13 @@ void AUnrealPortfolioPlayerController::OnSetDestinationReleased()
 }
 
 // Triggered every frame when the input is held down
-void AUnrealPortfolioPlayerController::OnTouchTriggered()
+void AUPPlayerController::OnTouchTriggered()
 {
 	bIsTouch = true;
 	OnSetDestinationTriggered();
 }
 
-void AUnrealPortfolioPlayerController::OnTouchReleased()
+void AUPPlayerController::OnTouchReleased()
 {
 	bIsTouch = false;
 	OnSetDestinationReleased();

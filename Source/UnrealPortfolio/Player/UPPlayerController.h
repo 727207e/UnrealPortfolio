@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Templates/SubclassOf.h"
 #include "GameFramework/PlayerController.h"
-#include "UnrealPortfolioPlayerController.generated.h"
+#include "UPPlayerController.generated.h"
 
 /** Forward declaration to improve compiling times */
 class UNiagaraSystem;
@@ -15,12 +15,12 @@ class UInputAction;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS()
-class AUnrealPortfolioPlayerController : public APlayerController
+class AUPPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
-public:
-	AUnrealPortfolioPlayerController();
+	public:
+	AUPPlayerController();
 
 	/** Time Threshold to know if it was a short press */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
@@ -28,15 +28,15 @@ public:
 
 	/** FX Class that we will spawn when clicking */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UNiagaraSystem* FXCursor;
+	TObjectPtr<class UNiagaraSystem> FXCursor;
 
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	UInputMappingContext* DefaultMappingContext;
+	TObjectPtr<class UInputMappingContext> DefaultMappingContext;
 	
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	UInputAction* SetDestinationClickAction;
+	TObjectPtr<class UInputAction> SetDestinationClickAction;
 
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */

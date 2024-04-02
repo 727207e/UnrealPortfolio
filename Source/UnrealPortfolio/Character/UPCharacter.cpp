@@ -1,6 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "UnrealPortfolioCharacter.h"
+// Copyright Epic Games, Inc. All Rights Reserved.
+
+#include "UPCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/DecalComponent.h"
@@ -11,7 +13,7 @@
 #include "Materials/Material.h"
 #include "Engine/World.h"
 
-AUnrealPortfolioCharacter::AUnrealPortfolioCharacter()
+AUPCharacter::AUPCharacter()
 {
 	// Set size for player capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -45,7 +47,7 @@ AUnrealPortfolioCharacter::AUnrealPortfolioCharacter()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 }
 
-void AUnrealPortfolioCharacter::Tick(float DeltaSeconds)
+void AUPCharacter::Tick(float DeltaSeconds)
 {
-    Super::Tick(DeltaSeconds);
+	Super::Tick(DeltaSeconds);
 }

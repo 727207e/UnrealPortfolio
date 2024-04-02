@@ -1,18 +1,16 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "UnrealPortfolioCharacter.generated.h"
+#include "UPCharacter.generated.h"
 
 UCLASS(Blueprintable)
-class AUnrealPortfolioCharacter : public ACharacter
+class AUPCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
-public:
-	AUnrealPortfolioCharacter();
+	public:
+	AUPCharacter();
 
 	// Called every frame.
 	virtual void Tick(float DeltaSeconds) override;
@@ -31,4 +29,3 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
 };
-
