@@ -43,6 +43,8 @@ void AUPPlayerController::SetupInputComponent()
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
+		EnhancedInputComponent->ClearActionBindings();
+
 		// Setup mouse input events
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Started, this, &AUPPlayerController::OnInputStarted);
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Triggered, this, &AUPPlayerController::OnSetDestinationTriggered);
@@ -68,6 +70,22 @@ void AUPPlayerController::SetupInputComponent()
 void AUPPlayerController::teeee()
 {
 	UE_LOG(LogTemplateCharacter, Log, TEXT("teeee"));
+
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		Subsystem->ClearAllMappings();
+		if (DefaultMappingContext)
+		{
+
+			//SKill
+			for (auto& skill : PlayerSkillRegistDictionary)
+			{
+				skill.Value += 1;
+			}
+			SetupInputComponent();
+			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+		}
+	}
 }
 
 void AUPPlayerController::OnSkillStart(int32 InputId)
