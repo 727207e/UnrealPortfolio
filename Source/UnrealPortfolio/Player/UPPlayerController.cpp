@@ -68,33 +68,10 @@ void AUPPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(AvoidAction, ETriggerEvent::Started, this, &AUPPlayerController::OnAvoidStart);
 		EnhancedInputComponent->BindAction(MenuAction, ETriggerEvent::Started, this, &AUPPlayerController::OnMenuStart);
 		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AUPPlayerController::OnInventoryStart);
-
-
-		EnhancedInputComponent->BindAction(TestInput, ETriggerEvent::Started, this, &AUPPlayerController::teeee);
 	}
 	else
 	{
 		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
-	}
-}
-
-void AUPPlayerController::teeee()
-{
-	UE_LOG(LogTemplateCharacter, Log, TEXT("teeee"));
-
-	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
-	{
-		Subsystem->ClearAllMappings();
-		if (DefaultMappingContext)
-		{
-			//SKill
-			for (auto& skill : PlayerSkillRegistDictionary)
-			{
-				skill.Value += 1;
-			}
-			SetupInputComponent();
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-		}
 	}
 }
 
