@@ -49,5 +49,14 @@ protected:
 	void ShowWeaponShopWidget();
 	void ShowItemShopWidget();
 	void ShowRaiderSelector();
+
+protected:
+	UPROPERTY(VisibleAnywhere, Category = UI)
+	TObjectPtr<class UWidgetComponent> InterActionCompo;
+public:
+	UFUNCTION(BlueprintCallable)
+	void ShowInterAction();
+	UFUNCTION(BlueprintCallable)
+	void HideInterAction();
 	
 };

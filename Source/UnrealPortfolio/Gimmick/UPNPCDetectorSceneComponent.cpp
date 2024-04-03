@@ -20,7 +20,6 @@ UUPNPCDetectorSceneComponent::UUPNPCDetectorSceneComponent()
 	BoxComp->SetCollisionProfileName(CPROFILE_NPC);
 	BoxComp->OnComponentBeginOverlap.AddDynamic(this,&UUPNPCDetectorSceneComponent::OnOverlapBegin);
 	BoxComp->OnComponentEndOverlap.AddDynamic(this,&UUPNPCDetectorSceneComponent::OnOverlapEnd);
-	BoxComp->SetupAttachment(this);
 }
 
 void UUPNPCDetectorSceneComponent::Action() const
@@ -34,12 +33,13 @@ void UUPNPCDetectorSceneComponent::Action() const
 void UUPNPCDetectorSceneComponent::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult)
 {
-	if(OtherActor != nullptr)
+	const auto Character = Cast<IUPUINpcInterface>(OtherActor);
+	if(Character == nullptr)
 	{
-		UE_LOG(LogTemp,Log,TEXT("NPC Get"));
-		UINPC =  Cast<IUPUINpcInterface>(OtherActor);
+		return;
 	}
-		
+	UINPC = Character;
+	UINPC->ShowInterAction();
 }
 
 void UUPNPCDetectorSceneComponent::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
@@ -50,6 +50,7 @@ void UUPNPCDetectorSceneComponent::OnOverlapEnd(UPrimitiveComponent* OverlappedC
 
 	if(ExistActor == UINPC)
 	{
+		UINPC->HideInterAction();
 		UINPC = nullptr;
 	}
 }
@@ -57,5 +58,5 @@ void UUPNPCDetectorSceneComponent::OnOverlapEnd(UPrimitiveComponent* OverlappedC
 void UUPNPCDetectorSceneComponent::SetParent(USceneComponent* InParent)
 {
 	this->SetupAttachment(InParent);
-	BoxComp->SetupAttachment(InParent);
+	BoxComp->SetupAttachment(InParent);	
 }
