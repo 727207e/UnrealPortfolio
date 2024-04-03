@@ -10,10 +10,14 @@
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Abilities/GameplayAbilityTypes.h"
+#include "Components/BoxComponent.h"
+#include "Gimmick/UPNPCDetectorSceneComponent.h"
 
 AUPMainCharacter::AUPMainCharacter()
 {
 	ASC = nullptr;
+	NPCDetectorSceneComponent = CreateDefaultSubobject<UUPNPCDetectorSceneComponent>("NPC_Checker");
+	NPCDetectorSceneComponent->SetParent(RootComponent);
 }
 
 UAbilitySystemComponent* AUPMainCharacter::GetAbilitySystemComponent() const
@@ -123,6 +127,12 @@ void AUPMainCharacter::OnSetDestinationReleased()
 	}
 
 	FollowTime = 0.f;
+}
+
+void AUPMainCharacter::OnNPCInteraction()
+{
+	UE_LOG(LogTemplateCharacter, Log, TEXT("OnNPCInteraction"));
+	NPCDetectorSceneComponent->Action();
 }
 
 void AUPMainCharacter::SetupGasInput(AController* NewController)

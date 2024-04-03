@@ -2,13 +2,10 @@
 
 
 #include "Character/UPNPCCharacter.h"
-
+#include "defines/UPCollision.h"
 #include "Animation/AnimClassData.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-
-
-#define CPROFILE_PAWN TEXT("Pawn")
 
 // Sets default values
 AUPNPCCharacter::AUPNPCCharacter()

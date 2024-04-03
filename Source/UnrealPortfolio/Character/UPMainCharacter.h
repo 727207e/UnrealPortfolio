@@ -19,7 +19,7 @@ class UNREALPORTFOLIO_API AUPMainCharacter : public AUPCharacter, public IAbilit
 	
 public :
 	AUPMainCharacter();
-
+	
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	virtual void PossessedBy(AController* NewController) override;
@@ -35,6 +35,7 @@ public :
 	virtual void OnInputStart() override;
 	virtual void OnSetDestinationTriggered() override;
 	virtual void OnSetDestinationReleased() override;
+	virtual void OnNPCInteraction() override;
 	
 	/** Time Threshold to know if it was a short press */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
@@ -53,6 +54,10 @@ protected :
 	
 	UPROPERTY(EditAnywhere, Category = GAS)
 	TMap<int32, TSubclassOf<class UGameplayAbility>> StartInputAbilities;
+
+	UPROPERTY(EditAnywhere, Category = NPC)
+	TObjectPtr<class UUPNPCDetectorSceneComponent> NPCDetectorSceneComponent;
+	
 
 private :
 	void SetupGasInput(AController* NewController);
