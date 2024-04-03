@@ -3,9 +3,8 @@
 
 #include "Character/UPNPCCharacter.h"
 #include "defines/UPCollision.h"
-#include "Animation/AnimClassData.h"
 #include "Components/CapsuleComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
+#include "Components/WidgetComponent.h"
 
 // Sets default values
 AUPNPCCharacter::AUPNPCCharacter()
@@ -17,7 +16,7 @@ AUPNPCCharacter::AUPNPCCharacter()
 	// Mesh
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -100.0f), FRotator(0.0f, -90.0f, 0.0f));
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-	GetMesh()->SetCollisionProfileName(TEXT("Pawn"));
+	GetMesh()->SetCollisionProfileName(CPROFILE_PAWN);
 
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/OtherCharacterPack/Mesh/Dwarf_Mesh.Dwarf_Mesh'"));
 	if (CharacterMeshRef.Object)
@@ -32,6 +31,17 @@ AUPNPCCharacter::AUPNPCCharacter()
 		GetMesh()->SetAnimInstanceClass(CharacterAnimRef.Class);
 	}
 
+	InterActionCompo = CreateDefaultSubobject<UWidgetComponent>(TEXT("InterActionCompo"));
+	InterActionCompo->SetupAttachment(GetMesh());
+	
+	static ConstructorHelpers::FClassFinder<UUserWidget> InterActionClassRef(TEXT("/Game/UI/WBP_InterAction.WBP_InterAction_C"));
+	 if(InterActionClassRef.Class)
+	 {
+	 	InterActionCompo->SetWidgetClass(InterActionClassRef.Class);
+	 	InterActionCompo->SetWidgetSpace(EWidgetSpace::World);
+	 	InterActionCompo->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	 }
+
 	TakeUiActions.Add(FTakeWidgetDelegateWrapper(FOnShowNPCWidgetDelegate::CreateUObject(this,&AUPNPCCharacter::ShowWeaponShopWidget)));
 	TakeUiActions.Add(FTakeWidgetDelegateWrapper(FOnShowNPCWidgetDelegate::CreateUObject(this,&AUPNPCCharacter::ShowItemShopWidget)));
 	TakeUiActions.Add(FTakeWidgetDelegateWrapper(FOnShowNPCWidgetDelegate::CreateUObject(this,&AUPNPCCharacter::ShowRaiderSelector)));
@@ -45,8 +55,9 @@ void AUPNPCCharacter::TakeNPCWidget()
 void AUPNPCCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	TakeNPCWidget();
-	
+	InterActionCompo->GetWidget()->AddToViewport();
+	HideInterAction();
+
 }
 
 void AUPNPCCharacter::ShowWeaponShopWidget()
@@ -62,4 +73,20 @@ void AUPNPCCharacter::ShowItemShopWidget()
 void AUPNPCCharacter::ShowRaiderSelector()
 {
 	UE_LOG(LogTemp,Log,TEXT("ShowRaiderSelector"));
+}
+
+void AUPNPCCharacter::ShowInterAction()
+{
+	if(InterActionCompo)
+	{
+		InterActionCompo->GetWidget()->SetVisibility(ESlateVisibility::Visible);	
+	}
+}
+
+void AUPNPCCharacter::HideInterAction()
+{
+	if(InterActionCompo)
+	{
+		InterActionCompo->GetWidget()->SetVisibility(ESlateVisibility::Hidden);		
+	}
 }
