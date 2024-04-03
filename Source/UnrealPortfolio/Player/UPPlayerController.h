@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Templates/SubclassOf.h"
 #include "GameFramework/PlayerController.h"
+#include "Interface/UPControllerInterface.h"
+#include "Interface/UPPossessCharacterInterface.h"
 #include "UPPlayerController.generated.h"
 
 /** Forward declaration to improve compiling times */
@@ -15,20 +17,15 @@ class UInputAction;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS()
-class AUPPlayerController : public APlayerController
+class AUPPlayerController : public APlayerController, public IUPControllerInterface
 {
 	GENERATED_BODY()
 
 public:
 	AUPPlayerController();
 
-	/** Time Threshold to know if it was a short press */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	float ShortPressThreshold;
+	virtual void SetPossessCharacterInterface(class IUPPossessCharacterInterface* TargetCharacter) override;
 
-	/** FX Class that we will spawn when clicking */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	TObjectPtr<class UNiagaraSystem> FXCursor;
 
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
@@ -70,8 +67,6 @@ protected:
 	void OnInputStarted();
 	void OnSetDestinationTriggered();
 	void OnSetDestinationReleased();
-	void OnTouchTriggered();
-	void OnTouchReleased();
 
 private:
 	void OnSkillStart(int32 InputId);
@@ -85,10 +80,5 @@ private:
 	void OnMenuStart();
 	void OnInventoryStart();
 
-	FVector CachedDestination;
-
-	bool bIsTouch; // Is it a touch device
-	float FollowTime; // For how long it has been pressed
+	IUPPossessCharacterInterface* PossessCharacter;
 };
-
-
