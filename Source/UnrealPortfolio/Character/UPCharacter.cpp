@@ -55,4 +55,3 @@ void AUPCharacter::Tick(float DeltaSeconds)
 void AUPCharacter::SetDead()
 {
 }
-
