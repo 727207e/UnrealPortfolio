@@ -51,6 +51,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> InventoryAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> InteractionAction;
+		
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Input)
 	TMap<TObjectPtr<class UInputAction>, int32> ConsumableItemDictionary;
 	
@@ -79,6 +82,7 @@ private:
 
 	void OnMenuStart();
 	void OnInventoryStart();
+	void OnNPCInteraction();
 
 	IUPPossessCharacterInterface* PossessCharacter;
 };
