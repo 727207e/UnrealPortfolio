@@ -51,3 +51,8 @@ void AUPCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 }
+
+void AUPCharacter::SetDead()
+{
+}
+
