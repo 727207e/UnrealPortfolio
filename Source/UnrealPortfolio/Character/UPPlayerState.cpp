@@ -12,6 +12,6 @@ AUPPlayerState::AUPPlayerState()
 
 UAbilitySystemComponent* AUPPlayerState::GetAbilitySystemComponent() const
 {
-	return nullptr;
+	return ASC;
 }
 
