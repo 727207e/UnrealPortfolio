@@ -11,8 +11,13 @@ public class UnrealPortfolio : ModuleRules
         PublicIncludePaths.AddRange(new string[] { "UnrealPortfolio" });
 
         PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "NavigationSystem", "AIModule", "Niagara", "EnhancedInput" });
-
-        PrivateDependencyModuleNames.AddRange(new string[] { });
+        
+        PrivateDependencyModuleNames.AddRange(new string[] {
+            "GameFeatures",
+            "GameplayAbilities",
+            "GameplayTasks",
+            "GameplayTags"
+        });
 
     }
 }

@@ -2,9 +2,7 @@
 
 #include "UPPlayerController.h"
 #include "GameFramework/Pawn.h"
-#include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "NiagaraSystem.h"
-#include "NiagaraFunctionLibrary.h"
 #include "Character/UPCharacter.h"
 #include "Engine/World.h"
 #include "EnhancedInputComponent.h"
@@ -19,8 +17,12 @@ AUPPlayerController::AUPPlayerController()
 {
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;
-	CachedDestination = FVector::ZeroVector;
-	FollowTime = 0.f;
+	PossessCharacter = nullptr;
+}
+
+void AUPPlayerController::SetPossessCharacterInterface(IUPPossessCharacterInterface* targetCharacter)
+{
+	PossessCharacter = targetCharacter;
 }
 
 void AUPPlayerController::BeginPlay()
@@ -77,99 +79,80 @@ void AUPPlayerController::SetupInputComponent()
 
 void AUPPlayerController::OnSkillStart(int32 InputId)
 {
-	UE_LOG(LogTemplateCharacter, Log, TEXT("Start : %d") , InputId);
+	if (PossessCharacter)
+	{
+		PossessCharacter->OnSkillStart(InputId);
+	}
 }
 
 void AUPPlayerController::OnSkillRelease(int32 InputId)
 {
-	UE_LOG(LogTemplateCharacter, Log, TEXT("Release : %d"), InputId);
+	if (PossessCharacter)
+	{
+		PossessCharacter->OnSkillRelease(InputId);
+	}
 }
 
 void AUPPlayerController::OnAttackStart()
 {
-	UE_LOG(LogTemplateCharacter, Log, TEXT("Attack"));
+	if (PossessCharacter)
+	{
+		PossessCharacter->OnAttackStart();
+	}
 }
 
 void AUPPlayerController::OnConsumableItemStart(int32 InputId)
 {
-	UE_LOG(LogTemplateCharacter, Log, TEXT("ConsumableItem : %d"), InputId);
+	if (PossessCharacter)
+	{
+		PossessCharacter->OnConsumableStart(InputId);
+	}
 }
 
 void AUPPlayerController::OnAvoidStart()
 {
-	UE_LOG(LogTemplateCharacter, Log, TEXT("AvoidStart"));
+	if (PossessCharacter)
+	{
+		PossessCharacter->OnAvoidStart();
+	}
 }
 
 void AUPPlayerController::OnMenuStart()
 {
-	UE_LOG(LogTemplateCharacter, Log, TEXT("MenuStart"));
+	if (PossessCharacter)
+	{
+		PossessCharacter->OnMenuStart();
+	}
 }
 
 void AUPPlayerController::OnInventoryStart()
 {
-	UE_LOG(LogTemplateCharacter, Log, TEXT("InventoryStart"));
+	if (PossessCharacter)
+	{
+		PossessCharacter->OnInventoryStart();
+	}
 }
 
 void AUPPlayerController::OnInputStarted()
 {
-	StopMovement();
+	if (PossessCharacter)
+	{
+		PossessCharacter->OnInputStart();
+	}
 }
 
-// Triggered every frame when the input is held down
 void AUPPlayerController::OnSetDestinationTriggered()
 {
-	// We flag that the input is being pressed
-	FollowTime += GetWorld()->GetDeltaSeconds();
-
-	// We look for the location in the world where the player has pressed the input
-	FHitResult Hit;
-	bool bHitSuccessful = false;
-	if (bIsTouch)
+	if (PossessCharacter)
 	{
-		bHitSuccessful = GetHitResultUnderFinger(ETouchIndex::Touch1, ECollisionChannel::ECC_Visibility, true, Hit);
-	}
-	else
-	{
-		bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);
-	}
-
-	// If we hit a surface, cache the location
-	if (bHitSuccessful)
-	{
-		CachedDestination = Hit.Location;
-	}
-
-	// Move towards mouse pointer or touch
-	APawn* ControlledPawn = GetPawn();
-	if (ControlledPawn != nullptr)
-	{
-		FVector WorldDirection = (CachedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal();
-		ControlledPawn->AddMovementInput(WorldDirection, 1.0, false);
+		PossessCharacter->OnSetDestinationTriggered();
 	}
 }
 
 void AUPPlayerController::OnSetDestinationReleased()
 {
-	// If it was a short press
-	if (FollowTime <= ShortPressThreshold)
+	if (PossessCharacter)
 	{
-		// We move there and spawn some particles
-		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, CachedDestination, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
+		PossessCharacter->OnSetDestinationReleased();
 	}
-
-	FollowTime = 0.f;
-}
-
-// Triggered every frame when the input is held down
-void AUPPlayerController::OnTouchTriggered()
-{
-	bIsTouch = true;
-	OnSetDestinationTriggered();
-}
-
-void AUPPlayerController::OnTouchReleased()
-{
-	bIsTouch = false;
-	OnSetDestinationReleased();
 }
