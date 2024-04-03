@@ -7,27 +7,16 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
+
+#define CPROFILE_PAWN TEXT("Pawn")
+
 // Sets default values
 AUPNPCCharacter::AUPNPCCharacter()
 {
-	// Pawn
-	bUseControllerRotationPitch = false;
-	bUseControllerRotationYaw = false;
-	bUseControllerRotationRoll = false;
-
 	// Capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-	//GetCapsuleComponent()->SetCollisionProfileName(프로파일);
-
-	// Movement
-	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
-	GetCharacterMovement()->JumpZVelocity = 700.f;
-	GetCharacterMovement()->AirControl = 0.35f;
-	GetCharacterMovement()->MaxWalkSpeed = 500.f;
-	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
-	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
-
+	GetCapsuleComponent()->SetCollisionProfileName(CPROFILE_PAWN);
+	
 	// Mesh
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -100.0f), FRotator(0.0f, -90.0f, 0.0f));
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
