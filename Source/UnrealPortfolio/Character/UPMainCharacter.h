@@ -57,13 +57,40 @@ protected :
 
 	UPROPERTY(EditAnywhere, Category = NPC)
 	TObjectPtr<class UUPNPCDetectorSceneComponent> NPCDetectorSceneComponent;
-	
-
 private :
 	void SetupGasInput(AController* NewController);
 
-private :
+protected:
 	//Movement
 	float FollowTime; // For how long it has been pressed
 	FVector CachedDestination;
+
+
+protected:
+	/** Top down camera */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class UCameraComponent* CameraComponent;
+
+	/** Camera boom positioning the camera above the character */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class USpringArmComponent* CameraBoom;
+
+
+	
+protected:
+	/** Camera Control Data */
+	UPROPERTY(EditAnywhere, Category = CharacterControl, Meta = (AllowPrivateAccess = "true"))
+	TMap<ECharacterControlType, class UUPCharacterControlData*> CharacterControlManager;
+	/** CurrentCharacterControlType */
+	ECharacterControlType CurrentCharacterControlType;
+
+protected:
+
+	void SetupPlayerCamera();
+	
+	void ChangeCharacterControl();
+	/**Set Current Player Control Data **/
+	void SetCharacterControl(ECharacterControlType NewCharacterControlType);
+	/**Set Current Player Camera Data **/
+	void SetCharacterControlData(const UUPCharacterControlData* CharacterControlData);
 };
