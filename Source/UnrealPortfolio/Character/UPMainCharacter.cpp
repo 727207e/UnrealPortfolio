@@ -10,7 +10,10 @@
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Abilities/GameplayAbilityTypes.h"
+#include "Camera/CameraComponent.h"
 #include "Components/BoxComponent.h"
+#include "Data/UPCharacterControlData.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Gimmick/UPNPCDetectorSceneComponent.h"
 
 AUPMainCharacter::AUPMainCharacter()
@@ -18,6 +21,8 @@ AUPMainCharacter::AUPMainCharacter()
 	ASC = nullptr;
 	NPCDetectorSceneComponent = CreateDefaultSubobject<UUPNPCDetectorSceneComponent>("NPC_Checker");
 	NPCDetectorSceneComponent->SetParent(RootComponent);
+
+	SetupPlayerCamera();
 }
 
 UAbilitySystemComponent* AUPMainCharacter::GetAbilitySystemComponent() const
@@ -131,8 +136,10 @@ void AUPMainCharacter::OnSetDestinationReleased()
 
 void AUPMainCharacter::OnNPCInteraction()
 {
-	UE_LOG(LogTemplateCharacter, Log, TEXT("OnNPCInteraction"));
-	NPCDetectorSceneComponent->Action();
+	//UE_LOG(LogTemplateCharacter, Log, TEXT("OnNPCInteraction"));
+	//NPCDetectorSceneComponent->Action();
+
+	ChangeCharacterControl();
 }
 
 void AUPMainCharacter::SetupGasInput(AController* NewController)
@@ -143,3 +150,95 @@ void AUPMainCharacter::SetupGasInput(AController* NewController)
 		ControllerInterface->SetPossessCharacterInterface(this);
 	}
 }
+
+//*##############################Camera Control##################################*/
+//*##############################Camera Control##################################*/
+
+void AUPMainCharacter::SetupPlayerCamera()
+{
+	// Create a camera boom...
+	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	CameraBoom->SetupAttachment(RootComponent);
+	CameraBoom->SetUsingAbsoluteRotation(true); // Don't want arm to rotate when character does
+	CameraBoom->bDoCollisionTest = false; // Don't want to pull camera in when it collides with level
+
+	// Create a camera...
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("TopDownCamera"));
+	CameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+	CameraComponent->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+
+	// Create CharacterControlData...
+	static ConstructorHelpers::FObjectFinder<UUPCharacterControlData> ShoulderDataRef(TEXT("/Script/UnrealPortfolio.UPCharacterControlData'/Game/CharacterControl/ABC_Shoulder.ABC_Shoulder'"));
+	if (ShoulderDataRef.Object)
+	{
+		CharacterControlManager.Add(ECharacterControlType::Shoulder, ShoulderDataRef.Object);
+	}
+
+	static ConstructorHelpers::FObjectFinder<UUPCharacterControlData> TopDownDataDataRef(TEXT("/Script/UnrealPortfolio.UPCharacterControlData'/Game/CharacterControl/ABC_TopDown.ABC_TopDown'"));
+	if (TopDownDataDataRef.Object)
+	{
+		CharacterControlManager.Add(ECharacterControlType::TopDown, TopDownDataDataRef.Object);
+	}
+
+	static ConstructorHelpers::FObjectFinder<UUPCharacterControlData> SideScrollDataRef(TEXT("/Script/UnrealPortfolio.UPCharacterControlData'/Game/CharacterControl/ABC_SideScroll.ABC_SideScroll'"));
+	if (SideScrollDataRef.Object)
+	{
+		CharacterControlManager.Add(ECharacterControlType::SideScroll, SideScrollDataRef.Object);
+	}
+
+	SetCharacterControl(ECharacterControlType::TopDown);
+	
+}
+
+void AUPMainCharacter::ChangeCharacterControl()
+{
+	if (CurrentCharacterControlType == ECharacterControlType::TopDown)
+	{
+		UE_LOG(LogTemp,Log,TEXT("Shoulder"));
+		SetCharacterControl(ECharacterControlType::Shoulder);
+	}
+	else if (CurrentCharacterControlType == ECharacterControlType::Shoulder)
+	{
+		UE_LOG(LogTemp,Log,TEXT("SideScroll"));
+		SetCharacterControl(ECharacterControlType::SideScroll);
+	}
+	else if (CurrentCharacterControlType == ECharacterControlType::SideScroll)
+	{
+		UE_LOG(LogTemp,Log,TEXT("TopDown"));
+		SetCharacterControl(ECharacterControlType::TopDown);
+	}
+}
+
+void AUPMainCharacter::SetCharacterControl(ECharacterControlType NewCharacterControlType)
+{
+	UUPCharacterControlData* NewCharacterControl = CharacterControlManager[NewCharacterControlType];
+	check(NewCharacterControl);
+
+	SetCharacterControlData(NewCharacterControl);
+
+	// APlayerController* PlayerController = CastChecked<APlayerController>(GetController());
+	// if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+	// {
+	// 	Subsystem->ClearAllMappings();
+	// 	UInputMappingContext* NewMappingContext = NewCharacterControl->InputMappingContext;
+	// 	if (NewMappingContext)
+	// 	{
+	// 		Subsystem->AddMappingContext(NewMappingContext, 0);
+	// 	}
+	// }
+
+	CurrentCharacterControlType = NewCharacterControlType;
+}
+
+void AUPMainCharacter::SetCharacterControlData(const UUPCharacterControlData* CharacterControlData)
+{
+
+	CameraBoom->TargetArmLength = CharacterControlData->TargetArmLength;
+	CameraBoom->SetRelativeRotation(CharacterControlData->RelativeRotation);
+	CameraBoom->bUsePawnControlRotation = CharacterControlData->bUsePawnControlRotation;
+	CameraBoom->bInheritPitch = CharacterControlData->bInheritPitch;
+	CameraBoom->bInheritYaw = CharacterControlData->bInheritYaw;
+	CameraBoom->bInheritRoll = CharacterControlData->bInheritRoll;
+	CameraBoom->bDoCollisionTest = CharacterControlData->bDoCollisionTest;
+}
+
