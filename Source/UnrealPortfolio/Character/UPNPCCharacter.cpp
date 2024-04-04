@@ -31,15 +31,14 @@ AUPNPCCharacter::AUPNPCCharacter()
 		GetMesh()->SetAnimInstanceClass(CharacterAnimRef.Class);
 	}
 
-	InterActionCompo = CreateDefaultSubobject<UWidgetComponent>(TEXT("InterActionCompo"));
-	InterActionCompo->SetupAttachment(GetMesh());
-	
-	static ConstructorHelpers::FClassFinder<UUserWidget> InterActionClassRef(TEXT("/Game/UI/WBP_InterAction.WBP_InterAction_C"));
+	InteractionAlarmCompo = CreateDefaultSubobject<UWidgetComponent>(TEXT("InterActionCompo"));
+	InteractionAlarmCompo->SetupAttachment(GetMesh());			
+	static ConstructorHelpers::FClassFinder<UUserWidget> InterActionClassRef(TEXT("/Game/UI/WBP_InteractionAlarm.WBP_InteractionAlarm_C"));
 	 if(InterActionClassRef.Class)
 	 {
-	 	InterActionCompo->SetWidgetClass(InterActionClassRef.Class);
-	 	InterActionCompo->SetWidgetSpace(EWidgetSpace::World);
-	 	InterActionCompo->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	 	InteractionAlarmCompo->SetWidgetClass(InterActionClassRef.Class);
+	 	InteractionAlarmCompo->SetWidgetSpace(EWidgetSpace::World);
+	 	InteractionAlarmCompo->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	 }
 
 	TakeUiActions.Add(FTakeWidgetDelegateWrapper(FOnShowNPCWidgetDelegate::CreateUObject(this,&AUPNPCCharacter::ShowWeaponShopWidget)));
@@ -55,7 +54,7 @@ void AUPNPCCharacter::TakeNPCWidget()
 void AUPNPCCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	InterActionCompo->GetWidget()->AddToViewport();
+	InteractionAlarmCompo->GetWidget()->AddToViewport();
 	HideInterAction();
 
 }
@@ -77,16 +76,16 @@ void AUPNPCCharacter::ShowRaiderSelector()
 
 void AUPNPCCharacter::ShowInterAction()
 {
-	if(InterActionCompo)
+	if(InteractionAlarmCompo)
 	{
-		InterActionCompo->GetWidget()->SetVisibility(ESlateVisibility::Visible);	
+		InteractionAlarmCompo->GetWidget()->SetVisibility(ESlateVisibility::Visible);	
 	}
 }
 
 void AUPNPCCharacter::HideInterAction()
 {
-	if(InterActionCompo)
+	if(InteractionAlarmCompo)
 	{
-		InterActionCompo->GetWidget()->SetVisibility(ESlateVisibility::Hidden);		
+		InteractionAlarmCompo->GetWidget()->SetVisibility(ESlateVisibility::Hidden);		
 	}
 }

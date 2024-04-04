@@ -52,7 +52,7 @@ protected:
 
 protected:
 	UPROPERTY(VisibleAnywhere, Category = UI)
-	TObjectPtr<class UWidgetComponent> InterActionCompo;
+	TObjectPtr<class UWidgetComponent> InteractionAlarmCompo;
 public:
 	UFUNCTION(BlueprintCallable)
 	void ShowInterAction();
