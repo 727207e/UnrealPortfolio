@@ -48,6 +48,11 @@ void UUPNPCDetectorSceneComponent::OnOverlapEnd(UPrimitiveComponent* OverlappedC
 	UE_LOG(LogTemp,Log,TEXT("NPC Is Null"));
 	const IUPUINpcInterface* ExistActor = Cast<IUPUINpcInterface>(OtherActor);
 
+	if (UINPC == nullptr)
+	{
+		return;
+	}
+
 	if(ExistActor == UINPC)
 	{
 		UINPC->HideInterAction();

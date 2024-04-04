@@ -4,6 +4,7 @@
 #include "Character/UPNPCCharacter.h"
 #include "defines/UPCollision.h"
 #include "Components/CapsuleComponent.h"
+#include "Game/UPGameInstance.h"
 #include "Components/WidgetComponent.h"
 
 // Sets default values
@@ -72,6 +73,14 @@ void AUPNPCCharacter::ShowItemShopWidget()
 void AUPNPCCharacter::ShowRaiderSelector()
 {
 	UE_LOG(LogTemp,Log,TEXT("ShowRaiderSelector"));
+
+	UUPGameInstance* UPGameInstance = Cast<UUPGameInstance>(GetWorld()->GetGameInstance());
+	if (UPGameInstance)
+	{
+		UE_LOG(LogTemp, Log, TEXT("ShowRaiderSelector22222"));
+		UPGameInstance->LoadNextLevelByAsync(NextLevelPath);
+	}
+
 }
 
 void AUPNPCCharacter::ShowInterAction()
@@ -84,8 +93,13 @@ void AUPNPCCharacter::ShowInterAction()
 
 void AUPNPCCharacter::HideInterAction()
 {
+
 	if(InteractionAlarmCompo)
 	{
-		InteractionAlarmCompo->GetWidget()->SetVisibility(ESlateVisibility::Hidden);		
+		UUserWidget* Widget = InteractionAlarmCompo->GetWidget();
+		if (Widget)
+		{
+			InteractionAlarmCompo->GetWidget()->SetVisibility(ESlateVisibility::Hidden);
+		}
 	}
 }
