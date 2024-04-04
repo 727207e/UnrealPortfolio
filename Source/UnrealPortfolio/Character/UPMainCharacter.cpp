@@ -194,17 +194,14 @@ void AUPMainCharacter::ChangeCharacterControl()
 {
 	if (CurrentCharacterControlType == ECharacterControlType::TopDown)
 	{
-		UE_LOG(LogTemp,Log,TEXT("Shoulder"));
 		SetCharacterControl(ECharacterControlType::Shoulder);
 	}
 	else if (CurrentCharacterControlType == ECharacterControlType::Shoulder)
 	{
-		UE_LOG(LogTemp,Log,TEXT("SideScroll"));
 		SetCharacterControl(ECharacterControlType::SideScroll);
 	}
 	else if (CurrentCharacterControlType == ECharacterControlType::SideScroll)
 	{
-		UE_LOG(LogTemp,Log,TEXT("TopDown"));
 		SetCharacterControl(ECharacterControlType::TopDown);
 	}
 }
@@ -215,18 +212,6 @@ void AUPMainCharacter::SetCharacterControl(ECharacterControlType NewCharacterCon
 	check(NewCharacterControl);
 
 	SetCharacterControlData(NewCharacterControl);
-
-	// APlayerController* PlayerController = CastChecked<APlayerController>(GetController());
-	// if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-	// {
-	// 	Subsystem->ClearAllMappings();
-	// 	UInputMappingContext* NewMappingContext = NewCharacterControl->InputMappingContext;
-	// 	if (NewMappingContext)
-	// 	{
-	// 		Subsystem->AddMappingContext(NewMappingContext, 0);
-	// 	}
-	// }
-
 	CurrentCharacterControlType = NewCharacterControlType;
 }
 
