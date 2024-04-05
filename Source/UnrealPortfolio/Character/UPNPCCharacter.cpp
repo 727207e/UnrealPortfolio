@@ -4,7 +4,7 @@
 #include "Character/UPNPCCharacter.h"
 #include "defines/UPCollision.h"
 #include "Components/CapsuleComponent.h"
-#include "Game/UPGameInstance.h"
+#include "Level/UPLevelScriptActor.h"
 #include "Components/WidgetComponent.h"
 
 // Sets default values
@@ -74,11 +74,11 @@ void AUPNPCCharacter::ShowRaiderSelector()
 {
 	UE_LOG(LogTemp,Log,TEXT("ShowRaiderSelector"));
 
-	UUPGameInstance* UPGameInstance = Cast<UUPGameInstance>(GetWorld()->GetGameInstance());
-	if (UPGameInstance)
+	AUPLevelScriptActor* UpLevelScript = Cast<AUPLevelScriptActor>(GetWorld()->GetLevelScriptActor());
+	if (UpLevelScript)
 	{
 		UE_LOG(LogTemp, Log, TEXT("ShowRaiderSelector22222"));
-		UPGameInstance->LoadNextLevelByAsync(NextLevelPath);
+		UpLevelScript->LoadNextLevelByAsync(NextLevelPath);
 	}
 
 }
