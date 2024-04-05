@@ -30,17 +30,7 @@ AUPNPCCharacter::AUPNPCCharacter()
 	{
 		GetMesh()->SetAnimInstanceClass(CharacterAnimRef.Class);
 	}
-
-	InteractionAlarmCompo = CreateDefaultSubobject<UWidgetComponent>(TEXT("InterActionCompo"));
-	InteractionAlarmCompo->SetupAttachment(GetMesh());			
-	static ConstructorHelpers::FClassFinder<UUserWidget> InterActionClassRef(TEXT("/Game/UI/WBP_InteractionAlarm.WBP_InteractionAlarm_C"));
-	 if(InterActionClassRef.Class)
-	 {
-	 	InteractionAlarmCompo->SetWidgetClass(InterActionClassRef.Class);
-	 	InteractionAlarmCompo->SetWidgetSpace(EWidgetSpace::World);
-	 	InteractionAlarmCompo->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	 }
-
+	
 	TakeUiActions.Add(FTakeWidgetDelegateWrapper(FOnShowNPCWidgetDelegate::CreateUObject(this,&AUPNPCCharacter::ShowWeaponShopWidget)));
 	TakeUiActions.Add(FTakeWidgetDelegateWrapper(FOnShowNPCWidgetDelegate::CreateUObject(this,&AUPNPCCharacter::ShowItemShopWidget)));
 	TakeUiActions.Add(FTakeWidgetDelegateWrapper(FOnShowNPCWidgetDelegate::CreateUObject(this,&AUPNPCCharacter::ShowRaiderSelector)));

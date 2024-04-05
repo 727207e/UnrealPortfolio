@@ -10,19 +10,25 @@
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Abilities/GameplayAbilityTypes.h"
+#include "Blueprint/UserWidget.h"
 #include "Camera/CameraComponent.h"
-#include "Components/BoxComponent.h"
 #include "Data/UPCharacterControlData.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Gimmick/UPNPCDetectorSceneComponent.h"
+#include "UI/UPFadeUserWidget.h"
+
+class UUPFadeUserWidget;
 
 AUPMainCharacter::AUPMainCharacter()
 {
 	ASC = nullptr;
 	NPCDetectorSceneComponent = CreateDefaultSubobject<UUPNPCDetectorSceneComponent>("NPC_Checker");
 	NPCDetectorSceneComponent->SetParent(RootComponent);
-
+	
 	SetupPlayerCamera();
+	SetupFadeWidget();
+	
 }
 
 UAbilitySystemComponent* AUPMainCharacter::GetAbilitySystemComponent() const
@@ -136,10 +142,13 @@ void AUPMainCharacter::OnSetDestinationReleased()
 
 void AUPMainCharacter::OnNPCInteraction()
 {
-	//UE_LOG(LogTemplateCharacter, Log, TEXT("OnNPCInteraction"));
-	//NPCDetectorSceneComponent->Action();
+	CreateFadeWidget();
+	NPCDetectorSceneComponent->Action();
+}
 
-	ChangeCharacterControl();
+void AUPMainCharacter::BeginPlay()
+{
+	Super::BeginPlay();
 }
 
 void AUPMainCharacter::SetupGasInput(AController* NewController)
@@ -227,3 +236,33 @@ void AUPMainCharacter::SetCharacterControlData(const UUPCharacterControlData* Ch
 	CameraBoom->bDoCollisionTest = CharacterControlData->bDoCollisionTest;
 }
 
+/** Interface **/
+void AUPMainCharacter::SetCharacterMovementMod(EMovementMode MovementMode)
+{
+	GetCharacterMovement()->SetMovementMode(MovementMode);
+}
+
+void AUPMainCharacter::SetupFadeWidget()
+{
+	static ConstructorHelpers::FClassFinder<UUPFadeUserWidget> FadeUiRef(TEXT("/Game/UI/WBP_Fade.WBP_Fade_C"));
+
+	if(FadeUiRef.Class)
+	{
+		FadeClassType = FadeUiRef.Class;
+	}
+}
+
+
+void AUPMainCharacter::CreateFadeWidget()
+{
+	if (FadeClassType && FadeUserWidget == nullptr)
+	{
+		FadeUserWidget = Cast<UUPFadeUserWidget>(CreateWidget(GetWorld(),FadeClassType));
+		FadeUserWidget->AddToViewport();
+		
+	}
+	if(FadeUserWidget != nullptr)
+	{
+		FadeUserWidget->StartFade(this);
+	}
+}

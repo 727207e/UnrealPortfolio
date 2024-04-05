@@ -6,7 +6,7 @@
 #include "Components/SceneComponent.h"
 #include "UPNPCDetectorSceneComponent.generated.h"
 
-
+class IUPUINpcInterface;
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UNREALPORTFOLIO_API UUPNPCDetectorSceneComponent : public USceneComponent
 {
@@ -26,8 +26,8 @@ private:
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult);
 	UFUNCTION()
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-	UPROPERTY()
-	TObjectPtr<class IUPUINpcInterface>  UINPC;
+
+	IUPUINpcInterface*  UINPC;
 public:
 
 public:
