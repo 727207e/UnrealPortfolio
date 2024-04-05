@@ -4,6 +4,7 @@
 #include "Character/UPNPCCharacter.h"
 #include "defines/UPCollision.h"
 #include "Components/CapsuleComponent.h"
+#include "Level/UPLevelScriptActor.h"
 #include "Components/WidgetComponent.h"
 
 // Sets default values
@@ -62,6 +63,14 @@ void AUPNPCCharacter::ShowItemShopWidget()
 void AUPNPCCharacter::ShowRaiderSelector()
 {
 	UE_LOG(LogTemp,Log,TEXT("ShowRaiderSelector"));
+
+	AUPLevelScriptActor* UpLevelScript = Cast<AUPLevelScriptActor>(GetWorld()->GetLevelScriptActor());
+	if (UpLevelScript)
+	{
+		UE_LOG(LogTemp, Log, TEXT("ShowRaiderSelector22222"));
+		UpLevelScript->LoadNextLevelByAsync(NextLevelPath);
+	}
+
 }
 
 void AUPNPCCharacter::ShowInterAction()
@@ -74,8 +83,13 @@ void AUPNPCCharacter::ShowInterAction()
 
 void AUPNPCCharacter::HideInterAction()
 {
+
 	if(InteractionAlarmCompo)
 	{
-		InteractionAlarmCompo->GetWidget()->SetVisibility(ESlateVisibility::Hidden);		
+		UUserWidget* Widget = InteractionAlarmCompo->GetWidget();
+		if (Widget)
+		{
+			InteractionAlarmCompo->GetWidget()->SetVisibility(ESlateVisibility::Hidden);
+		}
 	}
 }

@@ -7,6 +7,7 @@
 #include "UPNPCDetectorSceneComponent.generated.h"
 
 class IUPUINpcInterface;
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UNREALPORTFOLIO_API UUPNPCDetectorSceneComponent : public USceneComponent
 {

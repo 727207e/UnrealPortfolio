@@ -45,6 +45,10 @@ public:
 	virtual  void TakeNPCWidget() override;
 
 	virtual  void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere, Category = Level)
+	FString NextLevelPath;
+
 protected:
 	void ShowWeaponShopWidget();
 	void ShowItemShopWidget();
