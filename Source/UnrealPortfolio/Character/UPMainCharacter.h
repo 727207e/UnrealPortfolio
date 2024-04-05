@@ -6,6 +6,7 @@
 #include "Character/UPCharacter.h"
 #include "Abilities/GameplayAbilityTypes.h"
 #include "Interface/AbilitySystemGetInterface.h"
+#include "Interface/CharacterMovementInterface.h"
 #include "Interface/UPPossessCharacterInterface.h"
 #include "UPMainCharacter.generated.h"
 
@@ -13,7 +14,7 @@
  * 
  */
 UCLASS()
-class UNREALPORTFOLIO_API AUPMainCharacter : public AUPCharacter, public IAbilitySystemGetInterface, public IUPPossessCharacterInterface
+class UNREALPORTFOLIO_API AUPMainCharacter : public AUPCharacter, public IAbilitySystemGetInterface, public IUPPossessCharacterInterface ,public ICharacterMovementInterface
 {
 	GENERATED_BODY()
 	
@@ -36,6 +37,7 @@ public :
 	virtual void OnSetDestinationTriggered() override;
 	virtual void OnSetDestinationReleased() override;
 	virtual void OnNPCInteraction() override;
+	virtual void BeginPlay() override;
 	
 	/** Time Threshold to know if it was a short press */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
@@ -93,4 +95,17 @@ protected:
 	void SetCharacterControl(ECharacterControlType NewCharacterControlType);
 	/**Set Current Player Camera Data **/
 	void SetCharacterControlData(const UUPCharacterControlData* CharacterControlData);
+
+
+protected:
+	UPROPERTY();
+	TObjectPtr<class UUPFadeUserWidget> FadeUserWidget;
+	TSubclassOf<class  UUPFadeUserWidget> FadeClassType;
+protected:
+	virtual void SetCharacterMovementMod(EMovementMode MovementMode) override;
+	
+	void SetupFadeWidget();
+	UFUNCTION()
+	void CreateFadeWidget();
+	
 };
