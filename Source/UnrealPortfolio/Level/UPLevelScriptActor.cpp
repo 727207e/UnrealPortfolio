@@ -79,7 +79,7 @@ void AUPLevelScriptActor::ProgressCheck()
 	{
 
 		UE_LOG(LogTemp, Log, TEXT("Level UI Deactive"));
-		LevelLoadWidget->ProgressValue = 1;
+		LevelLoadWidget->ProgressValue = 100;
 		GetWorld()->GetTimerManager().ClearTimer(ProgressCheckTimeHandle);
 	}
 	else if (IsDoneCheckReady)
