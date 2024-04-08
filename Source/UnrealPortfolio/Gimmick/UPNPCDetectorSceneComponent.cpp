@@ -22,14 +22,6 @@ UUPNPCDetectorSceneComponent::UUPNPCDetectorSceneComponent()
 	BoxComp->OnComponentEndOverlap.AddDynamic(this,&UUPNPCDetectorSceneComponent::OnOverlapEnd);
 }
 
-void UUPNPCDetectorSceneComponent::Action() const
-{
-	if(UINPC != nullptr)
-	{
-		UINPC->TakeNPCWidget();
-	}
-}
-
 void UUPNPCDetectorSceneComponent::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult)
 {
@@ -39,13 +31,14 @@ void UUPNPCDetectorSceneComponent::OnOverlapBegin(UPrimitiveComponent* Overlappe
 		return;
 	}
 	UINPC = Character;
-	UINPC->ShowInterAction();
+	UINPC->ShowInteractionAlarm();
+	
 }
 
 void UUPNPCDetectorSceneComponent::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	UE_LOG(LogTemp,Log,TEXT("NPC Is Null"));
+	
 	const IUPUINpcInterface* ExistActor = Cast<IUPUINpcInterface>(OtherActor);
 
 	if (UINPC == nullptr)
@@ -55,7 +48,7 @@ void UUPNPCDetectorSceneComponent::OnOverlapEnd(UPrimitiveComponent* OverlappedC
 
 	if(ExistActor == UINPC)
 	{
-		UINPC->HideInterAction();
+		UINPC->HideInterActionAlarm();
 		UINPC = nullptr;
 	}
 }

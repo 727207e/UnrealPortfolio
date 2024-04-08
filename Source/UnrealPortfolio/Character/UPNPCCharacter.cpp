@@ -4,7 +4,6 @@
 #include "Character/UPNPCCharacter.h"
 #include "defines/UPCollision.h"
 #include "Components/CapsuleComponent.h"
-#include "Level/UPLevelScriptActor.h"
 #include "Components/WidgetComponent.h"
 
 // Sets default values
@@ -47,8 +46,15 @@ AUPNPCCharacter::AUPNPCCharacter()
 	TakeUiActions.Add(FTakeWidgetDelegateWrapper(FOnShowNPCWidgetDelegate::CreateUObject(this,&AUPNPCCharacter::ShowRaiderSelector)));
 }
 
-void AUPNPCCharacter::TakeNPCWidget()
+void AUPNPCCharacter::TakeNPCWidgetShow()
 {
+	UE_LOG(LogTemp,Log,TEXT("Show Type"));
+	TakeUiActions[static_cast<uint8>(widgetType)].OnTakeWidget.ExecuteIfBound();
+}
+
+void AUPNPCCharacter::TakeNPCWidgetHide()
+{
+	UE_LOG(LogTemp,Log,TEXT("Hide Type"));
 	TakeUiActions[static_cast<uint8>(widgetType)].OnTakeWidget.ExecuteIfBound();
 }
 
@@ -56,7 +62,7 @@ void AUPNPCCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	InteractionAlarmCompo->GetWidget()->AddToViewport();
-	HideInterAction();
+	HideInterActionAlarm();
 
 }
 
@@ -73,17 +79,17 @@ void AUPNPCCharacter::ShowItemShopWidget()
 void AUPNPCCharacter::ShowRaiderSelector()
 {
 	UE_LOG(LogTemp,Log,TEXT("ShowRaiderSelector"));
-
-	AUPLevelScriptActor* UpLevelScript = Cast<AUPLevelScriptActor>(GetWorld()->GetLevelScriptActor());
-	if (UpLevelScript)
-	{
-		UE_LOG(LogTemp, Log, TEXT("ShowRaiderSelector22222"));
-		UpLevelScript->LoadNextLevelByAsync(NextLevelPath);
-	}
+	//
+	// AUPLevelScriptActor* UpLevelScript = Cast<AUPLevelScriptActor>(GetWorld()->GetLevelScriptActor());
+	// if (UpLevelScript)
+	// {
+	// 	UE_LOG(LogTemp, Log, TEXT("ShowRaiderSelector22222"));
+	// 	UpLevelScript->LoadNextLevelByAsync(NextLevelPath);
+	// }
 
 }
 
-void AUPNPCCharacter::ShowInterAction()
+void AUPNPCCharacter::ShowInteractionAlarm()
 {
 	if(InteractionAlarmCompo)
 	{
@@ -91,7 +97,7 @@ void AUPNPCCharacter::ShowInterAction()
 	}
 }
 
-void AUPNPCCharacter::HideInterAction()
+void AUPNPCCharacter::HideInterActionAlarm()
 {
 
 	if(InteractionAlarmCompo)

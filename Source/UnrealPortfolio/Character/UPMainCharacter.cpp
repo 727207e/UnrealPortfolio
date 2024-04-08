@@ -9,8 +9,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "NiagaraFunctionLibrary.h"
-#include "Abilities/GameplayAbilityTypes.h"
-#include "Blueprint/UserWidget.h"
 #include "Camera/CameraComponent.h"
 #include "Data/UPCharacterControlData.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -27,8 +25,6 @@ AUPMainCharacter::AUPMainCharacter()
 	NPCDetectorSceneComponent->SetParent(RootComponent);
 	
 	SetupPlayerCamera();
-	SetupFadeWidget();
-	
 }
 
 UAbilitySystemComponent* AUPMainCharacter::GetAbilitySystemComponent() const
@@ -140,15 +136,15 @@ void AUPMainCharacter::OnSetDestinationReleased()
 	FollowTime = 0.f;
 }
 
-void AUPMainCharacter::OnNPCInteraction()
+void AUPMainCharacter::OnNPCInteraction(int32 InputId)
 {
-	CreateFadeWidget();
-	NPCDetectorSceneComponent->Action();
+	GASInputPressed(InputId);
 }
 
 void AUPMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	SetCharacterControl(ECharacterControlType::TopDown);
 }
 
 void AUPMainCharacter::SetupGasInput(AController* NewController)
@@ -160,8 +156,16 @@ void AUPMainCharacter::SetupGasInput(AController* NewController)
 	}
 }
 
+
+IUPUINpcInterface* AUPMainCharacter::GetNPCInterface()
+{
+	return  NPCDetectorSceneComponent->UINPC;
+}
+
 //*##############################Camera Control##################################*/
 //*##############################Camera Control##################################*/
+
+
 
 void AUPMainCharacter::SetupPlayerCamera()
 {
@@ -194,25 +198,6 @@ void AUPMainCharacter::SetupPlayerCamera()
 	{
 		CharacterControlManager.Add(ECharacterControlType::SideScroll, SideScrollDataRef.Object);
 	}
-
-	SetCharacterControl(ECharacterControlType::TopDown);
-	
-}
-
-void AUPMainCharacter::ChangeCharacterControl()
-{
-	if (CurrentCharacterControlType == ECharacterControlType::TopDown)
-	{
-		SetCharacterControl(ECharacterControlType::Shoulder);
-	}
-	else if (CurrentCharacterControlType == ECharacterControlType::Shoulder)
-	{
-		SetCharacterControl(ECharacterControlType::SideScroll);
-	}
-	else if (CurrentCharacterControlType == ECharacterControlType::SideScroll)
-	{
-		SetCharacterControl(ECharacterControlType::TopDown);
-	}
 }
 
 void AUPMainCharacter::SetCharacterControl(ECharacterControlType NewCharacterControlType)
@@ -236,33 +221,35 @@ void AUPMainCharacter::SetCharacterControlData(const UUPCharacterControlData* Ch
 	CameraBoom->bDoCollisionTest = CharacterControlData->bDoCollisionTest;
 }
 
+void AUPMainCharacter::GASInputPressed(int32 GameplayAbilityInputId)
+{
+	if(!IsValid(ASC))	{	return; }
+	
+	FGameplayAbilitySpec* Spec = ASC->FindAbilitySpecFromInputID(GameplayAbilityInputId);
+
+	if(Spec)
+	{
+		Spec->InputPressed = true;
+		if(Spec->IsActive())
+		{
+			ASC->AbilitySpecInputPressed(*Spec);
+			UE_LOG(LogTemp,Log,TEXT("Post AbilitySpecInputPressed"));
+		}
+		else
+		{
+			ASC->TryActivateAbility(Spec->Handle);
+			UE_LOG(LogTemp,Log,TEXT("{Post TryActivateAbility"));
+		}
+	}
+}
+
 /** Interface **/
 void AUPMainCharacter::SetCharacterMovementMod(EMovementMode MovementMode)
 {
 	GetCharacterMovement()->SetMovementMode(MovementMode);
 }
 
-void AUPMainCharacter::SetupFadeWidget()
+ECharacterControlType AUPMainCharacter::GetCharacterControl()
 {
-	static ConstructorHelpers::FClassFinder<UUPFadeUserWidget> FadeUiRef(TEXT("/Game/UI/WBP_Fade.WBP_Fade_C"));
-
-	if(FadeUiRef.Class)
-	{
-		FadeClassType = FadeUiRef.Class;
-	}
-}
-
-
-void AUPMainCharacter::CreateFadeWidget()
-{
-	if (FadeClassType && FadeUserWidget == nullptr)
-	{
-		FadeUserWidget = Cast<UUPFadeUserWidget>(CreateWidget(GetWorld(),FadeClassType));
-		FadeUserWidget->AddToViewport();
-		
-	}
-	if(FadeUserWidget != nullptr)
-	{
-		FadeUserWidget->StartFade(this);
-	}
+	return CurrentCharacterControlType;
 }

@@ -8,6 +8,7 @@
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
+#include "GameplayAbilitySpec.h"
 #include "Engine/LocalPlayer.h"
 #include "InputMappingContext.h"
 
@@ -70,13 +71,19 @@ void AUPPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(AvoidAction, ETriggerEvent::Started, this, &AUPPlayerController::OnAvoidStart);
 		EnhancedInputComponent->BindAction(MenuAction, ETriggerEvent::Started, this, &AUPPlayerController::OnMenuStart);
 		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AUPPlayerController::OnInventoryStart);
-		EnhancedInputComponent->BindAction(InteractionAction, ETriggerEvent::Started, this, &AUPPlayerController::OnNPCInteraction);
+		
+		EnhancedInputComponent->BindAction(InteractionAction, ETriggerEvent::Started, this, &AUPPlayerController::OnNPCInteraction,0);
 		
 	}
 	else
 	{
 		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
+}
+
+void AUPPlayerController::SetIgnoreLookInputInterface(bool bcheck)
+{
+	SetIgnoreLookInput(bcheck);
 }
 
 void AUPPlayerController::OnSkillStart(int32 InputId)
@@ -135,11 +142,11 @@ void AUPPlayerController::OnInventoryStart()
 	}
 }
 
-void AUPPlayerController::OnNPCInteraction()
+void AUPPlayerController::OnNPCInteraction(int32 InputId)
 {
 	if (PossessCharacter)
 	{
-		PossessCharacter->OnNPCInteraction();
+		PossessCharacter->OnNPCInteraction(InputId);
 	}
 }
 

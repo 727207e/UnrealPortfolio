@@ -62,7 +62,7 @@ protected:
 	uint32 bMoveToMouseCursor : 1;
 
 	virtual void SetupInputComponent() override;
-	
+	virtual void SetIgnoreLookInputInterface(bool bcheck) override;
 	// To add mapping context
 	virtual void BeginPlay();
 
@@ -82,7 +82,11 @@ private:
 
 	void OnMenuStart();
 	void OnInventoryStart();
-	void OnNPCInteraction();
+	void OnNPCInteraction(int32 InputId);
 
 	IUPPossessCharacterInterface* PossessCharacter;
+	
+	/** Game Ability System Input Component **/
+protected:
+	void GASInputPressed(int32 InputId);
 };

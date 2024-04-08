@@ -24,4 +24,5 @@ class UNREALPORTFOLIO_API IUPControllerInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	virtual void SetPossessCharacterInterface(IUPPossessCharacterInterface* TargetCharacter) = 0;
+	virtual void SetIgnoreLookInputInterface(bool bcheck) = 0;
 };

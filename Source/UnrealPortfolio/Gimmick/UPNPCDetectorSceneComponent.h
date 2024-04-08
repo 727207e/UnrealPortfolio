@@ -19,16 +19,14 @@ public:
 	
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UBoxComponent> BoxComp;
-public:
-	UFUNCTION(BlueprintCallable)
-	void Action() const;
+
 private:
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult);
 	UFUNCTION()
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
-	IUPUINpcInterface*  UINPC;
+public:
+	IUPUINpcInterface* UINPC;
 public:
 
 public:

@@ -33,5 +33,5 @@ public:
 	virtual void OnInputStart() = 0;
 	virtual void OnSetDestinationTriggered() = 0;
 	virtual void OnSetDestinationReleased() = 0;
-	virtual void OnNPCInteraction() = 0;
+	virtual void OnNPCInteraction(int32 InputId) = 0;
 };

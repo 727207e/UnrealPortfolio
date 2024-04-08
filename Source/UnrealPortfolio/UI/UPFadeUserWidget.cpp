@@ -7,108 +7,138 @@ void UUPFadeUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	Duration = 1.0f;
-	Img =  Cast<UImage>(GetWidgetFromName(TEXT("ImageFade")));
-	if(Img)
+	ImgFade =  Cast<UImage>(GetWidgetFromName(TEXT("ImageFade")));
+	if(ImgFade)
 	{
-		Img->SetColorAndOpacity(FLinearColor:: Black);
-		Img->SetOpacity(0.0f);
-		Type = EFadeType::FadeIn;
+		ImgFade->SetColorAndOpacity(FLinearColor:: Black);
+		ImgFade->SetOpacity(0.0f);
 	}
 }
 
 UImage* UUPFadeUserWidget::GetImage()
 {
-	return  Img;
-}
-
-
-
-void UUPFadeUserWidget::StartFade(TScriptInterface<ICharacterMovementInterface> MovementCharacter)
-{
-	if(ActionTimer.IsValid())	{	return;	}
-	//이동 제한
-	if(MovementCharacter)
-	{
-		MovementInterface = MovementCharacter;
-		MovementInterface->SetCharacterMovementMod(MOVE_None);
-	}
-	
-	switch (Type)
-	{
-		case EFadeType::FadeIn:StartFadeIn();	break;
-		case EFadeType::FadeOut:StartFadeOut();	break;
-	}
+	return  ImgFade;
 }
 
 void UUPFadeUserWidget::StartFadeIn()
 {
-	DelTime = 0.0f;
-	GetWorld()->GetTimerManager().ClearTimer(ActionTimer);
-	Img->SetColorAndOpacity(FLinearColor:: Black);
-	Img->SetOpacity(0.0f);
-	GetWorld()->GetTimerManager().SetTimer(ActionTimer,this,&UUPFadeUserWidget::FadeIn,0.01f,true,Duration);
+	UE_LOG(LogTemp,Log,TEXT("체크3"));
+	if (ActionTimer.IsValid()) { return; }
 
+	if (MovementInterface == nullptr) { return; }
+	UE_LOG(LogTemp,Log,TEXT("체크3_2"));
+	
+	DelTime = ZERO;
+	StartData = ZERO;
+	EndData = 1.0f - StartData;
+	
+	MovementInterface->SetCharacterMovementMod(MOVE_None);
+	
+	ImgFade->SetOpacity(StartData);
+	ImgFade->SetColorAndOpacity(FLinearColor:: Black);
+	ImgFade->SetOpacity(0.0f);
+	
+	GetWorld()->GetTimerManager().ClearTimer(ActionTimer);
+	GetWorld()->GetTimerManager().SetTimer(ActionTimer,this,&UUPFadeUserWidget::Fade,0.01f,true,Duration);
 }
+
+
+void UUPFadeUserWidget::StartFadeInInBlueprint(TScriptInterface<ICharacterMovementInterface> MovementCharacter,const FOnFadeEndDelegate& EndCallback)
+{
+	ICharacterMovementInterface* MovementInterfacePtr = MovementCharacter.GetInterface();
+	UE_LOG(LogTemp,Log,TEXT("체크3"));
+	if(MovementInterfacePtr != nullptr)
+	{
+		UE_LOG(LogTemp,Log,TEXT("체크4"));
+		MovementInterface = MovementInterfacePtr;
+		EndCallbackDelegate = EndCallback;
+		StartFadeIn();
+	}
+}
+
+// void UUPFadeUserWidget::StartFadeInMultiCast(ICharacterMovementInterface* MovementCharacter,
+// 									const FOnFadeEnd_MultiCastDelegate& EndCallback)
+// {
+// 	MovementInterface = MovementCharacter;
+// 	EndCallbackMultiCastDelegate = EndCallback;
+// 	StartFadeIn();
+// }
 
 void UUPFadeUserWidget::StartFadeOut()
 {
-	DelTime = 0.0f;
+	if (ActionTimer.IsValid() || !MovementInterface) { return; }
+	
+	MovementInterface->SetCharacterMovementMod(MOVE_None);
+	DelTime = ZERO;
+	StartData = ONE;
+	EndData = 1.0f - StartData;
+	ImgFade->SetColorAndOpacity(FLinearColor:: Black);
+	ImgFade->SetOpacity(StartData);
+	
 	GetWorld()->GetTimerManager().ClearTimer(ActionTimer);
-	Img->SetColorAndOpacity(FLinearColor:: Black);
-	Img->SetOpacity(1.0f);
-	GetWorld()->GetTimerManager().SetTimer(ActionTimer,this,&UUPFadeUserWidget::FadeOut,0.01f,true,Duration);
+	GetWorld()->GetTimerManager().SetTimer(ActionTimer,this,&UUPFadeUserWidget::Fade,0.01f,true,Duration);
 }
 
-void UUPFadeUserWidget::FadeIn()
+
+void UUPFadeUserWidget::StartFadeOutInBlueprint(const TScriptInterface<ICharacterMovementInterface>& MovementCharacter,
+	const FOnFadeEndDelegate& EndCallback)
+{
+	ICharacterMovementInterface* MovementInterfacePtr = MovementCharacter.GetInterface();
+	if(MovementInterfacePtr != nullptr)
+	{
+		MovementInterface = MovementInterfacePtr;
+		EndCallbackDelegate = EndCallback;
+		StartFadeOut();
+	}
+
+}
+
+void UUPFadeUserWidget::StartFadeIn(ICharacterMovementInterface* MovementCharacter, const FOnFadeEndDelegate& EndCallback)
+{
+	if(MovementCharacter != nullptr)
+	{
+		MovementInterface = MovementCharacter;
+		EndCallbackDelegate = EndCallback;
+		StartFadeIn();
+	}
+}
+
+void UUPFadeUserWidget::StartFadeOut(ICharacterMovementInterface* MovementCharacter,
+	const FOnFadeEndDelegate& EndCallback)
+{
+	if(MovementCharacter != nullptr)
+	{
+		MovementInterface = MovementCharacter;
+		EndCallbackDelegate = EndCallback;
+		StartFadeOut();
+	}
+}
+
+
+void UUPFadeUserWidget::Fade()
 {
 	if(!ActionTimer.IsValid())
 	{
-		UE_LOG(LogTemp,Log,TEXT("Not Found ActionTimer"));
 		return;
 	}
-	
-	const float StartData = 0.0f;
-	const float EndData = 1.0f;
 	DelTime += UKismetSystemLibrary::K2_GetTimerElapsedTimeHandle(GetWorld(),ActionTimer);
 	const float Alpha = DelTime / Duration;
 	const float Opacity = FMath::Lerp(StartData,EndData,Alpha);
-	Img->SetOpacity(Opacity);
+	ImgFade->SetOpacity(Opacity);
 
 	if(DelTime >= Duration)
 	{
-	
 		GetWorld()->GetTimerManager().ClearTimer(ActionTimer);
-		Img->SetOpacity(EndData);
-		Type = EFadeType::FadeOut;
-		MovementInterface->SetCharacterMovementMod(MOVE_Walking);
-	}
-	
-}
-
-void UUPFadeUserWidget::FadeOut()
-{
-	if(!ActionTimer.IsValid())
-	{
-		return;
-	}
-	const float StartData = 1.0f;
-	const float EndData = 0.0f;
-	
-	DelTime += UKismetSystemLibrary::K2_GetTimerElapsedTimeHandle(GetWorld(),ActionTimer);
-	const float Alpha = DelTime / Duration;
-	const float Opacity = FMath::Lerp(StartData,EndData,Alpha);
-	Img->SetOpacity(Opacity);
-
-	if(DelTime >= Duration)
-	{
-		UE_LOG(LogTemp,Log,TEXT("Switch FadeIn"));
-		GetWorld()->GetTimerManager().ClearTimer(ActionTimer);
-		Img->SetOpacity(EndData);
-		Type = EFadeType::FadeIn;
-		if(MovementInterface)
-		{
-			MovementInterface->SetCharacterMovementMod(MOVE_Walking);	
-		}
+		ImgFade->SetOpacity(EndData);
 		
+		if(EndCallbackDelegate.IsBound())
+		{
+			EndCallbackDelegate.ExecuteIfBound();	
+		}
+		else
+		{
+			EndCallbackMultiCastDelegate.Broadcast();
+		}
 	}
+	
 }
