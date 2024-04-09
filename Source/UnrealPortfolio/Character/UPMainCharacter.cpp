@@ -14,7 +14,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GAS/GA/GA_NPCInteractor.h"
 #include "Gimmick/UPNPCDetectorSceneComponent.h"
-#include "UI/UPFadeUserWidget.h"
+#include "Tag/GameplayTags.h"
 
 
 
@@ -138,15 +138,14 @@ void AUPMainCharacter::OnNPCInteraction()
 {
 	if(!IsValid(ASC))	{	return; }
 	
-	 FGameplayAbilitySpec* Spec = ASC->FindAbilitySpecFromClass(UGA_NPCInteractor::StaticClass());
-
-	if(Spec)
+	const FGameplayTagContainer TargetTag(TAG_ACTOR_INTERACTION);
+	if(!ASC->HasMatchingGameplayTag(TAG_PLAYER_INTERACTING_WITH_NPC))
 	{
-		if(!Spec->IsActive())
-		{
-			ASC->TryActivateAbility(Spec->Handle);
-			UE_LOG(LogTemp,Log,TEXT("{Post TryActivateAbility"));
-		}
+		ASC->TryActivateAbilitiesByTag(TargetTag);
+	}
+	else
+	{
+		ASC->CancelAbilities(&TargetTag);
 	}
 }
 
@@ -232,24 +231,20 @@ void AUPMainCharacter::SetCharacterControlData(const UUPCharacterControlData* Ch
 
 void AUPMainCharacter::GASInputPressed(int32 GameplayAbilityInputId)
 { 
-	if(!IsValid(ASC))	{	return; }
-	
 	FGameplayAbilitySpec* Spec = ASC->FindAbilitySpecFromInputID(GameplayAbilityInputId);
-
 	if(Spec)
 	{
 		Spec->InputPressed = true;
 		if(Spec->IsActive())
 		{
 			ASC->AbilitySpecInputPressed(*Spec);
-			UE_LOG(LogTemp,Log,TEXT("Post AbilitySpecInputPressed"));
 		}
 		else
 		{
 			ASC->TryActivateAbility(Spec->Handle);
-			UE_LOG(LogTemp,Log,TEXT("{Post TryActivateAbility"));
 		}
 	}
+	
 }
 
 /** Interface **/

@@ -23,6 +23,7 @@ private:
 	
 	
 public:
+	UGA_NPCInteractor();
 	EMovementMode CurrentEMoveType;
 	
 	ICharacterMovementInterface* CharacterMovementInterface;
@@ -31,21 +32,22 @@ public:
 	TSubclassOf<class UUPFadeUserWidget> FadeUserWidgetClass;
 	
  	TObjectPtr<class UUPFadeUserWidget>  FadeUserWidget;
+	bool bOnCancelAbility;
 	//TScriptInterface<class ICharacterMovementInterface>* ScriptInterface;
 
 protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
-	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
-
+	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
+	
 public:
 	UFUNCTION(BlueprintCallable)
 	void PlayCinematicCutscene();
+	UFUNCTION(BlueprintCallable)
+	void PlayCancelCinematicCutscene();
+	
 protected:
 	UFUNCTION()
 	void OnCinematicCutsceneFadeInEnd();
 	UFUNCTION()
 	void CinematicCutsceneFinish();
-	UFUNCTION()
-	void OnCompleteCallback();
-	
 };

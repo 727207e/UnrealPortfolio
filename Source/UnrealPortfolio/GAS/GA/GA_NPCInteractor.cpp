@@ -7,8 +7,15 @@
 #include "Character/UPMainCharacter.h"
 #include "Interface/UPControllerInterface.h"
 #include "UI/UPFadeUserWidget.h"
-
+#include "Tag/GameplayTags.h"
 class FOnFadeEndDelegate;
+
+UGA_NPCInteractor::UGA_NPCInteractor()
+{
+	AbilityTags.AddTag(TAG_ACTOR_INTERACTION);
+	ActivationOwnedTags.AddTag(TAG_PLAYER_INTERACTING_WITH_NPC);
+}
+
 void UGA_NPCInteractor::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
                                         const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
                                         const FGameplayEventData* TriggerEventData)
@@ -17,24 +24,31 @@ void UGA_NPCInteractor::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	auto MainCharacter = CastChecked<AUPMainCharacter>(ActorInfo->AvatarActor);
 	CharacterMovementInterface = MainCharacter;
 	UPUINpcInterface = MainCharacter->GetNPCInterface();
+	
+	bOnCancelAbility = false;
 	if(UPUINpcInterface == nullptr)
 	{
-		OnCompleteCallback();
+		Super::CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
 		return;
 	}
 	PlayCinematicCutscene();
-	
 }
 
-void UGA_NPCInteractor::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
-	const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
+void UGA_NPCInteractor::CancelAbility(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
+	bool bReplicateCancelAbility)
 {
-	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+	bOnCancelAbility = true;
+	if(UPUINpcInterface == nullptr || !FadeUserWidget)
+	{
+		Super::CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
+		return;
+	}
+	PlayCancelCinematicCutscene();
 }
 
 void UGA_NPCInteractor::PlayCinematicCutscene()
 {
-	
 	if (FadeUserWidget == nullptr)
 	{
 		UClass* WidgetClass = LoadClass<UUserWidget>(nullptr, *WidgetClassPath);
@@ -44,62 +58,45 @@ void UGA_NPCInteractor::PlayCinematicCutscene()
 	
 	FOnFadeEndDelegate OnFadeEndDelegate;
 	OnFadeEndDelegate.BindDynamic(this,&UGA_NPCInteractor::OnCinematicCutsceneFadeInEnd);
-	ECharacterControlType Type =  CharacterMovementInterface->GetCharacterControl();
-	if(Type == ECharacterControlType::TopDown)
-	{
-		UPUINpcInterface->HideInterActionAlarm();
-	}
-	else if(Type == ECharacterControlType::Shoulder)
-	{
-		UPUINpcInterface->TakeNPCWidgetHide();
-	}
+	UPUINpcInterface->HideInterActionAlarm();
 	FadeUserWidget->StartFadeIn(CharacterMovementInterface,OnFadeEndDelegate);
-	
+}
+
+void UGA_NPCInteractor::PlayCancelCinematicCutscene()
+{
+	FOnFadeEndDelegate OnFadeEndDelegate;
+	OnFadeEndDelegate.BindDynamic(this,&UGA_NPCInteractor::OnCinematicCutsceneFadeInEnd);
+	UPUINpcInterface->TakeNPCWidgetHide();
+	FadeUserWidget->StartFadeIn(CharacterMovementInterface,OnFadeEndDelegate);
 }
 
 
 void UGA_NPCInteractor::OnCinematicCutsceneFadeInEnd()
 {
 	FOnFadeEndDelegate OnFadeEndDelegate;
-	ECharacterControlType Type =  CharacterMovementInterface->GetCharacterControl();
-	if(Type == ECharacterControlType::TopDown)
+	if(!bOnCancelAbility)
 	{
 		CharacterMovementInterface->SetCharacterControl(ECharacterControlType::Shoulder);
 	}
-	else if(Type == ECharacterControlType::Shoulder)
+	else
 	{
 		CharacterMovementInterface->SetCharacterControl(ECharacterControlType::TopDown);
 	}
-	
-	
 	OnFadeEndDelegate.BindDynamic(this,&UGA_NPCInteractor::CinematicCutsceneFinish);
 	FadeUserWidget->StartFadeOut(CharacterMovementInterface,OnFadeEndDelegate);
 }
 
 void UGA_NPCInteractor::CinematicCutsceneFinish()
 {
-	ECharacterControlType Type =  CharacterMovementInterface->GetCharacterControl();
-	if(Type == ECharacterControlType::TopDown)
+	if(bOnCancelAbility)
 	{
 		UPUINpcInterface->ShowInteractionAlarm();
 		CharacterMovementInterface->SetCharacterMovementMod(MOVE_Walking);
+		Super::CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
 	}
-	else if(Type == ECharacterControlType::Shoulder)
+	else
 	{
 		UPUINpcInterface->TakeNPCWidgetShow();
 		CharacterMovementInterface->SetCharacterMovementMod(MOVE_None);
 	}
-	
-	OnCompleteCallback();
-}
-
-void UGA_NPCInteractor::OnCompleteCallback()
-{
-	
-	//리플리케이션에대한 사용여부 (네트워크)
-	bool bReplicatedEndAbility = true;
-	//취소 여부
-	bool bWasCancelled = false;
-	
-	EndAbility(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,bReplicatedEndAbility,bWasCancelled);
 }
