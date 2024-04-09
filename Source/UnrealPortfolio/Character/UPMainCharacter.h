@@ -8,6 +8,7 @@
 #include "Interface/AbilitySystemGetInterface.h"
 #include "Interface/CharacterMovementInterface.h"
 #include "Interface/UPPossessCharacterInterface.h"
+#include "Interface/UPUINpcInterface.h"
 #include "UPMainCharacter.generated.h"
 
 /**
@@ -32,7 +33,6 @@ public :
 	virtual void OnAvoidStart() override;
 	virtual void OnMenuStart() override;
 	virtual void OnInventoryStart() override;
-
 	virtual void OnInputStart() override;
 	virtual void OnSetDestinationTriggered() override;
 	virtual void OnSetDestinationReleased() override;
@@ -59,6 +59,10 @@ protected :
 
 	UPROPERTY(EditAnywhere, Category = NPC)
 	TObjectPtr<class UUPNPCDetectorSceneComponent> NPCDetectorSceneComponent;
+private :
+	void SetupGasInput(AController* NewController);
+public:
+	IUPUINpcInterface* GetNPCInterface();
 
 protected:
 	//Movement
@@ -74,8 +78,6 @@ protected:
 	/** Camera boom positioning the camera above the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
-
-
 	
 protected:
 	/** Camera Control Data */
@@ -83,27 +85,22 @@ protected:
 	TMap<ECharacterControlType, class UUPCharacterControlData*> CharacterControlManager;
 	/** CurrentCharacterControlType */
 	ECharacterControlType CurrentCharacterControlType;
-
 protected:
-
 	void SetupPlayerCamera();
-	
-	void ChangeCharacterControl();
-	/**Set Current Player Control Data **/
-	void SetCharacterControl(ECharacterControlType NewCharacterControlType);
 	/**Set Current Player Camera Data **/
 	void SetCharacterControlData(const UUPCharacterControlData* CharacterControlData);
+public:
+	/**Set Current Player Control Data **/
+	UFUNCTION(BlueprintCallable)
+	virtual  void SetCharacterControl(ECharacterControlType NewCharacterControlType) override;
 
-
+/** Game Ability System**/
 protected:
-	UPROPERTY();
-	TObjectPtr<class UUPFadeUserWidget> FadeUserWidget;
-	TSubclassOf<class  UUPFadeUserWidget> FadeClassType;
+	void GASInputPressed(int32 GameplayAbilityInputId);
+
 protected:
 	virtual void SetCharacterMovementMod(EMovementMode MovementMode) override;
+	virtual ECharacterControlType GetCharacterControl() override;
 	
-	void SetupFadeWidget();
-	UFUNCTION()
-	void CreateFadeWidget();
 	
 };

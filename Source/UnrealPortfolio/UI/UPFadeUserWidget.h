@@ -8,26 +8,8 @@
 #include "Interface/CharacterMovementInterface.h"
 #include "UPFadeUserWidget.generated.h"
 
-DECLARE_DELEGATE(FOnFadeEndDelegate);
-
-UENUM()
-enum class EFadeType : int8
-{
-	FadeIn = 0,
-	FadeOut = 1,
-};
-
-USTRUCT(BlueprintType)
-struct FDelegateWrapper
-{
-	GENERATED_BODY()
-	FDelegateWrapper(){}
-	FDelegateWrapper(const FOnFadeEndDelegate& Delegate) : OnEndCallback(Delegate) {}
-
-	FOnFadeEndDelegate OnEndCallback;
-};
-
-
+DECLARE_DYNAMIC_DELEGATE(FOnFadeEndDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFadeEnd_MultiCastDelegate);
 
 
 UCLASS()
@@ -37,49 +19,46 @@ class UNREALPORTFOLIO_API UUPFadeUserWidget : public UUPUserWidget
 protected:
 	virtual void NativeConstruct() override;
 
+protected:
+	const float ONE = 1.0f;
+	const float ZERO = 0.0f;
 	
-	UPROPERTY(EditAnywhere , Category = Fade)
-	EFadeType Type;
-	// 지속시간
+protected:
 	UPROPERTY(EditAnywhere , Category = Fade)
 	float Duration;
-
-	UPROPERTY()
 	float DelTime;
-	
-	
-	// 시작값
-
-	// 종료값
-
-	// 보간값
-
-	// 지속된 시간 / 지속시간
+	float StartData;
+	float EndData;
 	UPROPERTY(EditAnywhere, Category = Fade)
-	TObjectPtr<class UImage> Img;
-
-	TScriptInterface<ICharacterMovementInterface> MovementInterface;
+	TObjectPtr<class UImage> ImgFade;
+	
+	ICharacterMovementInterface* MovementInterface;
 
 public:
 	UFUNCTION(BlueprintCallable)
 	UImage* GetImage();
+	
+	FOnFadeEndDelegate EndCallbackDelegate;
+	
+	FOnFadeEnd_MultiCastDelegate EndCallbackMultiCastDelegate;
 
-	
-	FOnFadeEndDelegate* EndCallbackDelegate;
-
-public:
-	
-	void StartFade(TScriptInterface<ICharacterMovementInterface> MovementCharacter);
-	
 private:
-	UFUNCTION(BlueprintCallable)
 	void StartFadeIn();
-	UFUNCTION(BlueprintCallable)
+	
 	void StartFadeOut();
-	UFUNCTION(BlueprintCallable)
-	void FadeIn();
+public:
+	/** Only Use to Blueprint **/
+	UFUNCTION()
+	void StartFadeInInBlueprint(TScriptInterface<ICharacterMovementInterface>  MovementCharacter ,const FOnFadeEndDelegate& EndCallback );
+public:
+	UFUNCTION()
+	void StartFadeOutInBlueprint(const TScriptInterface<ICharacterMovementInterface>&  MovementCharacter ,const FOnFadeEndDelegate& EndCallback );
+	void StartFadeIn(ICharacterMovementInterface*  MovementCharacter ,const FOnFadeEndDelegate& EndCallback);
+	void StartFadeOut(ICharacterMovementInterface*  MovementCharacter ,const FOnFadeEndDelegate& EndCallback);
+	
+private:
+	void Fade();
 
 private:
-	void FadeOut();
 	FTimerHandle ActionTimer;
 };

@@ -4,14 +4,6 @@
 #include "GameFramework/Character.h"
 #include "UPCharacter.generated.h"
 
-UENUM()
-enum class ECharacterControlType : uint8
-{
-	TopDown,
-	Shoulder,
-	SideScroll,
-};
-
 UCLASS(Blueprintable)
 class AUPCharacter : public ACharacter
 {

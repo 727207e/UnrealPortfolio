@@ -42,7 +42,8 @@ public:
 	TArray<FTakeWidgetDelegateWrapper> TakeUiActions;
 public:
 	UFUNCTION()
-	virtual  void TakeNPCWidget() override;
+	virtual  void TakeNPCWidgetShow() override;
+	virtual  void TakeNPCWidgetHide() override;
 
 	virtual  void BeginPlay() override;
 
@@ -59,8 +60,10 @@ protected:
 	TObjectPtr<class UWidgetComponent> InteractionAlarmCompo;
 public:
 	UFUNCTION(BlueprintCallable)
-	void ShowInterAction();
+	void ShowInteractionAlarm();
 	UFUNCTION(BlueprintCallable)
-	void HideInterAction();
+	void HideInterActionAlarm();
+
+	
 	
 };

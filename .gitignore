@@ -73,6 +73,4 @@ Plugins/*/Intermediate/*
 # Cache files for the editor to use
 DerivedDataCache/*
 
-# Ignore Unreal Assets
 Content/DownloadAssets/Primitive_Characters_Pack/Textures/*
-Content/DownloadAssets/CantUploadAssets/*
