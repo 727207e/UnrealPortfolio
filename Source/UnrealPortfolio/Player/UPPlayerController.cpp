@@ -35,6 +35,12 @@ void AUPPlayerController::BeginPlay()
 	{
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
 	}
+
+	PossessCharacter = Cast<IUPPossessCharacterInterface>(GetPawn());
+	if (nullptr == PossessCharacter)
+	{
+		UE_LOG(LogTemplateCharacter, Log, TEXT("Failed To Get PossessCharacter"));
+	}
 }
 
 void AUPPlayerController::SetupInputComponent()
