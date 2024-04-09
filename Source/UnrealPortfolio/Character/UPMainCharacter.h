@@ -59,8 +59,6 @@ protected :
 
 	UPROPERTY(EditAnywhere, Category = NPC)
 	TObjectPtr<class UUPNPCDetectorSceneComponent> NPCDetectorSceneComponent;
-private :
-	void SetupGasInput(AController* NewController);
 
 protected:
 	//Movement

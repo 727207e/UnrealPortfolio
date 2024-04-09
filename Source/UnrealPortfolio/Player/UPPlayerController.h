@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "Templates/SubclassOf.h"
 #include "GameFramework/PlayerController.h"
-#include "Interface/UPControllerInterface.h"
 #include "Interface/UPPossessCharacterInterface.h"
 #include "UPPlayerController.generated.h"
 
@@ -17,15 +16,12 @@ class UInputAction;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS()
-class AUPPlayerController : public APlayerController, public IUPControllerInterface
+class AUPPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
 public:
 	AUPPlayerController();
-
-	virtual void SetPossessCharacterInterface(class IUPPossessCharacterInterface* TargetCharacter) override;
-
 
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))

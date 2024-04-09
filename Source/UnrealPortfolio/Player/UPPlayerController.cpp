@@ -20,11 +20,6 @@ AUPPlayerController::AUPPlayerController()
 	PossessCharacter = nullptr;
 }
 
-void AUPPlayerController::SetPossessCharacterInterface(IUPPossessCharacterInterface* targetCharacter)
-{
-	PossessCharacter = targetCharacter;
-}
-
 void AUPPlayerController::BeginPlay()
 {
 	// Call the base class  
@@ -34,6 +29,12 @@ void AUPPlayerController::BeginPlay()
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
+	}
+
+	PossessCharacter = Cast<IUPPossessCharacterInterface>(GetPawn());
+	if (nullptr == PossessCharacter)
+	{
+		UE_LOG(LogTemplateCharacter, Log, TEXT("Failed To Get PossessCharacter"));
 	}
 }
 
