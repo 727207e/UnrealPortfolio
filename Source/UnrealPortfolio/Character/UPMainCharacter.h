@@ -36,7 +36,7 @@ public :
 	virtual void OnInputStart() override;
 	virtual void OnSetDestinationTriggered() override;
 	virtual void OnSetDestinationReleased() override;
-	virtual void OnNPCInteraction(int32 InputId) override;
+	virtual void OnNPCInteraction() override;
 	virtual void BeginPlay() override;
 	
 	/** Time Threshold to know if it was a short press */

@@ -22,11 +22,9 @@ UImage* UUPFadeUserWidget::GetImage()
 
 void UUPFadeUserWidget::StartFadeIn()
 {
-	UE_LOG(LogTemp,Log,TEXT("체크3"));
 	if (ActionTimer.IsValid()) { return; }
 
 	if (MovementInterface == nullptr) { return; }
-	UE_LOG(LogTemp,Log,TEXT("체크3_2"));
 	
 	DelTime = ZERO;
 	StartData = ZERO;
@@ -46,16 +44,14 @@ void UUPFadeUserWidget::StartFadeIn()
 void UUPFadeUserWidget::StartFadeInInBlueprint(TScriptInterface<ICharacterMovementInterface> MovementCharacter,const FOnFadeEndDelegate& EndCallback)
 {
 	ICharacterMovementInterface* MovementInterfacePtr = MovementCharacter.GetInterface();
-	UE_LOG(LogTemp,Log,TEXT("체크3"));
 	if(MovementInterfacePtr != nullptr)
 	{
-		UE_LOG(LogTemp,Log,TEXT("체크4"));
 		MovementInterface = MovementInterfacePtr;
 		EndCallbackDelegate = EndCallback;
 		StartFadeIn();
 	}
 }
-
+// 멀티케스트 델리게이트 테스트용으로 사용
 // void UUPFadeUserWidget::StartFadeInMultiCast(ICharacterMovementInterface* MovementCharacter,
 // 									const FOnFadeEnd_MultiCastDelegate& EndCallback)
 // {
@@ -130,7 +126,7 @@ void UUPFadeUserWidget::Fade()
 	{
 		GetWorld()->GetTimerManager().ClearTimer(ActionTimer);
 		ImgFade->SetOpacity(EndData);
-		
+		MovementInterface->SetCharacterMovementMod(MOVE_Walking);
 		if(EndCallbackDelegate.IsBound())
 		{
 			EndCallbackDelegate.ExecuteIfBound();	

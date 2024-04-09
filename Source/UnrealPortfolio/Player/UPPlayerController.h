@@ -82,7 +82,7 @@ private:
 
 	void OnMenuStart();
 	void OnInventoryStart();
-	void OnNPCInteraction(int32 InputId);
+	void OnNPCInteraction();
 
 	IUPPossessCharacterInterface* PossessCharacter;
 	

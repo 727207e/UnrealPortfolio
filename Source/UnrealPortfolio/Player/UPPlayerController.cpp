@@ -72,7 +72,7 @@ void AUPPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(MenuAction, ETriggerEvent::Started, this, &AUPPlayerController::OnMenuStart);
 		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AUPPlayerController::OnInventoryStart);
 		
-		EnhancedInputComponent->BindAction(InteractionAction, ETriggerEvent::Started, this, &AUPPlayerController::OnNPCInteraction,0);
+		EnhancedInputComponent->BindAction(InteractionAction, ETriggerEvent::Started, this, &AUPPlayerController::OnNPCInteraction);
 		
 	}
 	else
@@ -142,11 +142,11 @@ void AUPPlayerController::OnInventoryStart()
 	}
 }
 
-void AUPPlayerController::OnNPCInteraction(int32 InputId)
+void AUPPlayerController::OnNPCInteraction()
 {
 	if (PossessCharacter)
 	{
-		PossessCharacter->OnNPCInteraction(InputId);
+		PossessCharacter->OnNPCInteraction();
 	}
 }
 

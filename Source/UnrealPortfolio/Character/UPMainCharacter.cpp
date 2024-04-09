@@ -13,10 +13,11 @@
 #include "Data/UPCharacterControlData.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GAS/GA/GA_NPCInteractor.h"
 #include "Gimmick/UPNPCDetectorSceneComponent.h"
 #include "UI/UPFadeUserWidget.h"
 
-class UUPFadeUserWidget;
+
 
 AUPMainCharacter::AUPMainCharacter()
 {
@@ -136,9 +137,20 @@ void AUPMainCharacter::OnSetDestinationReleased()
 	FollowTime = 0.f;
 }
 
-void AUPMainCharacter::OnNPCInteraction(int32 InputId)
+void AUPMainCharacter::OnNPCInteraction()
 {
-	GASInputPressed(InputId);
+	if(!IsValid(ASC))	{	return; }
+	
+	 FGameplayAbilitySpec* Spec = ASC->FindAbilitySpecFromClass(UGA_NPCInteractor::StaticClass());
+
+	if(Spec)
+	{
+		if(!Spec->IsActive())
+		{
+			ASC->TryActivateAbility(Spec->Handle);
+			UE_LOG(LogTemp,Log,TEXT("{Post TryActivateAbility"));
+		}
+	}
 }
 
 void AUPMainCharacter::BeginPlay()
@@ -211,7 +223,6 @@ void AUPMainCharacter::SetCharacterControl(ECharacterControlType NewCharacterCon
 
 void AUPMainCharacter::SetCharacterControlData(const UUPCharacterControlData* CharacterControlData)
 {
-
 	CameraBoom->TargetArmLength = CharacterControlData->TargetArmLength;
 	CameraBoom->SetRelativeRotation(CharacterControlData->RelativeRotation);
 	CameraBoom->bUsePawnControlRotation = CharacterControlData->bUsePawnControlRotation;
@@ -222,7 +233,7 @@ void AUPMainCharacter::SetCharacterControlData(const UUPCharacterControlData* Ch
 }
 
 void AUPMainCharacter::GASInputPressed(int32 GameplayAbilityInputId)
-{
+{ 
 	if(!IsValid(ASC))	{	return; }
 	
 	FGameplayAbilitySpec* Spec = ASC->FindAbilitySpecFromInputID(GameplayAbilityInputId);
