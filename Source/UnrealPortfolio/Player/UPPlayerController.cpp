@@ -20,11 +20,6 @@ AUPPlayerController::AUPPlayerController()
 	PossessCharacter = nullptr;
 }
 
-void AUPPlayerController::SetPossessCharacterInterface(IUPPossessCharacterInterface* targetCharacter)
-{
-	PossessCharacter = targetCharacter;
-}
-
 void AUPPlayerController::BeginPlay()
 {
 	// Call the base class  
