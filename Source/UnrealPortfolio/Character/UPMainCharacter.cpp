@@ -4,7 +4,6 @@
 #include "Character/UPMainCharacter.h"
 #include "AbilitySystemComponent.h"
 #include "Character/UPPlayerState.h"
-#include "Interface/UPControllerInterface.h"
 #include "Player/UPPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
@@ -55,8 +54,6 @@ void AUPMainCharacter::PossessedBy(AController* NewController)
 			StartSpec.InputID = StartInputAbility.Key;
 			ASC->GiveAbility(StartSpec);
 		}
-
-		SetupGasInput(NewController);
 
 		APlayerController* PlayerController = CastChecked<APlayerController>(NewController);
 		PlayerController->ConsoleCommand(TEXT("showdebug abilitysystem"));
@@ -158,6 +155,7 @@ void AUPMainCharacter::BeginPlay()
 	Super::BeginPlay();
 	SetCharacterControl(ECharacterControlType::TopDown);
 }
+
 
 void AUPMainCharacter::SetupGasInput(AController* NewController)
 {

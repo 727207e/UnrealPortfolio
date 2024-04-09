@@ -21,11 +21,6 @@ AUPPlayerController::AUPPlayerController()
 	PossessCharacter = nullptr;
 }
 
-void AUPPlayerController::SetPossessCharacterInterface(IUPPossessCharacterInterface* targetCharacter)
-{
-	PossessCharacter = targetCharacter;
-}
-
 void AUPPlayerController::BeginPlay()
 {
 	// Call the base class  
@@ -35,6 +30,12 @@ void AUPPlayerController::BeginPlay()
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
+	}
+
+	PossessCharacter = Cast<IUPPossessCharacterInterface>(GetPawn());
+	if (nullptr == PossessCharacter)
+	{
+		UE_LOG(LogTemplateCharacter, Log, TEXT("Failed To Get PossessCharacter"));
 	}
 }
 
@@ -79,11 +80,6 @@ void AUPPlayerController::SetupInputComponent()
 	{
 		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
-}
-
-void AUPPlayerController::SetIgnoreLookInputInterface(bool bcheck)
-{
-	SetIgnoreLookInput(bcheck);
 }
 
 void AUPPlayerController::OnSkillStart(int32 InputId)

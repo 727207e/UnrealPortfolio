@@ -15,7 +15,6 @@ void UGA_NPCInteractor::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	auto MainCharacter = CastChecked<AUPMainCharacter>(ActorInfo->AvatarActor);
-	ControllerInterface = CastChecked<IUPControllerInterface>(MainCharacter->GetController()); 
 	CharacterMovementInterface = MainCharacter;
 	UPUINpcInterface = MainCharacter->GetNPCInterface();
 	if(UPUINpcInterface == nullptr)
@@ -88,7 +87,6 @@ void UGA_NPCInteractor::CinematicCutsceneFinish()
 	else if(Type == ECharacterControlType::Shoulder)
 	{
 		UPUINpcInterface->TakeNPCWidgetShow();
-		ControllerInterface->SetIgnoreLookInputInterface(true);
 		CharacterMovementInterface->SetCharacterMovementMod(MOVE_None);
 	}
 	

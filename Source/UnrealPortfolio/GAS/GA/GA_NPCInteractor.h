@@ -27,7 +27,6 @@ public:
 	
 	ICharacterMovementInterface* CharacterMovementInterface;
 	IUPUINpcInterface* UPUINpcInterface;
-	IUPControllerInterface* ControllerInterface;
 	UPROPERTY(EditAnywhere , Category = GAS)
 	TSubclassOf<class UUPFadeUserWidget> FadeUserWidgetClass;
 	
