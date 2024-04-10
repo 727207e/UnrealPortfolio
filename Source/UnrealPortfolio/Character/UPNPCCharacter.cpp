@@ -24,7 +24,7 @@ AUPNPCCharacter::AUPNPCCharacter()
 		GetMesh()->SetSkeletalMesh(CharacterMeshRef.Object);
 	}
 
-	static ConstructorHelpers::FClassFinder<UAnimInstance> CharacterAnimRef(TEXT("/Game/OtherCharacterPack/Animations/ABP_Dwarf.ABP_Dwarf_C"));
+	static ConstructorHelpers::FClassFinder<UAnimInstance> CharacterAnimRef(TEXT("/Game/Blueprint/Animation/ABP_Dwarf.ABP_Dwarf_C"));
 
 	if(CharacterAnimRef.Class)
 	{
