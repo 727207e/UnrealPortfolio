@@ -8,6 +8,7 @@
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
+#include "UI/UPACChatGenerator.h"
 #include "GameplayAbilitySpec.h"
 #include "Engine/LocalPlayer.h"
 #include "InputMappingContext.h"
@@ -16,6 +17,8 @@ DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 AUPPlayerController::AUPPlayerController()
 {
+	ChatActorComponent = CreateDefaultSubobject<UUPACChatGenerator>(TEXT("ChatWidgetActorComponent"));
+
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;
 	PossessCharacter = nullptr;
@@ -54,7 +57,7 @@ void AUPPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Triggered, this, &AUPPlayerController::OnSetDestinationTriggered);
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Completed, this, &AUPPlayerController::OnSetDestinationReleased);
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Canceled, this, &AUPPlayerController::OnSetDestinationReleased);
-
+		
 		//SKill
 		for (auto& skill : PlayerSkillRegistDictionary)
 		{
@@ -68,6 +71,12 @@ void AUPPlayerController::SetupInputComponent()
 			EnhancedInputComponent->BindAction(item.Key, ETriggerEvent::Started, this, &AUPPlayerController::OnConsumableItemStart, item.Value);
 		}
 
+		//Widget Interaction
+		EnhancedInputComponent->BindAction(ChatEnterAction, ETriggerEvent::Started, this, &AUPPlayerController::ChatFocusOn);
+		EnhancedInputComponent->BindAction(ScrollUpAction, ETriggerEvent::Started, this, &AUPPlayerController::ChatScroll, true);
+		EnhancedInputComponent->BindAction(ScrollDownAction, ETriggerEvent::Started, this, &AUPPlayerController::ChatScroll, false);
+
+		//Normal Input
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AUPPlayerController::OnAttackStart);
 		EnhancedInputComponent->BindAction(AvoidAction, ETriggerEvent::Started, this, &AUPPlayerController::OnAvoidStart);
 		EnhancedInputComponent->BindAction(MenuAction, ETriggerEvent::Started, this, &AUPPlayerController::OnMenuStart);
@@ -143,6 +152,22 @@ void AUPPlayerController::OnNPCInteraction()
 	if (PossessCharacter)
 	{
 		PossessCharacter->OnNPCInteraction();
+	}
+}
+
+void AUPPlayerController::ChatFocusOn()
+{
+	if (ChatActorComponent)
+	{
+		ChatActorComponent->FocusChat();
+	}
+}
+
+void AUPPlayerController::ChatScroll(bool bUp)
+{
+	if (ChatActorComponent)
+	{
+		ChatActorComponent->Scroll(bUp);
 	}
 }
 

@@ -46,13 +46,25 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> InventoryAction;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> InteractionAction;
 		
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Input)
 	TMap<TObjectPtr<class UInputAction>, int32> ConsumableItemDictionary;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> ChatEnterAction;
+		
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> ScrollUpAction;
+		
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> ScrollDownAction;
+
+	UPROPERTY()
+	TObjectPtr<class UUPACChatGenerator> ChatActorComponent;
+
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
 	uint32 bMoveToMouseCursor : 1;
@@ -78,6 +90,9 @@ private:
 	void OnMenuStart();
 	void OnInventoryStart();
 	void OnNPCInteraction();
+
+	void ChatFocusOn();
+	void ChatScroll(bool bUp);
 
 	IUPPossessCharacterInterface* PossessCharacter;
 	
