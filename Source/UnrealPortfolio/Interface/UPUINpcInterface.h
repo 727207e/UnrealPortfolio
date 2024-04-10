@@ -24,6 +24,7 @@ public:
 	virtual  void TakeNPCWidgetHide() =0;
 	virtual  void ShowInteractionAlarm() =0;
 	virtual  void HideInterActionAlarm() =0;
+	virtual  FTransform GetNPCCameraTransform() = 0;
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:

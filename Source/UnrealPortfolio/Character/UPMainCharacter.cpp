@@ -207,14 +207,21 @@ void AUPMainCharacter::SetupPlayerCamera()
 	{
 		CharacterControlManager.Add(ECharacterControlType::SideScroll, SideScrollDataRef.Object);
 	}
+
+	static ConstructorHelpers::FObjectFinder<UUPCharacterControlData> NPCCameraDataRef(TEXT("/Script/UnrealPortfolio.UPCharacterControlData'/Game/CharacterControl/ABC_NPCCamera.ABC_NPCCamera'"));
+	if (NPCCameraDataRef.Object)
+	{
+		CharacterControlManager.Add(ECharacterControlType::NPC, NPCCameraDataRef.Object);
+	}
 }
 
-void AUPMainCharacter::SetCharacterControl(ECharacterControlType NewCharacterControlType)
+void AUPMainCharacter::SetCharacterControl(ECharacterControlType NewCharacterControlType, FTransform TargetTransform)
 {
 	UUPCharacterControlData* NewCharacterControl = CharacterControlManager[NewCharacterControlType];
 	check(NewCharacterControl);
 
 	SetCharacterControlData(NewCharacterControl);
+	SetCameraComponent(NewCharacterControlType, TargetTransform);
 	CurrentCharacterControlType = NewCharacterControlType;
 }
 
@@ -227,6 +234,20 @@ void AUPMainCharacter::SetCharacterControlData(const UUPCharacterControlData* Ch
 	CameraBoom->bInheritYaw = CharacterControlData->bInheritYaw;
 	CameraBoom->bInheritRoll = CharacterControlData->bInheritRoll;
 	CameraBoom->bDoCollisionTest = CharacterControlData->bDoCollisionTest;
+}
+
+void AUPMainCharacter::SetCameraComponent(ECharacterControlType CharacterControlType, FTransform CameraTransform)
+{
+	if (CharacterControlType == ECharacterControlType::NPC)
+	{
+		CameraComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	}
+	else
+	{
+		CameraComponent->AttachToComponent(CameraBoom, FAttachmentTransformRules::KeepRelativeTransform);
+	}
+
+	CameraComponent->SetRelativeTransform(CameraTransform);
 }
 
 void AUPMainCharacter::GASInputPressed(int32 GameplayAbilityInputId)

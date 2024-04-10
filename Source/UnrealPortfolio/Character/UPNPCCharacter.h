@@ -46,6 +46,10 @@ public:
 	virtual  void TakeNPCWidgetHide() override;
 
 	virtual  void BeginPlay() override;
+	virtual	 FTransform GetNPCCameraTransform() override;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class USceneComponent> NPCCameraTransform;
 
 	UPROPERTY(EditAnywhere, Category = Level)
 	FString NextLevelPath;

@@ -89,10 +89,11 @@ protected:
 	void SetupPlayerCamera();
 	/**Set Current Player Camera Data **/
 	void SetCharacterControlData(const UUPCharacterControlData* CharacterControlData);
+	void SetCameraComponent(ECharacterControlType CharacterControlType, FTransform CameraTransform);
 public:
 	/**Set Current Player Control Data **/
 	UFUNCTION(BlueprintCallable)
-	virtual  void SetCharacterControl(ECharacterControlType NewCharacterControlType) override;
+	virtual  void SetCharacterControl(ECharacterControlType NewCharacterControlType, FTransform TargetTransform = FTransform()) override;
 
 /** Game Ability System**/
 protected:

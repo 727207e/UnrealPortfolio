@@ -76,7 +76,7 @@ void UGA_NPCInteractor::OnCinematicCutsceneFadeInEnd()
 	FOnFadeEndDelegate OnFadeEndDelegate;
 	if(!bOnCancelAbility)
 	{
-		CharacterMovementInterface->SetCharacterControl(ECharacterControlType::Shoulder);
+		CharacterMovementInterface->SetCharacterControl(ECharacterControlType::NPC, UPUINpcInterface->GetNPCCameraTransform());
 	}
 	else
 	{

@@ -12,6 +12,7 @@ enum class ECharacterControlType : uint8
 	TopDown,
 	Shoulder,
 	SideScroll,
+	NPC,
 };
 
 UINTERFACE(MinimalAPI)
@@ -27,5 +28,5 @@ class UNREALPORTFOLIO_API ICharacterMovementInterface
 public:
 	virtual void SetCharacterMovementMod(EMovementMode MovementMode) = 0;
 	virtual ECharacterControlType GetCharacterControl() = 0;
-	virtual void SetCharacterControl(ECharacterControlType NewCharacterControlType) = 0;
+	virtual void SetCharacterControl(ECharacterControlType NewCharacterControlType, FTransform TargetTransform = FTransform()) = 0;
 };
