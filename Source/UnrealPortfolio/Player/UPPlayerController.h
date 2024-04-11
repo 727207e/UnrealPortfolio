@@ -20,9 +20,13 @@ class AUPPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
+	/** GAS Input Id **/
+private:
+	const int32 INPUT_ATTACK_START = 0;
+	
 public:
 	AUPPlayerController();
-
+	
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputMappingContext> DefaultMappingContext;

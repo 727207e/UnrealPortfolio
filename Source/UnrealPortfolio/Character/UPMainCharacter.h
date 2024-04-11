@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystemInterface.h"
 #include "Character/UPCharacter.h"
 #include "Abilities/GameplayAbilityTypes.h"
 #include "Interface/AbilitySystemGetInterface.h"
+#include "Interface/AttackableCharacterInterface.h"
 #include "Interface/CharacterMovementInterface.h"
 #include "Interface/UPPossessCharacterInterface.h"
 #include "Interface/UPUINpcInterface.h"
@@ -15,10 +17,16 @@
  * 
  */
 UCLASS()
-class UNREALPORTFOLIO_API AUPMainCharacter : public AUPCharacter, public IAbilitySystemGetInterface, public IUPPossessCharacterInterface ,public ICharacterMovementInterface
+class UNREALPORTFOLIO_API AUPMainCharacter : public AUPCharacter
+	,public IAbilitySystemGetInterface
+	,public IAbilitySystemInterface
+	,public IUPPossessCharacterInterface
+	,public ICharacterMovementInterface
+	,public IAttackableCharacterInterface
 {
 	GENERATED_BODY()
-	
+private:
+	const int32 GAS_INPUT_ID_ATTACK_START = 0;
 public :
 	AUPMainCharacter();
 	
@@ -95,12 +103,18 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual  void SetCharacterControl(ECharacterControlType NewCharacterControlType, FTransform TargetTransform = FTransform()) override;
 
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
+	TObjectPtr<class UAnimMontage> ComboActionMontage;
+
 /** Game Ability System**/
 protected:
 	void GASInputPressed(int32 GameplayAbilityInputId);
-
-protected:
+	
+public:
 	virtual void SetCharacterMovementMod(EMovementMode MovementMode) override;
 	virtual ECharacterControlType GetCharacterControl() override;
-	
+
+	UFUNCTION()
+	virtual	UAnimMontage* GetComboActionMontage() override;
 };

@@ -18,7 +18,7 @@ UUPNPCDetectorSceneComponent::UUPNPCDetectorSceneComponent()
 	
 	BoxComp = CreateDefaultSubobject<UBoxComponent>("BoxComponent");
 	BoxComp->SetBoxExtent(FVector(SizeX,SizeY,SizeZ));
-	BoxComp->SetCollisionProfileName(CPROFILE_NPC);
+	BoxComp->SetCollisionProfileName(CPROFILE_UP_TRACE);
 	BoxComp->OnComponentBeginOverlap.AddDynamic(this,&UUPNPCDetectorSceneComponent::OnOverlapBegin);
 	BoxComp->OnComponentEndOverlap.AddDynamic(this,&UUPNPCDetectorSceneComponent::OnOverlapEnd);
 }
