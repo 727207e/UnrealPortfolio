@@ -33,7 +33,6 @@ public:
 	
  	TObjectPtr<class UUPFadeUserWidget>  FadeUserWidget;
 	bool bOnCancelAbility;
-	//TScriptInterface<class ICharacterMovementInterface>* ScriptInterface;
 
 protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;

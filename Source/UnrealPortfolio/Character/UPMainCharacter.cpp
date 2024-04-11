@@ -13,7 +13,6 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GAS/GA/GA_Attack.h"
-#include "GAS/GA/GA_AttackHitCheck.h"
 #include "GAS/GA/GA_NPCInteractor.h"
 #include "Gimmick/UPNPCDetectorSceneComponent.h"
 #include "Tag/GameplayTags.h"
@@ -37,14 +36,18 @@ AUPMainCharacter::AUPMainCharacter()
 		GetMesh()->SetAnimInstanceClass(CharacterAnimRef.Class);
 	}
 	
-
+	//** Attackable Setup **//
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> ComboActionMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Blueprint/Animation/AM_Boss_ComboAttack.AM_Boss_ComboAttack'"));
 	if (ComboActionMontageRef.Object)
 	{
 		ComboActionMontage = ComboActionMontageRef.Object;
 	}
 	
-	
+	static ConstructorHelpers::FObjectFinder<UUPComboActionData> ComboActionDataRef(TEXT("/Script/UnrealPortfolio.UPComboActionData'/Game/Data/BossAttackCombo.BossAttackCombo'"));
+	if (ComboActionDataRef.Object)
+	{
+		ComboActionData = ComboActionDataRef.Object;
+	}
 	SetupPlayerCamera();
 }
 

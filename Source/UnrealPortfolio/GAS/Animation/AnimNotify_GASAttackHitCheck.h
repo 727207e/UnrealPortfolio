@@ -23,5 +23,7 @@ protected:
 protected:
 	UPROPERTY(EditAnywhere)
 	FGameplayTag TriggetTag;
+	UPROPERTY(EditAnywhere, Category = Anim)
+	float ComboAttackLevel;
 	
 };

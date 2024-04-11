@@ -20,30 +20,8 @@ void UAnimNotify_GASAttackHitCheck::Notify(USkeletalMeshComponent* MeshComp, UAn
 		if (OwnerActor)
 		{
 			FGameplayEventData PayloadData;
-
-			// const IAttackableCharacterInterface* Interface =  Cast<IAttackableCharacterInterface>(OwnerActor);
-			// if(Interface)
-			// {
-			// 	UE_LOG(LogTemp,Log,TEXT("xx"));
-			// 	Interface->GameplayAbilityActiveToTag(TriggetTag);
-			// }
-			//UAbilitySystemBlueprintLibrary::
-
+			PayloadData.EventMagnitude = ComboAttackLevel;
 			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(OwnerActor, TriggetTag,PayloadData);
-
-			// if (::IsValid(OwnerActor))
-			// {
-			// 	UUPAbilitySystemComponent* AbilitySystemComponent = Cast<UUPAbilitySystemComponent>( UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(OwnerActor));
-			// 	if (AbilitySystemComponent != nullptr && IsValidChecked(AbilitySystemComponent))
-			// 	{
-			// 		FScopedPredictionWindow NewScopedWindow(AbilitySystemComponent, true);
-			// 		AbilitySystemComponent->HandleGameplayEvent(TriggetTag, &PayloadData);
-			// 	}
-			// 	else
-			// 	{
-			// 		//ABILITY_LOG(Error, TEXT("UAbilitySystemBlueprintLibrary::SendGameplayEventToActor: Invalid ability system component retrieved from Actor %s. EventTag was %s"), *Actor->GetName(), *EventTag.ToString());
-			// 	}
-			// }
 		}
 	}
 }

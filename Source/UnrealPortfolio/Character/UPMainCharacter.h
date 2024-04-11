@@ -109,9 +109,14 @@ protected:
 	void GASInputPressed(int32 GameplayAbilityInputId);
 	
 public:
-	virtual void SetCharacterMovementMod(EMovementMode MovementMode) override;
+	/** Movement Character Interface **/
+	TObjectPtr<class UUPComboActionData> ComboActionData;
 	virtual ECharacterControlType GetCharacterControl() override;
+	virtual void SetCharacterMovementMod(EMovementMode MovementMode) override;
 
+	/** Attackabble Interface **/
 	UFUNCTION()
 	virtual	UAnimMontage* GetComboActionMontage() override;
+	FORCEINLINE virtual UUPComboActionData* GetComboActionData() const { return ComboActionData; }
+
 };

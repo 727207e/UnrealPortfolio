@@ -13,7 +13,6 @@ UGA_AttackHitCheck::UGA_AttackHitCheck()
 
 void UGA_AttackHitCheck::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	UE_LOG(LogTemp,Log,TEXT("Call?"));
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	UAbilityTask_Trace * AttackTraceTask = UAbilityTask_Trace::CreateTask(this, AGATA_Trace::StaticClass());
 	AttackTraceTask->OnComplete.AddDynamic(this, &UGA_AttackHitCheck::OnTraceResultCallback);
