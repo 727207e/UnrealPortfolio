@@ -13,6 +13,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GAS/GA/GA_Attack.h"
+#include "GAS/GA/GA_AttackHitCheck.h"
 #include "GAS/GA/GA_NPCInteractor.h"
 #include "Gimmick/UPNPCDetectorSceneComponent.h"
 #include "Tag/GameplayTags.h"
@@ -287,4 +288,9 @@ void AUPMainCharacter::SetCharacterMovementMod(EMovementMode MovementMode)
 ECharacterControlType AUPMainCharacter::GetCharacterControl()
 {
 	return CurrentCharacterControlType;
+}
+
+UAnimMontage* AUPMainCharacter::GetComboActionMontage()
+{
+	return ComboActionMontage;
 }

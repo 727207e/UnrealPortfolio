@@ -11,12 +11,12 @@ AUPNPCCharacter::AUPNPCCharacter()
 {
 	// Capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-	GetCapsuleComponent()->SetCollisionProfileName(CPROFILE_PAWN);
+	GetCapsuleComponent()->SetCollisionProfileName(CPROFILE_UP_NPC);
 	
 	// Mesh
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -100.0f), FRotator(0.0f, -90.0f, 0.0f));
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-	GetMesh()->SetCollisionProfileName(CPROFILE_PAWN);
+	GetMesh()->SetCollisionProfileName(CPROFILE_UP_NPC);
 
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/OtherCharacterPack/Mesh/Dwarf_Mesh.Dwarf_Mesh'"));
 	if (CharacterMeshRef.Object)
@@ -79,7 +79,7 @@ void AUPNPCCharacter::ShowItemShopWidget()
 void AUPNPCCharacter::ShowRaiderSelector()
 {
 	UE_LOG(LogTemp,Log,TEXT("ShowRaiderSelector"));
-	//
+	//버튼 생성까지 주석으로 비활성화
 	// AUPLevelScriptActor* UpLevelScript = Cast<AUPLevelScriptActor>(GetWorld()->GetLevelScriptActor());
 	// if (UpLevelScript)
 	// {

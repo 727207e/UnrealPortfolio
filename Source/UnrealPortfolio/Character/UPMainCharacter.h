@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystemInterface.h"
 #include "Character/UPCharacter.h"
 #include "Abilities/GameplayAbilityTypes.h"
 #include "Interface/AbilitySystemGetInterface.h"
@@ -18,6 +19,7 @@
 UCLASS()
 class UNREALPORTFOLIO_API AUPMainCharacter : public AUPCharacter
 	,public IAbilitySystemGetInterface
+	,public IAbilitySystemInterface
 	,public IUPPossessCharacterInterface
 	,public ICharacterMovementInterface
 	,public IAttackableCharacterInterface
@@ -75,7 +77,6 @@ protected:
 	float FollowTime; // For how long it has been pressed
 	FVector CachedDestination;
 
-
 protected:
 	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -106,11 +107,11 @@ protected:
 /** Game Ability System**/
 protected:
 	void GASInputPressed(int32 GameplayAbilityInputId);
-
+	
 public:
 	virtual void SetCharacterMovementMod(EMovementMode MovementMode) override;
 	virtual ECharacterControlType GetCharacterControl() override;
-	//FORCEINLINE virtual class UABComboActionData* GetComboActionData() const { return ComboActionData; }
-	FORCEINLINE virtual class UAnimMontage* GetComboActionMontage() const { return ComboActionMontage; }
-	
+
+	UFUNCTION()
+	virtual	UAnimMontage* GetComboActionMontage() override;
 };

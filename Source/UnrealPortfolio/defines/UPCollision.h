@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #define OVERLAP_ONLY_PAWN TEXT("OverlapOnlyPawn")
-#define CPROFILE_NPC TEXT("NPC")
+#define CPROFILE_UP_TRACE TEXT("UP_Trace_Profile")
 #define CPROFILE_PAWN TEXT("Pawn")
-#define CHANNEL_NPC_CHECKER ECC_GameTraceChannel1 
+#define CPROFILE_UP_NPC TEXT("UP_NPC_Profile")
+#define CHANNEL_UPTRACE ECC_GameTraceChannel1 

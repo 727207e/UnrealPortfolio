@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include "GameplayTagContainer.h"
 #include "AttackableCharacterInterface.generated.h"
 
 // This class does not need to be modified.
@@ -20,7 +21,6 @@ class UNREALPORTFOLIO_API IAttackableCharacterInterface
 {
 	GENERATED_BODY()
 public:
-	virtual class UAnimMontage* GetComboActionMontage() const = 0;
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
+	virtual UAnimMontage* GetComboActionMontage() = 0;
 public:
 };
