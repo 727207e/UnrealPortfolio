@@ -21,9 +21,6 @@
 AUPMainCharacter::AUPMainCharacter()
 {
 	ASC = nullptr;
-	NPCDetectorSceneComponent = CreateDefaultSubobject<UUPNPCDetectorSceneComponent>("NPC_Checker");
-	NPCDetectorSceneComponent->SetParent(RootComponent);
-	
 	SetupPlayerCamera();
 }
 
@@ -153,8 +150,16 @@ void AUPMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	SetCharacterControl(ECharacterControlType::TopDown);
-}
 
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController != nullptr && PlayerController->IsLocalPlayerController())
+	{
+		NPCDetectorSceneComponent = NewObject<UUPNPCDetectorSceneComponent>(this, UUPNPCDetectorSceneComponent::StaticClass());
+		NPCDetectorSceneComponent->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("NPC_Checker"));
+		NPCDetectorSceneComponent->SetParent(GetRootComponent());
+		NPCDetectorSceneComponent->RegisterComponent();
+	}
+}
 
 void AUPMainCharacter::SetupGasInput(AController* NewController)
 {
@@ -168,21 +173,30 @@ void AUPMainCharacter::SetupGasInput(AController* NewController)
 
 IUPUINpcInterface* AUPMainCharacter::GetNPCInterface()
 {
-	return  NPCDetectorSceneComponent->UINPC;
+	if (NPCDetectorSceneComponent)
+	{
+		return NPCDetectorSceneComponent->UINPC;
+	}
+	else
+	{
+		UE_LOG(LogTemplateCharacter, Log, TEXT("DetectorSceneComponent is null"));
+		return nullptr;
+	}
 }
 
-void AUPMainCharacter::LookTarget(const FVector& TargetLocation)
+IUPEntityInterface* AUPMainCharacter::GetNPCEntityInterface()
 {
-	FVector TargetDirection = TargetLocation - GetActorLocation();
-	TargetDirection.Z = 0;
-
-	SetActorRotation(TargetDirection.Rotation());
+	if (NPCDetectorSceneComponent)
+	{
+		return NPCDetectorSceneComponent->NPCEntityInterface;
+	}
+	else
+	{
+		UE_LOG(LogTemplateCharacter, Log, TEXT("DetectorSceneComponent is null"));
+		return nullptr;
+	}
 }
 
-FVector AUPMainCharacter::GetCurLocation()
-{
-	return GetActorLocation();
-}
 
 //*##############################Camera Control##################################*/
 //*##############################Camera Control##################################*/

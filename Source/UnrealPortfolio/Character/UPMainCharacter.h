@@ -63,14 +63,12 @@ private :
 	void SetupGasInput(AController* NewController);
 public:
 	IUPUINpcInterface* GetNPCInterface();
-	virtual void LookTarget(const FVector& TargetLocation) override;
-	virtual FVector GetCurLocation() override;
+	IUPEntityInterface* GetNPCEntityInterface();
 
 protected:
 	//Movement
 	float FollowTime; // For how long it has been pressed
 	FVector CachedDestination;
-
 
 protected:
 	/** Top down camera */
