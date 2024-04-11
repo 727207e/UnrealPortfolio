@@ -12,17 +12,38 @@
 #include "Data/UPCharacterControlData.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GAS/GA/GA_Attack.h"
+#include "GAS/GA/GA_AttackHitCheck.h"
 #include "GAS/GA/GA_NPCInteractor.h"
 #include "Gimmick/UPNPCDetectorSceneComponent.h"
 #include "Tag/GameplayTags.h"
-
-
 
 AUPMainCharacter::AUPMainCharacter()
 {
 	ASC = nullptr;
 	NPCDetectorSceneComponent = CreateDefaultSubobject<UUPNPCDetectorSceneComponent>("NPC_Checker");
 	NPCDetectorSceneComponent->SetParent(RootComponent);
+
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMeshRef(TEXT("Script/Engine.SkeletalMesh'/Game/DownloadAssets/DemonessBoss/Mesh/SK_DemonessBoss.SK_DemonessBoss'"));
+	if (CharacterMeshRef.Object)
+	{
+		GetMesh()->SetSkeletalMesh(CharacterMeshRef.Object);
+	}
+
+	static ConstructorHelpers::FClassFinder<UAnimInstance> CharacterAnimRef(TEXT("/Game/Blueprint/Animation/ABP_Boss.ABP_Boss_C"));
+
+	if(CharacterAnimRef.Class)
+	{
+		GetMesh()->SetAnimInstanceClass(CharacterAnimRef.Class);
+	}
+	
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> ComboActionMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Blueprint/Animation/AM_Boss_ComboAttack.AM_Boss_ComboAttack'"));
+	if (ComboActionMontageRef.Object)
+	{
+		ComboActionMontage = ComboActionMontageRef.Object;
+	}
+	
 	
 	SetupPlayerCamera();
 }
@@ -62,7 +83,8 @@ void AUPMainCharacter::PossessedBy(AController* NewController)
 
 void AUPMainCharacter::OnAttackStart()
 {
-	UE_LOG(LogTemplateCharacter, Log, TEXT("Attack"));
+	if(!IsValid(ASC))	{	return; }
+	GASInputPressed(GAS_INPUT_ID_ATTACK_START);
 }
 
 void AUPMainCharacter::OnSkillStart(int32 Index)
@@ -151,6 +173,7 @@ void AUPMainCharacter::OnNPCInteraction()
 
 void AUPMainCharacter::BeginPlay()
 {
+
 	Super::BeginPlay();
 	SetCharacterControl(ECharacterControlType::TopDown);
 }
@@ -183,7 +206,7 @@ void AUPMainCharacter::SetupPlayerCamera()
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->SetUsingAbsoluteRotation(true); // Don't want arm to rotate when character does
 	CameraBoom->bDoCollisionTest = false; // Don't want to pull camera in when it collides with level
-
+	
 	// Create a camera...
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("TopDownCamera"));
 	CameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
@@ -250,10 +273,24 @@ void AUPMainCharacter::GASInputPressed(int32 GameplayAbilityInputId)
 /** Interface **/
 void AUPMainCharacter::SetCharacterMovementMod(EMovementMode MovementMode)
 {
+	if(MovementMode == EMovementMode::MOVE_None)
+	{
+		DisableInput(GetLocalViewingPlayerController());
+	}
+	else if(MovementMode == MOVE_Walking)
+	{
+		EnableInput(GetLocalViewingPlayerController());
+	}
+	
 	GetCharacterMovement()->SetMovementMode(MovementMode);
 }
 
 ECharacterControlType AUPMainCharacter::GetCharacterControl()
 {
 	return CurrentCharacterControlType;
+}
+
+UAnimMontage* AUPMainCharacter::GetComboActionMontage()
+{
+	return ComboActionMontage;
 }
