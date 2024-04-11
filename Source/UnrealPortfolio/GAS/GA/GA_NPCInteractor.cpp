@@ -23,10 +23,12 @@ void UGA_NPCInteractor::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	auto MainCharacter = CastChecked<AUPMainCharacter>(ActorInfo->AvatarActor);
 	CharacterMovementInterface = MainCharacter;
+	CharacterEntityInterface = CastChecked<IUPEntityInterface>(MainCharacter);
 	UPUINpcInterface = MainCharacter->GetNPCInterface();
+	NPCEntityInterface = MainCharacter->GetNPCEntityInterface();
 	
 	bOnCancelAbility = false;
-	if(UPUINpcInterface == nullptr)
+	if(UPUINpcInterface == nullptr || NPCEntityInterface == nullptr)
 	{
 		Super::CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
 		return;
@@ -39,7 +41,7 @@ void UGA_NPCInteractor::CancelAbility(const FGameplayAbilitySpecHandle Handle,
 	bool bReplicateCancelAbility)
 {
 	bOnCancelAbility = true;
-	if(UPUINpcInterface == nullptr || !FadeUserWidget)
+	if(UPUINpcInterface == nullptr || !FadeUserWidget || NPCEntityInterface == nullptr)
 	{
 		Super::CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
 		return;
@@ -76,12 +78,12 @@ void UGA_NPCInteractor::OnCinematicCutsceneFadeInEnd()
 	FOnFadeEndDelegate OnFadeEndDelegate;
 	if(!bOnCancelAbility)
 	{
-		FVector CharacterLoction = CharacterMovementInterface->GetCurLocation();
-		FVector NPCLocation = UPUINpcInterface->GetNPCCurLocation();
+		FVector CharacterLoction = CharacterEntityInterface->GetCurLocation();
+		FVector NPCLocation = NPCEntityInterface->GetCurLocation();
 
 		//Look Each other
-		UPUINpcInterface->LookTarget(CharacterLoction);
-		CharacterMovementInterface->LookTarget(NPCLocation);
+		NPCEntityInterface->LookTarget(CharacterLoction);
+		CharacterEntityInterface->LookTarget(NPCLocation);
 
 		//Camera Location Setting
 		FTransform CameraTransform = UPUINpcInterface->GetNPCCameraTransform();

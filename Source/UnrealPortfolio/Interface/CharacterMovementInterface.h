@@ -29,6 +29,4 @@ public:
 	virtual void SetCharacterMovementMod(EMovementMode MovementMode) = 0;
 	virtual ECharacterControlType GetCharacterControl() = 0;
 	virtual void SetCharacterControl(ECharacterControlType NewCharacterControlType, FTransform TargetTransform = FTransform()) = 0;
-	virtual void LookTarget(const FVector& TargetLocation) = 0;
-	virtual FVector GetCurLocation() = 0;
 };

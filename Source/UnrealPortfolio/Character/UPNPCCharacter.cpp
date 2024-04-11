@@ -5,6 +5,7 @@
 #include "defines/UPCollision.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SceneComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Components/WidgetComponent.h"
 
 // Sets default values
@@ -48,6 +49,8 @@ AUPNPCCharacter::AUPNPCCharacter()
 
 	NPCCameraTransform = CreateDefaultSubobject<USceneComponent>(TEXT("CameraTransform"));
 	NPCCameraTransform->SetupAttachment(RootComponent);
+
+	GetCharacterMovement()->SetIsReplicated(false);
 }
 
 void AUPNPCCharacter::TakeNPCWidgetShow()
@@ -82,8 +85,7 @@ void AUPNPCCharacter::LookTarget(const FVector& TargetLocation)
 	SetActorRotation(TargetDirection.Rotation());
 }
 
-
-FVector AUPNPCCharacter::GetNPCCurLocation()
+FVector AUPNPCCharacter::GetCurLocation()
 {
 	return GetActorLocation();
 }

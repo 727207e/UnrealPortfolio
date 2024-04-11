@@ -7,6 +7,7 @@
 #include "Interface/CharacterMovementInterface.h"
 #include "Interface/UPUINpcInterface.h"
 #include "Interface/UPControllerInterface.h"
+#include "Interface/UPEntityInterface.h"
 #include "UI/UPFadeUserWidget.h"
 #include "GA_NPCInteractor.generated.h"
 
@@ -51,4 +52,8 @@ protected:
 	void OnCinematicCutsceneFadeInEnd();
 	UFUNCTION()
 	void CinematicCutsceneFinish();
+
+private:
+	IUPEntityInterface* CharacterEntityInterface;
+	IUPEntityInterface* NPCEntityInterface;
 };
