@@ -25,6 +25,8 @@ public:
 	virtual  void ShowInteractionAlarm() =0;
 	virtual  void HideInterActionAlarm() =0;
 	virtual  FTransform GetNPCCameraTransform() = 0;
+	virtual  void LookTarget(const FVector& TargetLocation) = 0;
+	virtual  FVector GetNPCCurLocation() = 0;
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:

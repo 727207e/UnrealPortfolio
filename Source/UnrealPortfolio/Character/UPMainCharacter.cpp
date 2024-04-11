@@ -171,6 +171,19 @@ IUPUINpcInterface* AUPMainCharacter::GetNPCInterface()
 	return  NPCDetectorSceneComponent->UINPC;
 }
 
+void AUPMainCharacter::LookTarget(const FVector& TargetLocation)
+{
+	FVector TargetDirection = TargetLocation - GetActorLocation();
+	TargetDirection.Z = 0;
+
+	SetActorRotation(TargetDirection.Rotation());
+}
+
+FVector AUPMainCharacter::GetCurLocation()
+{
+	return GetActorLocation();
+}
+
 //*##############################Camera Control##################################*/
 //*##############################Camera Control##################################*/
 

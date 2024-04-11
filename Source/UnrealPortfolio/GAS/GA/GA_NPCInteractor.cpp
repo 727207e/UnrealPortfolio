@@ -76,7 +76,22 @@ void UGA_NPCInteractor::OnCinematicCutsceneFadeInEnd()
 	FOnFadeEndDelegate OnFadeEndDelegate;
 	if(!bOnCancelAbility)
 	{
-		CharacterMovementInterface->SetCharacterControl(ECharacterControlType::NPC, UPUINpcInterface->GetNPCCameraTransform());
+		FVector CharacterLoction = CharacterMovementInterface->GetCurLocation();
+		FVector NPCLocation = UPUINpcInterface->GetNPCCurLocation();
+
+		//Look Each other
+		UPUINpcInterface->LookTarget(CharacterLoction);
+		CharacterMovementInterface->LookTarget(NPCLocation);
+
+		//Camera Location Setting
+		FTransform CameraTransform = UPUINpcInterface->GetNPCCameraTransform();
+		FVector CenterTwoVector = (CharacterLoction + NPCLocation) / 2.0f;
+		FVector Direction = CameraTransform.GetUnitAxis(EAxis::X);
+
+		CenterTwoVector -= (Direction * 1000);
+		CameraTransform.SetLocation(CenterTwoVector);
+
+		CharacterMovementInterface->SetCharacterControl(ECharacterControlType::NPC, CameraTransform);
 	}
 	else
 	{

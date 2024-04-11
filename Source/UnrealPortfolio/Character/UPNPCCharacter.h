@@ -47,6 +47,8 @@ public:
 
 	virtual  void BeginPlay() override;
 	virtual	 FTransform GetNPCCameraTransform() override;
+	virtual  void LookTarget(const FVector& TargetLocation) override;
+	virtual  FVector GetNPCCurLocation() override;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class USceneComponent> NPCCameraTransform;

@@ -74,6 +74,20 @@ FTransform AUPNPCCharacter::GetNPCCameraTransform()
 	return NPCCameraTransform->GetComponentTransform();
 }
 
+void AUPNPCCharacter::LookTarget(const FVector& TargetLocation)
+{
+	FVector TargetDirection = TargetLocation - GetActorLocation();
+	TargetDirection.Z = 0;
+
+	SetActorRotation(TargetDirection.Rotation());
+}
+
+
+FVector AUPNPCCharacter::GetNPCCurLocation()
+{
+	return GetActorLocation();
+}
+
 void AUPNPCCharacter::ShowWeaponShopWidget()
 {
 	UE_LOG(LogTemp,Log,TEXT("ShowWeaponShopWidget"));

@@ -63,6 +63,8 @@ private :
 	void SetupGasInput(AController* NewController);
 public:
 	IUPUINpcInterface* GetNPCInterface();
+	virtual void LookTarget(const FVector& TargetLocation) override;
+	virtual FVector GetCurLocation() override;
 
 protected:
 	//Movement
@@ -102,6 +104,5 @@ protected:
 protected:
 	virtual void SetCharacterMovementMod(EMovementMode MovementMode) override;
 	virtual ECharacterControlType GetCharacterControl() override;
-	
 	
 };
