@@ -21,8 +21,6 @@
 AUPMainCharacter::AUPMainCharacter()
 {
 	ASC = nullptr;
-	NPCDetectorSceneComponent = CreateDefaultSubobject<UUPNPCDetectorSceneComponent>("NPC_Checker");
-	NPCDetectorSceneComponent->SetParent(RootComponent);
 
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMeshRef(TEXT("Script/Engine.SkeletalMesh'/Game/DownloadAssets/DemonessBoss/Mesh/SK_DemonessBoss.SK_DemonessBoss'"));
 	if (CharacterMeshRef.Object)
@@ -43,7 +41,6 @@ AUPMainCharacter::AUPMainCharacter()
 	{
 		ComboActionMontage = ComboActionMontageRef.Object;
 	}
-	
 	
 	SetupPlayerCamera();
 }
@@ -176,8 +173,16 @@ void AUPMainCharacter::BeginPlay()
 
 	Super::BeginPlay();
 	SetCharacterControl(ECharacterControlType::TopDown);
-}
 
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController != nullptr && PlayerController->IsLocalPlayerController())
+	{
+		NPCDetectorSceneComponent = NewObject<UUPNPCDetectorSceneComponent>(this, UUPNPCDetectorSceneComponent::StaticClass());
+		NPCDetectorSceneComponent->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("NPC_Checker"));
+		NPCDetectorSceneComponent->SetParent(GetRootComponent());
+		NPCDetectorSceneComponent->RegisterComponent();
+	}
+}
 
 void AUPMainCharacter::SetupGasInput(AController* NewController)
 {
@@ -191,8 +196,30 @@ void AUPMainCharacter::SetupGasInput(AController* NewController)
 
 IUPUINpcInterface* AUPMainCharacter::GetNPCInterface()
 {
-	return  NPCDetectorSceneComponent->UINPC;
+	if (NPCDetectorSceneComponent)
+	{
+		return NPCDetectorSceneComponent->UINPC;
+	}
+	else
+	{
+		UE_LOG(LogTemplateCharacter, Log, TEXT("DetectorSceneComponent is null"));
+		return nullptr;
+	}
 }
+
+IUPEntityInterface* AUPMainCharacter::GetNPCEntityInterface()
+{
+	if (NPCDetectorSceneComponent)
+	{
+		return NPCDetectorSceneComponent->NPCEntityInterface;
+	}
+	else
+	{
+		UE_LOG(LogTemplateCharacter, Log, TEXT("DetectorSceneComponent is null"));
+		return nullptr;
+	}
+}
+
 
 //*##############################Camera Control##################################*/
 //*##############################Camera Control##################################*/
@@ -230,14 +257,21 @@ void AUPMainCharacter::SetupPlayerCamera()
 	{
 		CharacterControlManager.Add(ECharacterControlType::SideScroll, SideScrollDataRef.Object);
 	}
+
+	static ConstructorHelpers::FObjectFinder<UUPCharacterControlData> NPCCameraDataRef(TEXT("/Script/UnrealPortfolio.UPCharacterControlData'/Game/CharacterControl/ABC_NPCCamera.ABC_NPCCamera'"));
+	if (NPCCameraDataRef.Object)
+	{
+		CharacterControlManager.Add(ECharacterControlType::NPC, NPCCameraDataRef.Object);
+	}
 }
 
-void AUPMainCharacter::SetCharacterControl(ECharacterControlType NewCharacterControlType)
+void AUPMainCharacter::SetCharacterControl(ECharacterControlType NewCharacterControlType, FTransform TargetTransform)
 {
 	UUPCharacterControlData* NewCharacterControl = CharacterControlManager[NewCharacterControlType];
 	check(NewCharacterControl);
 
 	SetCharacterControlData(NewCharacterControl);
+	SetCameraComponent(NewCharacterControlType, TargetTransform);
 	CurrentCharacterControlType = NewCharacterControlType;
 }
 
@@ -250,6 +284,20 @@ void AUPMainCharacter::SetCharacterControlData(const UUPCharacterControlData* Ch
 	CameraBoom->bInheritYaw = CharacterControlData->bInheritYaw;
 	CameraBoom->bInheritRoll = CharacterControlData->bInheritRoll;
 	CameraBoom->bDoCollisionTest = CharacterControlData->bDoCollisionTest;
+}
+
+void AUPMainCharacter::SetCameraComponent(ECharacterControlType CharacterControlType, FTransform CameraTransform)
+{
+	if (CharacterControlType == ECharacterControlType::NPC)
+	{
+		CameraComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	}
+	else
+	{
+		CameraComponent->AttachToComponent(CameraBoom, FAttachmentTransformRules::KeepRelativeTransform);
+	}
+
+	CameraComponent->SetRelativeTransform(CameraTransform);
 }
 
 void AUPMainCharacter::GASInputPressed(int32 GameplayAbilityInputId)

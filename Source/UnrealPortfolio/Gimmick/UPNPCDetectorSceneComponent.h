@@ -6,8 +6,6 @@
 #include "Components/SceneComponent.h"
 #include "UPNPCDetectorSceneComponent.generated.h"
 
-class IUPUINpcInterface;
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UNREALPORTFOLIO_API UUPNPCDetectorSceneComponent : public USceneComponent
 {
@@ -20,13 +18,17 @@ public:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UBoxComponent> BoxComp;
 
+	virtual void BeginPlay() override;
+
 private:
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult);
 	UFUNCTION()
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 public:
-	IUPUINpcInterface* UINPC;
+	class IUPUINpcInterface* UINPC;
+	class IUPEntityInterface* NPCEntityInterface;
+
 public:
 
 public:
@@ -39,5 +41,4 @@ public:
 	float SizeY;
 	UPROPERTY(EditAnywhere)
 	float SizeZ;
-	
 };

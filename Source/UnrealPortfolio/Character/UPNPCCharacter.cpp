@@ -4,6 +4,8 @@
 #include "Character/UPNPCCharacter.h"
 #include "defines/UPCollision.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SceneComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Components/WidgetComponent.h"
 
 // Sets default values
@@ -44,6 +46,11 @@ AUPNPCCharacter::AUPNPCCharacter()
 	TakeUiActions.Add(FTakeWidgetDelegateWrapper(FOnShowNPCWidgetDelegate::CreateUObject(this,&AUPNPCCharacter::ShowWeaponShopWidget)));
 	TakeUiActions.Add(FTakeWidgetDelegateWrapper(FOnShowNPCWidgetDelegate::CreateUObject(this,&AUPNPCCharacter::ShowItemShopWidget)));
 	TakeUiActions.Add(FTakeWidgetDelegateWrapper(FOnShowNPCWidgetDelegate::CreateUObject(this,&AUPNPCCharacter::ShowRaiderSelector)));
+
+	NPCCameraTransform = CreateDefaultSubobject<USceneComponent>(TEXT("CameraTransform"));
+	NPCCameraTransform->SetupAttachment(RootComponent);
+
+	GetCharacterMovement()->SetIsReplicated(false);
 }
 
 void AUPNPCCharacter::TakeNPCWidgetShow()
@@ -63,7 +70,24 @@ void AUPNPCCharacter::BeginPlay()
 	Super::BeginPlay();
 	InteractionAlarmCompo->GetWidget()->AddToViewport();
 	HideInterActionAlarm();
+}
 
+FTransform AUPNPCCharacter::GetNPCCameraTransform()
+{
+	return NPCCameraTransform->GetComponentTransform();
+}
+
+void AUPNPCCharacter::LookTarget(const FVector& TargetLocation)
+{
+	FVector TargetDirection = TargetLocation - GetActorLocation();
+	TargetDirection.Z = 0;
+
+	SetActorRotation(TargetDirection.Rotation());
+}
+
+FVector AUPNPCCharacter::GetCurLocation()
+{
+	return GetActorLocation();
 }
 
 void AUPNPCCharacter::ShowWeaponShopWidget()

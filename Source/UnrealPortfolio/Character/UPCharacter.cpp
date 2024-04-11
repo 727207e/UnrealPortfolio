@@ -50,3 +50,16 @@ void AUPCharacter::Tick(float DeltaSeconds)
 void AUPCharacter::SetDead()
 {
 }
+
+void AUPCharacter::LookTarget(const FVector& TargetLocation)
+{
+	FVector TargetDirection = TargetLocation - GetActorLocation();
+	TargetDirection.Z = 0;
+
+	SetActorRotation(TargetDirection.Rotation());
+}
+
+FVector AUPCharacter::GetCurLocation()
+{
+	return GetActorLocation();
+}

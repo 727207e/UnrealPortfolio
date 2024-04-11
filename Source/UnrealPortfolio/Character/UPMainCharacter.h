@@ -71,6 +71,7 @@ private :
 	void SetupGasInput(AController* NewController);
 public:
 	IUPUINpcInterface* GetNPCInterface();
+	IUPEntityInterface* GetNPCEntityInterface();
 
 protected:
 	//Movement
@@ -96,10 +97,12 @@ protected:
 	void SetupPlayerCamera();
 	/**Set Current Player Camera Data **/
 	void SetCharacterControlData(const UUPCharacterControlData* CharacterControlData);
+	void SetCameraComponent(ECharacterControlType CharacterControlType, FTransform CameraTransform);
 public:
 	/**Set Current Player Control Data **/
 	UFUNCTION(BlueprintCallable)
-	virtual  void SetCharacterControl(ECharacterControlType NewCharacterControlType) override;
+	virtual  void SetCharacterControl(ECharacterControlType NewCharacterControlType, FTransform TargetTransform = FTransform()) override;
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
 	TObjectPtr<class UAnimMontage> ComboActionMontage;

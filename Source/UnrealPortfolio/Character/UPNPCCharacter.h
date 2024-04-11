@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interface/UPEntityInterface.h"
 #include "Interface/UPUINpcInterface.h"
 #include "UPNPCCharacter.generated.h"
 
@@ -30,7 +31,7 @@ struct FTakeWidgetDelegateWrapper
 
 
 UCLASS()
-class UNREALPORTFOLIO_API AUPNPCCharacter : public ACharacter ,public IUPUINpcInterface
+class UNREALPORTFOLIO_API AUPNPCCharacter : public ACharacter ,public IUPUINpcInterface, public IUPEntityInterface
 {
 	GENERATED_BODY()
 
@@ -46,6 +47,12 @@ public:
 	virtual  void TakeNPCWidgetHide() override;
 
 	virtual  void BeginPlay() override;
+	virtual	 FTransform GetNPCCameraTransform() override;
+	virtual  void LookTarget(const FVector& TargetLocation) override;
+	virtual  FVector GetCurLocation() override;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class USceneComponent> NPCCameraTransform;
 
 	UPROPERTY(EditAnywhere, Category = Level)
 	FString NextLevelPath;

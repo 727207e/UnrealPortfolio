@@ -6,6 +6,7 @@
 #include "Character/UPMainCharacter.h"
 #include "Character/UPNPCCharacter.h"
 #include "Components/BoxComponent.h"
+#include "Interface/UPEntityInterface.h"
 #include "Interface/UPUINpcInterface.h"
 #include "defines/UPCollision.h"
 // Sets default values for this component's properties
@@ -26,13 +27,15 @@ void UUPNPCDetectorSceneComponent::OnOverlapBegin(UPrimitiveComponent* Overlappe
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult)
 {
 	const auto Character = Cast<IUPUINpcInterface>(OtherActor);
-	if(Character == nullptr)
+	const auto NPCEntity = Cast<IUPEntityInterface>(OtherActor);
+	if(Character == nullptr || NPCEntity == nullptr)
 	{
 		return;
 	}
 	UINPC = Character;
 	UINPC->ShowInteractionAlarm();
-	
+
+	NPCEntityInterface = NPCEntity;
 }
 
 void UUPNPCDetectorSceneComponent::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
@@ -55,6 +58,7 @@ void UUPNPCDetectorSceneComponent::OnOverlapEnd(UPrimitiveComponent* OverlappedC
 
 void UUPNPCDetectorSceneComponent::SetParent(USceneComponent* InParent)
 {
-	this->SetupAttachment(InParent);
-	BoxComp->SetupAttachment(InParent);	
+	this->AttachToComponent(InParent, FAttachmentTransformRules::KeepRelativeTransform);
+	BoxComp->AttachToComponent(InParent, FAttachmentTransformRules::KeepRelativeTransform);
+	BoxComp->RegisterComponent();
 }
