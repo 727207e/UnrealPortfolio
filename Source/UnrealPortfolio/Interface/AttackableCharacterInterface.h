@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "GameplayTagContainer.h"
+#include "Data/UPComboActionData.h"
 #include "AttackableCharacterInterface.generated.h"
 
 // This class does not need to be modified.
@@ -22,5 +23,6 @@ class UNREALPORTFOLIO_API IAttackableCharacterInterface
 	GENERATED_BODY()
 public:
 	virtual UAnimMontage* GetComboActionMontage() = 0;
+	virtual UUPComboActionData* GetComboActionData() const = 0;
 public:
 };
