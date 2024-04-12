@@ -49,8 +49,7 @@ AUPNPCCharacter::AUPNPCCharacter()
 
 	NPCCameraTransform = CreateDefaultSubobject<USceneComponent>(TEXT("CameraTransform"));
 	NPCCameraTransform->SetupAttachment(RootComponent);
-
-	GetCharacterMovement()->SetIsReplicated(false);
+	SetReplicateMovement(false);
 }
 
 void AUPNPCCharacter::TakeNPCWidgetShow()
@@ -103,6 +102,8 @@ void AUPNPCCharacter::ShowItemShopWidget()
 void AUPNPCCharacter::ShowRaiderSelector()
 {
 	UE_LOG(LogTemp,Log,TEXT("ShowRaiderSelector"));
+
+
 	//버튼 생성까지 주석으로 비활성화
 	// AUPLevelScriptActor* UpLevelScript = Cast<AUPLevelScriptActor>(GetWorld()->GetLevelScriptActor());
 	// if (UpLevelScript)
