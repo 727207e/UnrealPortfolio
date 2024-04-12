@@ -41,7 +41,6 @@ void UAbilityTask_Trace::OnDestroy(bool AbilityEnded)
 
 void UAbilityTask_Trace::SpawnAndInitializeTargetActor()
 {
-	UE_LOG(LogTemp,Log,TEXT("SpawnAndInitializeTargetActor"));
 	SpawnedTargetActor = Cast<AGATA_Trace>(Ability->GetWorld()->SpawnActorDeferred<AGameplayAbilityTargetActor>(TargetActorClass,FTransform::Identity,nullptr,nullptr,ESpawnActorCollisionHandlingMethod::AlwaysSpawn));
 	if(SpawnedTargetActor)
 	{
@@ -64,10 +63,8 @@ void UAbilityTask_Trace::FinalizeTargetActor()
 	}
 }
 
-//종료
 void UAbilityTask_Trace::OnTargetDataReadyCallback(const FGameplayAbilityTargetDataHandle& DataHandle)
 {
-	UE_LOG(LogTemp,Log,TEXT("OnTargetDataReadyCallback"));
 	if(ShouldBroadcastAbilityTaskDelegates())
 	{
 		OnComplete.Broadcast(DataHandle);

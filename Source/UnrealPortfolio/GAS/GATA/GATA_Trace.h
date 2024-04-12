@@ -23,7 +23,7 @@ public:
 	void SetShowDebug(bool InShowDebug) { bShowDebug = InShowDebug; }
     
 protected:
-	//정보들을 반환 왜 프로텍트지
+
 	virtual FGameplayAbilityTargetDataHandle MakeTargetData() const;
     
 	bool bShowDebug = false;

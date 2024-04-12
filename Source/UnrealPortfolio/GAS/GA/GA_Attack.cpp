@@ -9,35 +9,39 @@ void UGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
                                  const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-	//모션재생 어빌리티 테스크
+
+	/** Attackable Setup **/
 	AttackableCharacter = CastChecked<IAttackableCharacterInterface>(ActorInfo->AvatarActor.Get());
-	MovementInterface = CastChecked<ICharacterMovementInterface>(ActorInfo->AvatarActor.Get());
-	MovementInterface->SetCharacterMovementMod(MOVE_None);
+	if(AttackableCharacter)
+	{
+		CurrentComboData = AttackableCharacter->GetComboActionData();
+	}
+
+	/** Movement Setup **/
+	MovementCharacter = CastChecked<ICharacterMovementInterface>(ActorInfo->AvatarActor.Get());
+	MovementCharacter->SetCharacterMovementMod(MOVE_None);
+
+	/** PlayAttackTask Ability **/
 	UAbilityTask_PlayMontageAndWait* PlayAttackTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 		this,TEXT("PlayAttack"), AttackableCharacter->GetComboActionMontage(),1.0f,GetNextSection());
 	PlayAttackTask->OnCompleted.AddDynamic(this,&UGA_Attack::OnCompleteCallback);
 	PlayAttackTask->OnInterrupted.AddDynamic(this,&UGA_Attack::OnInterruptedCallback);
 	PlayAttackTask->ReadyForActivation();
-
+	StartComboTimer();
 }
 
 FName UGA_Attack::GetNextSection()
 {
-	CurrentCombo = FMath::Clamp(CurrentCombo + 1, 1, 3);
-	//사용CurrentCombo법 주의
-	const FName NextSection = *FString::Printf(TEXT("%s%d"),TEXT("ComboAttack"),CurrentCombo);
+	CurrentCombo = FMath::Clamp(CurrentCombo + 1, 1, CurrentComboData->MaxComboCount);
+	FName NextSection = *FString::Printf(TEXT("%s%d"), *CurrentComboData->MontageSectionNamePrefix, CurrentCombo);
 	return NextSection;
 }
 
 void UGA_Attack::OnCompleteCallback()
 {
-	AUPMainCharacter* AabCharacterBase = CastChecked<AUPMainCharacter>(CurrentActorInfo->AvatarActor.Get());
-	AabCharacterBase->SetCharacterMovementMod(MOVE_Walking);
-	//리플리케이션에대한 사용여부 (네트워크)
 	bool bReplicatedEndAbility = true;
-	//취소 여부
 	bool bWasCancelled = false;
-	EndAbility(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,bReplicatedEndAbility,bWasCancelled);
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, bReplicatedEndAbility, bWasCancelled);
 }
 
 void UGA_Attack::OnInterruptedCallback()
@@ -45,6 +49,18 @@ void UGA_Attack::OnInterruptedCallback()
 	bool bReplicatedEndAbility = true;
 	bool bWasCancelled = true;
 	EndAbility(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,bReplicatedEndAbility,bWasCancelled);
+	
+}
+
+void UGA_Attack::StartComboTimer()
+{
+	int32 ComboIndex = CurrentCombo - 1;
+	ensure(CurrentComboData->EffectiveFrameCount.IsValidIndex(ComboIndex));
+	const float ComboEffectiveTime = CurrentComboData->EffectiveFrameCount[ComboIndex] / CurrentComboData->FrameRate;
+	if (ComboEffectiveTime > 0.0f)
+	{
+		GetWorld()->GetTimerManager().SetTimer(ComboTimerHandle, this, &UGA_Attack::CheckComboInput, ComboEffectiveTime, false);
+	}
 	
 }
 
@@ -57,11 +73,33 @@ void UGA_Attack::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FG
 void UGA_Attack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 	const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
-	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+		Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+    	MovementCharacter->SetCharacterMovementMod(MOVE_Walking);
+    	CurrentComboData = nullptr;
+    	CurrentCombo = 0;
+    	HasNextComboInput = false;
 }
 
 void UGA_Attack::InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 	const FGameplayAbilityActivationInfo ActivationInfo)
 {
-	Super::InputPressed(Handle, ActorInfo, ActivationInfo);
+	if (!ComboTimerHandle.IsValid())
+	{
+		HasNextComboInput = false;
+	}
+	else
+	{
+		HasNextComboInput = true;
+	}
+}
+
+void UGA_Attack::CheckComboInput()
+{
+	ComboTimerHandle.Invalidate();
+	if (HasNextComboInput)
+	{
+		MontageJumpToSection(GetNextSection());
+		StartComboTimer();
+		HasNextComboInput = false;
+	}
 }

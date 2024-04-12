@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
+#include "Data/UPComboActionData.h"
 #include "Interface/AttackableCharacterInterface.h"
 #include "Interface/CharacterMovementInterface.h"
+#include "Data/UPComboActionData.h"
 #include "GA_Attack.generated.h"
-
 /**
  * 
  */
@@ -30,13 +31,24 @@ class UNREALPORTFOLIO_API UGA_Attack : public UGameplayAbility
 	virtual void InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) override;
 
 	IAttackableCharacterInterface*  AttackableCharacter;
-	ICharacterMovementInterface* MovementInterface;
+	ICharacterMovementInterface* MovementCharacter;
 	FName GetNextSection();
-	uint8 CurrentCombo = 0;
 protected:
 	//FMontageWaitSimpleDelegate
 	UFUNCTION()
 	void OnCompleteCallback();
 	UFUNCTION()
 	void OnInterruptedCallback();
+	UFUNCTION()
+	void StartComboTimer();
+	UFUNCTION()
+	void CheckComboInput();
+	
+	protected:
+    	UPROPERTY()
+    	TObjectPtr<class UUPComboActionData> CurrentComboData;
+    
+    	uint8 CurrentCombo = 0;
+    	FTimerHandle ComboTimerHandle;
+    	bool HasNextComboInput = false;
 };

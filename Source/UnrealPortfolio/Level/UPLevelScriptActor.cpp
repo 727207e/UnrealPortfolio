@@ -9,7 +9,7 @@
 
 AUPLevelScriptActor::AUPLevelScriptActor()
 {
-	static ConstructorHelpers::FClassFinder<UUPLoadLevelUserWidget> LevelLoadWidgetBlueprint(TEXT("/Game/Blueprint/UI/WBP_LevelLoading.WBP_LevelLoading_C"));
+	static ConstructorHelpers::FClassFinder<UUPLoadLevelUserWidget> LevelLoadWidgetBlueprint(TEXT("/Game/UI/WBP_LevelLoading.WBP_LevelLoading_C"));
 
 	if (LevelLoadWidgetBlueprint.Class)
 	{
