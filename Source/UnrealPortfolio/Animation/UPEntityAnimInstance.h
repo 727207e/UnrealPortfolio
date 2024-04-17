@@ -4,23 +4,21 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
-#include "UPMeleeEnemyAnimInstance.generated.h"
+#include "UPEntityAnimInstance.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class UNREALPORTFOLIO_API UUPMeleeEnemyAnimInstance : public UAnimInstance
+class UNREALPORTFOLIO_API UUPEntityAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
 	
 public:
-	UUPMeleeEnemyAnimInstance();
+	UUPEntityAnimInstance();
 
 protected:
 	virtual void NativeInitializeAnimation() override;
-
-	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Character)
 	TObjectPtr<class ACharacter> Owner;
@@ -39,14 +37,4 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
 	float MovingThreshould;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
-	uint8 bIsFalling : 1;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
-	uint8 bIsJumping : 1;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
-	float JumpingThreshould;
-
 };

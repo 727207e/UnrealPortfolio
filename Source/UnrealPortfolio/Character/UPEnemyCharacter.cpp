@@ -6,3 +6,8 @@
 AUPEnemyCharacter::AUPEnemyCharacter()
 {
 }
+
+void AUPEnemyCharacter::SetDead()
+{
+	Super::SetDead();
+}

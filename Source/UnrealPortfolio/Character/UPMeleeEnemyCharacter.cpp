@@ -36,3 +36,30 @@ AUPMeleeEnemyCharacter::AUPMeleeEnemyCharacter()
 		TrousersMesh->SetAnimInstanceClass(CharacterAnimRef.Class);
 	}
 }
+
+void AUPMeleeEnemyCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	FTimerHandle DeadTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, this, &AUPMeleeEnemyCharacter::SetDead, 5.0f, false);
+}
+
+
+void AUPMeleeEnemyCharacter::SetDead()
+{
+	if (GetMesh() && BeltMesh && TrousersMesh)
+	{
+		// 새로운 위치로 캐릭터를 이동시킵니다.
+		SetActorLocation(GetCurLocation() + FVector(0,0,500));
+
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		//BeltMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		//TrousersMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+		GetMesh()->SetSimulatePhysics(true);
+		//BeltMesh->SetSimulatePhysics(true);
+		//TrousersMesh->SetSimulatePhysics(true);
+		//GetMesh()->SetAllBodiesSimulatePhysics(true);
+	}
+}

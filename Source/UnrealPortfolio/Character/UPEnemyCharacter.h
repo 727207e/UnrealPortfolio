@@ -18,4 +18,6 @@ class UNREALPORTFOLIO_API AUPEnemyCharacter : public AUPBattleBaseCharacter
 	
 public :
 	AUPEnemyCharacter();
+
+	virtual void SetDead() override;
 };

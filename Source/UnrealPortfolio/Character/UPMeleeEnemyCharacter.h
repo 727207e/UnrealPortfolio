@@ -18,6 +18,11 @@ class UNREALPORTFOLIO_API AUPMeleeEnemyCharacter : public AUPEnemyCharacter
 public :
 	AUPMeleeEnemyCharacter();
 
+	virtual void SetDead() override;
+
+
+	virtual void BeginPlay() override;
+
 protected :
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh)
 	TObjectPtr<USkeletalMeshComponent> BeltMesh;
