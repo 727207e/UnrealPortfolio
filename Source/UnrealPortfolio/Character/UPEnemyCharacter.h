@@ -20,6 +20,9 @@ public :
 	AUPEnemyCharacter();
 
 	virtual void SetDead() override;
+	
+	UPROPERTY(BlueprintReadWrite, Category = Entity)
+	TObjectPtr<class UUPACEntityState> EnemyEntity;
 
 protected :
 	void MeshSetSimulatePhysics(class USkeletalMeshComponent* targetMesh, class UCapsuleComponent* targetCapsule = nullptr);

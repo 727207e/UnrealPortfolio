@@ -24,37 +24,50 @@ class UNREALPORTFOLIO_API UEntityAttributeSet : public UAttributeSet
 public:
 	UEntityAttributeSet();
 
+	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, Hp);
+	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, MaxHp);
+	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, Attack);
+	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, AttackRange);
+	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, AttackSize);
+	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, Armor);
+	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, AttackSpeed);
 	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, AttackRate);
-	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, MaxAttackRate);
-	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, Health);
-	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, MaxHealth);
-	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, Damage);
-	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, Defense);
-	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, MaxDefense);
+	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, MovementSpeed);
 
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 	virtual bool PreGameplayEffectExecute(struct FGameplayEffectModCallbackData& Data) override;
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 
+	virtual void InitAttributeSet();
+
 protected:
+	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData Hp;
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData MaxHp;
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData Attack;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData AttackRange;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData AttackSize;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData Armor;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData AttackSpeed;
+
 	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData AttackRate;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData MaxAttackRate;
-
-	UPROPERTY(BlueprintReadOnly, Category = "Health", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData Health;
-
-	UPROPERTY(BlueprintReadOnly, Category = "Health", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData MaxHealth;
+	FGameplayAttributeData MovementSpeed;
 	
-	UPROPERTY(BlueprintReadOnly, Category = "Damage", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData Damage;
-
-	UPROPERTY(BlueprintReadOnly, Category = "Defense", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData Defense;
-	
-	UPROPERTY(BlueprintReadOnly, Category = "Defense", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData MaxDefense;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<class UDataTable> BaseStat;
 };

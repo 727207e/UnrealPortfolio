@@ -4,25 +4,13 @@
 #include "Data/DataAttributeSet/EntityAttributeSet.h"
 #include "GameplayEffectExtension.h"
 
-UEntityAttributeSet::UEntityAttributeSet() :
-	AttackRate(0.0f),
-	MaxAttackRate(0.0f),
-	MaxHealth(0.0f),
-	Damage(0.0f),
-	Defense(0.0f),
-	MaxDefense(0.0f)
+UEntityAttributeSet::UEntityAttributeSet()
 {
-	InitHealth(GetMaxHealth());
 }
 
 void UEntityAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
 {
-	if (Attribute == GetHealthAttribute())
-	{
-		NewValue = FMath::Clamp(NewValue, 0.0f, GetMaxHealth());
-	}
-
-	if (Attribute == GetDamageAttribute())
+	if (Attribute == GetHpAttribute())
 	{
 		NewValue = NewValue < 0.0f ? 0.0f : NewValue;
 	}
@@ -30,15 +18,15 @@ void UEntityAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute
 
 bool UEntityAttributeSet::PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data)
 {
-	if (!Super::PreGameplayEffectExecute(Data))
-	{
-		return false;
-	}
-
-	return true;
+	return Super::PreGameplayEffectExecute(Data);
 }
 
 void UEntityAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
+}
+
+void UEntityAttributeSet::InitAttributeSet()
+{
+	InitFromMetaDataTable(BaseStat);
 }
