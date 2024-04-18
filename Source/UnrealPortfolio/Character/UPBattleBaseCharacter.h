@@ -30,9 +30,7 @@ protected:
 	virtual void PossessedBy(AController* NewController) override;
 	/** When use to Client Character Initialize **/
 	virtual void OnRep_PlayerState() override;
-	/** When use to Enemy Character Initialize **/
-	//virtual void PostInitializeComponents() override;
-	
+
 	/** Game Ability System **/
 	/** Game Ability System **/
 	
