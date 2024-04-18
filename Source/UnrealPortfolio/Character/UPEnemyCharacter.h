@@ -3,8 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Character/UPCharacter.h"
-#include "AbilitySystemInterface.h"
 #include "Character/UPBattleBaseCharacter.h"
 #include "UPEnemyCharacter.generated.h"
 
@@ -20,4 +18,7 @@ public :
 	AUPEnemyCharacter();
 
 	virtual void SetDead() override;
+
+	virtual  void PostInitializeComponents() override;
+	
 };

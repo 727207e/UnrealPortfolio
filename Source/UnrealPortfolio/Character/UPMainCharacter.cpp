@@ -19,7 +19,7 @@
 
 AUPMainCharacter::AUPMainCharacter()
 {
-	ASC = nullptr;
+	//ASC = nullptr;
 
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/DownloadAssets/Primitive_Characters_Pack/Mesh/Primitive_02/Mesh_UE4/Full/SK_Primitive_02_Full.SK_Primitive_02_Full'"));
 	if (CharacterMeshRef.Object)
@@ -51,34 +51,6 @@ AUPMainCharacter::AUPMainCharacter()
 UAbilitySystemComponent* AUPMainCharacter::GetAbilitySystemComponent() const
 {
 	return ASC;
-}
-
-void AUPMainCharacter::PossessedBy(AController* NewController)
-{
-	Super::PossessedBy(NewController);
-
-	AUPPlayerState* GASPS = GetPlayerState<AUPPlayerState>();
-	if (GASPS)
-	{
-		ASC = GASPS->GetAbilitySystemComponent();
-		ASC->InitAbilityActorInfo(GASPS, this);
-
-		for (const auto& StartAbility : StartAbilities)
-		{
-			FGameplayAbilitySpec StartSpec(StartAbility);
-			ASC->GiveAbility(StartSpec);
-		}
-
-		for (const auto& StartInputAbility : StartInputAbilities)
-		{
-			FGameplayAbilitySpec StartSpec(StartInputAbility.Value);
-			StartSpec.InputID = StartInputAbility.Key;
-			ASC->GiveAbility(StartSpec);
-		}
-
-		APlayerController* PlayerController = CastChecked<APlayerController>(NewController);
-		PlayerController->ConsoleCommand(TEXT("showdebug abilitysystem"));
-	}
 }
 
 void AUPMainCharacter::OnAttackStart()

@@ -26,20 +26,36 @@ public :
 
 protected:
 	virtual void PostInitializeComponents() override;
+	virtual void PossessedBy(AController* NewController) override;
 
+private:
+	void SetupASC_EnemyCharacter();
+	void SetupASC_Player();
+	
 public :
 	virtual void SetDead() override;
-	
+	/** GAS **/
 	UPROPERTY()
 	TObjectPtr<class UAbilitySystemComponent> ASC;
 
 //Battle Animation
 protected:
+	TObjectPtr<class UUPComboActionData> ComboActionData;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
 	TObjectPtr<class UAnimMontage> ComboActionMontage;
+	FORCEINLINE virtual UUPComboActionData* GetComboActionData() const { return ComboActionData; }
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
+	TObjectPtr<class  UAnimMontage> DeadMontage;
+protected:
+	UPROPERTY(EditAnywhere, Category = GAS)
+	TArray<TSubclassOf<class UGameplayAbility>> StartAbilities;
+	
+	UPROPERTY(EditAnywhere, Category = GAS)
+	TMap<int32, TSubclassOf<class UGameplayAbility>> StartInputAbilities;
 
-//GAS
+	
+	
+	
 protected:
 	virtual UAnimMontage* GetComboActionMontage() override;
-	virtual UUPComboActionData* GetComboActionData() const override;
 };
