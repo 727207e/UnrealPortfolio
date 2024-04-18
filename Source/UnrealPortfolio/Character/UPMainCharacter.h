@@ -4,25 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
+#include "UPBattleBaseCharacter.h"
 #include "Character/UPCharacter.h"
-#include "Abilities/GameplayAbilityTypes.h"
-#include "Interface/AbilitySystemGetInterface.h"
-#include "Interface/AttackableCharacterInterface.h"
 #include "Interface/CharacterMovementInterface.h"
 #include "Interface/UPPossessCharacterInterface.h"
 #include "Interface/UPUINpcInterface.h"
 #include "UPMainCharacter.generated.h"
 
-/**
- * 
- */
 UCLASS()
-class UNREALPORTFOLIO_API AUPMainCharacter : public AUPCharacter
-	,public IAbilitySystemGetInterface
-	,public IAbilitySystemInterface
+class UNREALPORTFOLIO_API AUPMainCharacter : public AUPBattleBaseCharacter
 	,public IUPPossessCharacterInterface
 	,public ICharacterMovementInterface
-	,public IAttackableCharacterInterface
 {
 	GENERATED_BODY()
 private:
@@ -33,8 +25,6 @@ public :
 	AUPMainCharacter();
 	
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-
-	virtual void PossessedBy(AController* NewController) override;
 	virtual	void OnAttackStart() override;
 	virtual void OnSkillStart(int32 Index) override;
 	virtual void OnSkillRelease(int32 Index) override;
@@ -61,15 +51,6 @@ public:
 	TObjectPtr<class UNiagaraSystem> FXCursor;
 
 protected :
-	UPROPERTY(EditAnywhere, Category = GAS)
-	TObjectPtr<class UAbilitySystemComponent> ASC;
-
-	UPROPERTY(EditAnywhere, Category = GAS)
-	TArray<TSubclassOf<class UGameplayAbility>> StartAbilities;
-	
-	UPROPERTY(EditAnywhere, Category = GAS)
-	TMap<int32, TSubclassOf<class UGameplayAbility>> StartInputAbilities;
-
 	UPROPERTY(EditAnywhere, Category = NPC)
 	TObjectPtr<class UUPNPCDetectorSceneComponent> NPCDetectorSceneComponent;
 private :
@@ -107,26 +88,14 @@ public:
 	/**Set Current Player Control Data **/
 	UFUNCTION(BlueprintCallable)
 	virtual  void SetCharacterControl(ECharacterControlType NewCharacterControlType, FTransform TargetTransform = FTransform()) override;
-
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
-	TObjectPtr<class UAnimMontage> ComboActionMontage;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
-	TObjectPtr<class  UAnimMontage> DeadMontage;
-
-/** Game Ability System**/
+	
+	/** Game Ability System**/
 protected:
 	void GASInputPressed(int32 GameplayAbilityInputId);
 	
 public:
 	/** Movement Character Interface **/
-	TObjectPtr<class UUPComboActionData> ComboActionData;
 	virtual ECharacterControlType GetCharacterControl() override;
 	virtual void SetCharacterMovementMod(EMovementMode MovementMode) override;
-
-	/** Attackabble Interface **/
-	UFUNCTION()
-	virtual	UAnimMontage* GetComboActionMontage() override;
-	FORCEINLINE virtual UUPComboActionData* GetComboActionData() const { return ComboActionData; }
-
+	
 };

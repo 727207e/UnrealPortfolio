@@ -22,24 +22,53 @@ class UNREALPORTFOLIO_API AUPBattleBaseCharacter : public AUPCharacter
 	
 public :
 	AUPBattleBaseCharacter();
-	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-
+	/** Unreal Life **/
+	/** Unreal Life **/
 protected:
-	virtual void PostInitializeComponents() override;
+	
+	/** When use to Host Character Initialize **/
+	virtual void PossessedBy(AController* NewController) override;
+	/** When use to Client Character Initialize **/
+	virtual void OnRep_PlayerState() override;
 
-public :
-	virtual void SetDead() override;
+	/** Game Ability System **/
+	/** Game Ability System **/
 	
 	UPROPERTY()
 	TObjectPtr<class UAbilitySystemComponent> ASC;
 
-//Battle Animation
+	UPROPERTY(EditAnywhere, Category = GAS)
+	TArray<TSubclassOf<class UGameplayAbility>> StartAbilities;
+	
+	UPROPERTY(EditAnywhere, Category = GAS)
+	TMap<int32, TSubclassOf<class UGameplayAbility>> StartInputAbilities;
+
+private:
+	void SetupASCHostPlayer();
+	
+	void SetupASCClientPlayer();
+protected:
+	void SetupASCEnemyCharacter();
+
+	
+public:
+	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	
+	/** Character Animation **/
+	/** Character Animation **/
+	
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
+	TObjectPtr<class UUPComboActionData> ComboActionData;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
 	TObjectPtr<class UAnimMontage> ComboActionMontage;
-
-//GAS
-protected:
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
+	TObjectPtr<class  UAnimMontage> DeadMontage;
+	
+	virtual void SetDead() override;
 	virtual UAnimMontage* GetComboActionMontage() override;
-	virtual UUPComboActionData* GetComboActionData() const override;
+	FORCEINLINE virtual UUPComboActionData* GetComboActionData() const { return ComboActionData; }
 };
