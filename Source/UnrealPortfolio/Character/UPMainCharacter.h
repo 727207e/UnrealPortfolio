@@ -27,13 +27,14 @@ class UNREALPORTFOLIO_API AUPMainCharacter : public AUPCharacter
 	GENERATED_BODY()
 private:
 	const int32 GAS_INPUT_ID_ATTACK_START = 0;
+	const int32 GAS_INPUT_ID_AVOID_START = 10;
+	
 public :
 	AUPMainCharacter();
 	
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	virtual void PossessedBy(AController* NewController) override;
-
 	virtual	void OnAttackStart() override;
 	virtual void OnSkillStart(int32 Index) override;
 	virtual void OnSkillRelease(int32 Index) override;
@@ -46,6 +47,10 @@ public :
 	virtual void OnSetDestinationReleased() override;
 	virtual void OnNPCInteraction() override;
 	virtual void BeginPlay() override;
+public:
+	/* Animation */
+	virtual void SetDead() override;
+	void PlayDeadAnimation();
 	
 	/** Time Threshold to know if it was a short press */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
@@ -106,6 +111,8 @@ public:
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
 	TObjectPtr<class UAnimMontage> ComboActionMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
+	TObjectPtr<class  UAnimMontage> DeadMontage;
 
 /** Game Ability System**/
 protected:

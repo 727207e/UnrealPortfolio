@@ -21,24 +21,23 @@ AUPMainCharacter::AUPMainCharacter()
 {
 	ASC = nullptr;
 
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMeshRef(TEXT("Script/Engine.SkeletalMesh'/Game/DownloadAssets/DemonessBoss/Mesh/SK_DemonessBoss.SK_DemonessBoss'"));
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/DownloadAssets/Primitive_Characters_Pack/Mesh/Primitive_02/Mesh_UE4/Full/SK_Primitive_02_Full.SK_Primitive_02_Full'"));
 	if (CharacterMeshRef.Object)
 	{
 		GetMesh()->SetSkeletalMesh(CharacterMeshRef.Object);
 	}
-
-	static ConstructorHelpers::FClassFinder<UAnimInstance> CharacterAnimRef(TEXT("/Game/Blueprint/Animation/ABP_Boss.ABP_Boss_C"));
-
-	if(CharacterAnimRef.Class)
-	{
-		GetMesh()->SetAnimInstanceClass(CharacterAnimRef.Class);
-	}
 	
 	//** Attackable Setup **//
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> ComboActionMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Blueprint/Animation/AM_Boss_ComboAttack.AM_Boss_ComboAttack'"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> ComboActionMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Blueprint/Animation/MainCharacter/Montages/AM_Attack.AM_Attack'"));
 	if (ComboActionMontageRef.Object)
 	{
 		ComboActionMontage = ComboActionMontageRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> DeadActionMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Blueprint/Animation/MainCharacter/Montages/AM_Dead.AM_Dead'"));
+	if (DeadActionMontageRef.Object)
+	{
+		DeadMontage = DeadActionMontageRef.Object;
 	}
 	
 	static ConstructorHelpers::FObjectFinder<UUPComboActionData> ComboActionDataRef(TEXT("/Script/UnrealPortfolio.UPComboActionData'/Game/Data/BossAttackCombo.BossAttackCombo'"));
@@ -90,6 +89,7 @@ void AUPMainCharacter::OnAttackStart()
 
 void AUPMainCharacter::OnSkillStart(int32 Index)
 {
+	GASInputPressed(Index);
 	UE_LOG(LogTemplateCharacter, Log, TEXT("Start : %d"), Index);
 }
 
@@ -105,6 +105,7 @@ void AUPMainCharacter::OnConsumableStart(int32 Index)
 
 void AUPMainCharacter::OnAvoidStart()
 {
+	GASInputPressed(GAS_INPUT_ID_AVOID_START);
 	UE_LOG(LogTemplateCharacter, Log, TEXT("AvoidStart"));
 }
 
@@ -186,6 +187,21 @@ void AUPMainCharacter::BeginPlay()
 		NPCDetectorSceneComponent->SetParent(GetRootComponent());
 		NPCDetectorSceneComponent->RegisterComponent();
 	}
+}
+
+void AUPMainCharacter::SetDead()
+{
+	Super::SetDead();
+	SetCharacterMovementMod(MOVE_None);
+	PlayDeadAnimation();
+	SetActorEnableCollision(false);
+}
+
+void AUPMainCharacter::PlayDeadAnimation()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	AnimInstance->StopAllMontages(0.0f);
+	AnimInstance->Montage_Play(DeadMontage,1.0f);
 }
 
 void AUPMainCharacter::SetupGasInput(AController* NewController)
