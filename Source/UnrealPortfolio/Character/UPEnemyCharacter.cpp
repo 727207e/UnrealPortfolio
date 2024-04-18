@@ -19,6 +19,6 @@ void AUPEnemyCharacter::PostInitializeComponents()
 	Super::PostInitializeComponents();
 	if(ASC)
 	{
-		SetupASC_EnemyCharacter();
+		SetupASCEnemyCharacter();
 	}
 }

@@ -21,7 +21,7 @@ void AUPBattleBaseCharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 	if(NewController)
 	{
-		SetupASC_HostPlayer();
+		SetupASCHostPlayer();
 		APlayerController* PlayerController = CastChecked<APlayerController>(NewController);
 		PlayerController->ConsoleCommand(TEXT("showdebug abilitysystem"));
 	}
@@ -30,11 +30,11 @@ void AUPBattleBaseCharacter::PossessedBy(AController* NewController)
 void AUPBattleBaseCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
-	SetupASC_ClientPlayer();
+	SetupASCClientPlayer();
 }
 
 
-void AUPBattleBaseCharacter::SetupASC_HostPlayer()
+void AUPBattleBaseCharacter::SetupASCHostPlayer()
 {
 	AUPPlayerState* PS = GetPlayerState<AUPPlayerState>();
 	if (PS)
@@ -59,7 +59,7 @@ void AUPBattleBaseCharacter::SetupASC_HostPlayer()
 	}
 }
 
-void AUPBattleBaseCharacter::SetupASC_ClientPlayer()
+void AUPBattleBaseCharacter::SetupASCClientPlayer()
 {
 	AUPPlayerState* PS = GetPlayerState<AUPPlayerState>();
 	if (PS)
@@ -69,7 +69,7 @@ void AUPBattleBaseCharacter::SetupASC_ClientPlayer()
 	}
 }
 
-void AUPBattleBaseCharacter::SetupASC_EnemyCharacter()
+void AUPBattleBaseCharacter::SetupASCEnemyCharacter()
 {
 	ASC->InitAbilityActorInfo(this, this);
 	ASC->SetIsReplicated(true);

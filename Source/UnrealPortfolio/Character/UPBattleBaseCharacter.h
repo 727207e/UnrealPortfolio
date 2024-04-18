@@ -44,11 +44,11 @@ protected:
 	TMap<int32, TSubclassOf<class UGameplayAbility>> StartInputAbilities;
 
 private:
-	void SetupASC_HostPlayer();
+	void SetupASCHostPlayer();
 	
-	void SetupASC_ClientPlayer();
+	void SetupASCClientPlayer();
 protected:
-	void SetupASC_EnemyCharacter();
+	void SetupASCEnemyCharacter();
 
 	
 public:
