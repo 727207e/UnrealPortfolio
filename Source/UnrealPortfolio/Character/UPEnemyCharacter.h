@@ -3,8 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Character/UPCharacter.h"
-#include "AbilitySystemInterface.h"
 #include "Character/UPBattleBaseCharacter.h"
 #include "UPEnemyCharacter.generated.h"
 
@@ -26,4 +24,7 @@ public :
 
 protected :
 	void MeshSetSimulatePhysics(class USkeletalMeshComponent* targetMesh, class UCapsuleComponent* targetCapsule = nullptr);
+
+	virtual  void PostInitializeComponents() override;
+	
 };
