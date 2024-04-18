@@ -329,8 +329,3 @@ ECharacterControlType AUPMainCharacter::GetCharacterControl()
 {
 	return CurrentCharacterControlType;
 }
-
-UAnimMontage* AUPMainCharacter::GetComboActionMontage()
-{
-	return ComboActionMontage;
-}

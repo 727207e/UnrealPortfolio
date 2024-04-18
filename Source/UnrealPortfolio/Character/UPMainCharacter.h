@@ -6,17 +6,11 @@
 #include "AbilitySystemInterface.h"
 #include "UPBattleBaseCharacter.h"
 #include "Character/UPCharacter.h"
-#include "Abilities/GameplayAbilityTypes.h"
-#include "Interface/AbilitySystemGetInterface.h"
-#include "Interface/AttackableCharacterInterface.h"
 #include "Interface/CharacterMovementInterface.h"
 #include "Interface/UPPossessCharacterInterface.h"
 #include "Interface/UPUINpcInterface.h"
 #include "UPMainCharacter.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class UNREALPORTFOLIO_API AUPMainCharacter : public AUPBattleBaseCharacter
 	,public IUPPossessCharacterInterface
@@ -95,8 +89,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual  void SetCharacterControl(ECharacterControlType NewCharacterControlType, FTransform TargetTransform = FTransform()) override;
 	
-
-/** Game Ability System**/
+	/** Game Ability System**/
 protected:
 	void GASInputPressed(int32 GameplayAbilityInputId);
 	
@@ -104,9 +97,5 @@ public:
 	/** Movement Character Interface **/
 	virtual ECharacterControlType GetCharacterControl() override;
 	virtual void SetCharacterMovementMod(EMovementMode MovementMode) override;
-
-	/** Attackabble Interface **/
-	UFUNCTION()
-	virtual	UAnimMontage* GetComboActionMontage() override;
 	
 };
