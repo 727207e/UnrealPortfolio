@@ -19,7 +19,6 @@ void UGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 
 	/** Movement Setup **/
 	MovementCharacter = CastChecked<ICharacterMovementInterface>(ActorInfo->AvatarActor.Get());
-	MovementCharacter->SetCharacterMovementMod(MOVE_None);
 
 	/** PlayAttackTask Ability **/
 	UAbilityTask_PlayMontageAndWait* PlayAttackTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
@@ -74,7 +73,6 @@ void UGA_Attack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGame
 	const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 		Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-    	MovementCharacter->SetCharacterMovementMod(MOVE_Walking);
     	CurrentComboData = nullptr;
     	CurrentCombo = 0;
     	HasNextComboInput = false;
