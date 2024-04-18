@@ -20,4 +20,7 @@ public :
 	AUPEnemyCharacter();
 
 	virtual void SetDead() override;
+
+protected :
+	void MeshSetSimulatePhysics(class USkeletalMeshComponent* targetMesh, class UCapsuleComponent* targetCapsule = nullptr);
 };
