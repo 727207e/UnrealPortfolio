@@ -31,9 +31,17 @@ void UGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 
 FName UGA_Attack::GetNextSection()
 {
-	CurrentCombo = FMath::Clamp(CurrentCombo + 1, 1, CurrentComboData->MaxComboCount);
-	FName NextSection = *FString::Printf(TEXT("%s%d"), *CurrentComboData->MontageSectionNamePrefix, CurrentCombo);
-	return NextSection;
+	//Data Code Need Change ****
+	if (CurrentComboData)
+	{
+		CurrentCombo = FMath::Clamp(CurrentCombo + 1, 1, CurrentComboData->MaxComboCount);
+		FName NextSection = *FString::Printf(TEXT("%s%d"), *CurrentComboData->MontageSectionNamePrefix, CurrentCombo);
+		return NextSection;
+	}
+	else
+	{
+		return FName();
+	}
 }
 
 void UGA_Attack::OnCompleteCallback()
