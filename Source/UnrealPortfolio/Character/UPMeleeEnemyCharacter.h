@@ -19,8 +19,6 @@ public :
 	AUPMeleeEnemyCharacter();
 
 	virtual void SetDead() override;
-
-
 	virtual void BeginPlay() override;
 
 protected :

@@ -6,13 +6,17 @@
 #include "Character/UPCharacter.h"
 #include "AbilitySystemInterface.h"
 #include "Interface/AbilitySystemGetInterface.h"
+#include "Interface/AttackableCharacterInterface.h"
 #include "UPBattleBaseCharacter.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class UNREALPORTFOLIO_API AUPBattleBaseCharacter : public AUPCharacter, public IAbilitySystemInterface, public IAbilitySystemGetInterface
+class UNREALPORTFOLIO_API AUPBattleBaseCharacter : public AUPCharacter
+	, public IAbilitySystemInterface
+	, public IAbilitySystemGetInterface
+	, public IAttackableCharacterInterface
 {
 	GENERATED_BODY()
 	
@@ -36,5 +40,6 @@ protected:
 
 //GAS
 protected:
-
+	virtual UAnimMontage* GetComboActionMontage() override;
+	virtual UUPComboActionData* GetComboActionData() const override;
 };

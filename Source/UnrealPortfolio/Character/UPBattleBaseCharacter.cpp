@@ -13,6 +13,21 @@ void AUPBattleBaseCharacter::SetDead()
 {
 }
 
+UAnimMontage* AUPBattleBaseCharacter::GetComboActionMontage()
+{
+	if (ComboActionMontage)
+	{
+		return ComboActionMontage;
+	}
+
+	return nullptr;
+}
+
+UUPComboActionData* AUPBattleBaseCharacter::GetComboActionData() const
+{
+	return nullptr;
+}
+
 UAbilitySystemComponent* AUPBattleBaseCharacter::GetAbilitySystemComponent() const
 {
 	return ASC;
