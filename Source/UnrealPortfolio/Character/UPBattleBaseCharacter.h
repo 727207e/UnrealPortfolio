@@ -25,13 +25,17 @@ public :
 	/** Unreal Life **/
 	/** Unreal Life **/
 protected:
-	virtual void PostInitializeComponents() override;
+	
+	/** When use to Host Character Initialize **/
 	virtual void PossessedBy(AController* NewController) override;
-
+	/** When use to Client Character Initialize **/
+	virtual void OnRep_PlayerState() override;
+	/** When use to Enemy Character Initialize **/
+	//virtual void PostInitializeComponents() override;
 	
 	/** Game Ability System **/
 	/** Game Ability System **/
-
+	
 	UPROPERTY()
 	TObjectPtr<class UAbilitySystemComponent> ASC;
 
@@ -42,8 +46,12 @@ protected:
 	TMap<int32, TSubclassOf<class UGameplayAbility>> StartInputAbilities;
 
 private:
+	void SetupASC_HostPlayer();
+	
+	void SetupASC_ClientPlayer();
+protected:
 	void SetupASC_EnemyCharacter();
-	void SetupASC_Player();
+
 	
 public:
 	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;

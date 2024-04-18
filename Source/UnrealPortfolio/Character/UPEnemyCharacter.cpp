@@ -6,7 +6,7 @@
 
 AUPEnemyCharacter::AUPEnemyCharacter()
 {
-	
+	ASC = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("ASC"));
 }
 
 void AUPEnemyCharacter::SetDead()
@@ -17,5 +17,8 @@ void AUPEnemyCharacter::SetDead()
 void AUPEnemyCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-	
+	if(ASC)
+	{
+		SetupASC_EnemyCharacter();
+	}
 }

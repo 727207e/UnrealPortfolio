@@ -16,35 +16,31 @@ void AUPBattleBaseCharacter::SetDead()
 }
 
 
-void AUPBattleBaseCharacter::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
-	if(ASC)
-	{
-		SetupASC_EnemyCharacter();
-	}
-	
-}
-
 void AUPBattleBaseCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 	if(NewController)
 	{
-		SetupASC_Player();
+		SetupASC_HostPlayer();
 		APlayerController* PlayerController = CastChecked<APlayerController>(NewController);
 		PlayerController->ConsoleCommand(TEXT("showdebug abilitysystem"));
 	}
 }
 
-
-void AUPBattleBaseCharacter::SetupASC_Player()
+void AUPBattleBaseCharacter::OnRep_PlayerState()
 {
-	AUPPlayerState* GASPS = GetPlayerState<AUPPlayerState>();
-	if (GASPS)
+	Super::OnRep_PlayerState();
+	SetupASC_ClientPlayer();
+}
+
+
+void AUPBattleBaseCharacter::SetupASC_HostPlayer()
+{
+	AUPPlayerState* PS = GetPlayerState<AUPPlayerState>();
+	if (PS)
 	{
-		ASC = GASPS->GetAbilitySystemComponent();
-		ASC->InitAbilityActorInfo(GASPS, this);
+		ASC = PS->GetAbilitySystemComponent();
+		ASC->InitAbilityActorInfo(PS, this);
 
 		for (const auto& StartAbility : StartAbilities)
 		{
@@ -63,10 +59,21 @@ void AUPBattleBaseCharacter::SetupASC_Player()
 	}
 }
 
+void AUPBattleBaseCharacter::SetupASC_ClientPlayer()
+{
+	AUPPlayerState* PS = GetPlayerState<AUPPlayerState>();
+	if (PS)
+	{
+		ASC = PS->GetAbilitySystemComponent();
+		ASC->InitAbilityActorInfo(PS, this);
+	}
+}
+
 void AUPBattleBaseCharacter::SetupASC_EnemyCharacter()
 {
-	ASC = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("ASC"));
 	ASC->InitAbilityActorInfo(this, this);
+	ASC->SetIsReplicated(true);
+	ASC->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 }
 
 
@@ -79,6 +86,7 @@ UAnimMontage* AUPBattleBaseCharacter::GetComboActionMontage()
 
 	return nullptr;
 }
+
 
 UAbilitySystemComponent* AUPBattleBaseCharacter::GetAbilitySystemComponent() const
 {
