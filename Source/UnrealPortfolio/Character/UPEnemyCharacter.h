@@ -19,6 +19,7 @@ public :
 
 	virtual void SetDead() override;
 	virtual void PreInitializeComponents() override;
+	virtual void PostInitializeComponents() override;
 
 protected :
 	void MeshSetSimulatePhysics(class USkeletalMeshComponent* targetMesh, class UCapsuleComponent* targetCapsule = nullptr);

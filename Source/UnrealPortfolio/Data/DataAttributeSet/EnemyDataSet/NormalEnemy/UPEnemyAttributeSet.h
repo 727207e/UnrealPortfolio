@@ -14,6 +14,8 @@ class UNREALPORTFOLIO_API UUPEnemyAttributeSet : public UEntityAttributeSet
 {
 	GENERATED_BODY()
 
+	typedef UEntityAttributeSet Super;
+
 public:
 	UUPEnemyAttributeSet();
 
@@ -35,4 +37,7 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData TargetSearchingRange;
+
+protected:
+	virtual void SettingValue(FUPBaseTable table) override;
 };

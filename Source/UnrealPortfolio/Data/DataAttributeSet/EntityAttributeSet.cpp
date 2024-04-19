@@ -2,6 +2,8 @@
 
 
 #include "Data/DataAttributeSet/EntityAttributeSet.h"
+#include "Engine/DataTable.h"
+#include "Data/DataAsset/UPBaseTable.h"
 #include "GameplayEffectExtension.h"
 
 UEntityAttributeSet::UEntityAttributeSet()
@@ -28,5 +30,35 @@ void UEntityAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCall
 
 void UEntityAttributeSet::InitAttributeSet()
 {
-	InitFromMetaDataTable(BaseStat);
+	SettingValue(GetTableData());
+}
+
+void UEntityAttributeSet::SettingValue(FUPBaseTable table)
+{
+	SetHp(table.MaxHp);
+	SetMaxHp(table.MaxHp);
+	SetAttack(table.Attack);
+	SetAttackRange(table.AttackRange);
+	SetAttackSize(table.AttackSize);
+	SetArmor(table.Armor);
+	SetAttackSpeed(table.AttackSpeed);
+	SetAttackRate(table.AttackRate);
+	SetMovementSpeed(table.MovementSpeed);
+}
+
+FUPBaseTable UEntityAttributeSet::GetTableData()
+{
+	check(BaseStat);
+	TArray<FName> RowNames = BaseStat->GetRowNames();
+	FUPBaseTable table;
+	for (int i = 0; i < RowNames.Num(); ++i)
+	{
+		if (StatName.Equals(RowNames[i].ToString()))
+		{
+			table = *(BaseStat->FindRow<FUPBaseTable>(RowNames[i], RowNames[i].ToString()));
+			break;
+		}
+	}
+
+	return table;
 }

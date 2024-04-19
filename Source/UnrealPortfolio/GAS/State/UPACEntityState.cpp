@@ -27,7 +27,14 @@ void UUPACEntityState::InitEntityState(AActor* Owner)
 		if (AttributeSet != nullptr)
 		{
 			AttributeSet->Rename(TEXT("Attribute"), Owner);
-			AttributeSet->InitAttributeSet();
 		}
+	}
+}
+
+void UUPACEntityState::PostInitialize()
+{
+	if (AttributeSetType)
+	{
+		AttributeSet->InitAttributeSet();
 	}
 }

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AttributeSet.h"
 #include "AbilitySystemComponent.h"
+#include "Data/DataAsset/UPBaseTable.h"
 #include "EntityAttributeSet.generated.h"
 
 #define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
@@ -40,7 +41,7 @@ public:
 
 	virtual void InitAttributeSet();
 
-protected:
+public:
 	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData Hp;
 	
@@ -70,4 +71,11 @@ protected:
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<class UDataTable> BaseStat;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FString StatName;
+
+protected:
+	virtual void SettingValue(FUPBaseTable table);
+	virtual FUPBaseTable GetTableData();
 };

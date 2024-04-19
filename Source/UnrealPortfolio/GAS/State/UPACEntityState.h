@@ -19,6 +19,7 @@ public:
 	UUPACEntityState();
 
 	virtual void InitEntityState(AActor* Owner);
+	virtual void PostInitialize();
 public :
 	UPROPERTY(EditAnywhere, Category = GAS)
 	TObjectPtr<class UAbilitySystemComponent> ASC;

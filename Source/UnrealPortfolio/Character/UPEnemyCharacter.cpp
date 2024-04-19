@@ -34,6 +34,30 @@ void AUPEnemyCharacter::PreInitializeComponents()
 	}
 }
 
+void AUPEnemyCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	if (EnemyEntityState)
+	{
+		EnemyEntityState->PostInitialize();
+
+		///////////TEST CODE////////////////
+		UE_LOG(LogTemp, Log, TEXT("After Start"));
+		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(this);
+		UEntityAttributeSet* TargetEntityAttribute = const_cast<UEntityAttributeSet*>(TargetASC->GetSet<UEntityAttributeSet>());
+
+		if (TargetEntityAttribute)
+		{
+			UE_LOG(LogTemp, Log, TEXT("MinusOn, %f"), TargetASC->GetSet<UEntityAttributeSet>()->GetHp());
+			TargetEntityAttribute->SetHp(TargetEntityAttribute->GetHp() - 2);
+
+			UE_LOG(LogTemp, Log, TEXT("MinusOn, %f"), TargetASC->GetSet<UEntityAttributeSet>()->GetHp());
+		}
+		///////////TEST CODE////////////////
+	}
+}
+
 void AUPEnemyCharacter::MeshSetSimulatePhysics(USkeletalMeshComponent* targetMesh, UCapsuleComponent* targetCapsule)
 {
 	targetMesh->SetCollisionProfileName(TEXT("PhysicsActor"));
@@ -62,15 +86,4 @@ void AUPEnemyCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 
 	ASC->AddSpawnedAttribute(EnemyEntityState->AttributeSet);
 	ASC->InitAbilityActorInfo(InOwnerActor, this);
-
-	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(this);
-	UEntityAttributeSet* TargetEntityAttribute = const_cast<UEntityAttributeSet*>(TargetASC->GetSet<UEntityAttributeSet>());
-
-	if (TargetEntityAttribute)
-	{
-		TargetEntityAttribute->SetHp(TargetEntityAttribute->GetHp() - 2);
-
-		UE_LOG(LogTemp, Log, TEXT("MinusOn, %f"), TargetASC->GetSet<UEntityAttributeSet>()->GetHp());
-	}
-
 }
