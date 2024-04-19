@@ -18,13 +18,15 @@ public :
 	AUPEnemyCharacter();
 
 	virtual void SetDead() override;
-	
-	UPROPERTY(BlueprintReadWrite, Category = Entity)
-	TObjectPtr<class UUPACEntityState> EnemyEntity;
+	virtual void PreInitializeComponents() override;
 
 protected :
 	void MeshSetSimulatePhysics(class USkeletalMeshComponent* targetMesh, class UCapsuleComponent* targetCapsule = nullptr);
+	virtual void SetupASCHostPlayer(AActor* InOwnerActor) override;
 
-	virtual  void PostInitializeComponents() override;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Entity)
+	TSubclassOf<class UUPACEntityState> EnemyEntityStateType;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Entity)
+	TObjectPtr<class UUPACEntityState> EnemyEntityState;
+
 };

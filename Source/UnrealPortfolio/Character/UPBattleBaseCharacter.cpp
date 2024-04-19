@@ -19,11 +19,30 @@ void AUPBattleBaseCharacter::SetDead()
 void AUPBattleBaseCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
-	if(NewController)
+
+	APlayerController* PlayerController = Cast<APlayerController>(NewController);
+	if (PlayerController)
 	{
-		SetupASCHostPlayer();
-		APlayerController* PlayerController = CastChecked<APlayerController>(NewController);
-		PlayerController->ConsoleCommand(TEXT("showdebug abilitysystem"));
+		AUPPlayerState* PS = GetPlayerState<AUPPlayerState>();
+		if (PS)
+		{
+			ASC = PS->GetAbilitySystemComponent();
+			SetupASCHostPlayer(PS);
+			PlayerController->ConsoleCommand(TEXT("showdebug abilitysystem"));
+		}
+	}
+
+	else // AI Controller
+	{
+		if(HasAuthority())
+		{
+			SetupASCHostPlayer(this);
+		}
+
+		else
+		{
+			ServerASCSyncRequest();
+		}
 	}
 }
 
@@ -33,29 +52,28 @@ void AUPBattleBaseCharacter::OnRep_PlayerState()
 	SetupASCClientPlayer();
 }
 
-
-void AUPBattleBaseCharacter::SetupASCHostPlayer()
+void AUPBattleBaseCharacter::ServerASCSyncRequest_Implementation()
 {
-	AUPPlayerState* PS = GetPlayerState<AUPPlayerState>();
-	if (PS)
+	//Need Refactoring 
+	SetupASCHostPlayer(this);
+}
+
+
+void AUPBattleBaseCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
+{
+	ASC->InitAbilityActorInfo(InOwnerActor, this);
+
+	for (const auto& StartAbility : StartAbilities)
 	{
-		ASC = PS->GetAbilitySystemComponent();
-		ASC->InitAbilityActorInfo(PS, this);
+		FGameplayAbilitySpec StartSpec(StartAbility);
+		ASC->GiveAbility(StartSpec);
+	}
 
-		for (const auto& StartAbility : StartAbilities)
-		{
-			FGameplayAbilitySpec StartSpec(StartAbility);
-			ASC->GiveAbility(StartSpec);
-		}
-
-		for (const auto& StartInputAbility : StartInputAbilities)
-		{
-			FGameplayAbilitySpec StartSpec(StartInputAbility.Value);
-			StartSpec.InputID = StartInputAbility.Key;
-			ASC->GiveAbility(StartSpec);
-		}
-
-
+	for (const auto& StartInputAbility : StartInputAbilities)
+	{
+		FGameplayAbilitySpec StartSpec(StartInputAbility.Value);
+		StartSpec.InputID = StartInputAbility.Key;
+		ASC->GiveAbility(StartSpec);
 	}
 }
 
@@ -68,14 +86,6 @@ void AUPBattleBaseCharacter::SetupASCClientPlayer()
 		ASC->InitAbilityActorInfo(PS, this);
 	}
 }
-
-void AUPBattleBaseCharacter::SetupASCEnemyCharacter()
-{
-	ASC->InitAbilityActorInfo(this, this);
-	ASC->SetIsReplicated(true);
-	ASC->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
-}
-
 
 UAnimMontage* AUPBattleBaseCharacter::GetComboActionMontage()
 {

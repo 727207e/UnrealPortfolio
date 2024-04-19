@@ -18,15 +18,13 @@ public:
 	// Sets default values for this component's properties
 	UUPACEntityState();
 
-	virtual void BeginPlay() override;
-
+	virtual void InitEntityState(AActor* Owner);
 public :
 	UPROPERTY(EditAnywhere, Category = GAS)
 	TObjectPtr<class UAbilitySystemComponent> ASC;
-
-	///Test Method . Plz Delete This!
-	void TestMethod();
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<class UEntityAttributeSet> AttributeSet;
+	TSubclassOf<class UEntityAttributeSet> AttributeSetType;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<class UEntityAttributeSet> AttributeSet;
 };

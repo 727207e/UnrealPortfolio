@@ -9,16 +9,25 @@
 // Sets default values for this component's properties
 UUPACEntityState::UUPACEntityState()
 {
-	ASC = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("ASC"));
+
 }
 
-void UUPACEntityState::BeginPlay()
+void UUPACEntityState::InitEntityState(AActor* Owner)
 {
-	AttributeSet->GetDefaultObject<UEntityAttributeSet>()->InitAttributeSet();
-}
+	ASC = NewObject<UAbilitySystemComponent>(Owner, UAbilitySystemComponent::StaticClass());
+	
+	Owner->AddOwnedComponent(ASC);
+	ASC->RegisterComponent();
+	ASC->SetIsReplicated(true);
+	ASC->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 
-//Delete This!
-void UUPACEntityState::TestMethod()
-{
-	//AttributeSet->
+	if (AttributeSetType)
+	{
+		AttributeSet = NewObject<UEntityAttributeSet>(Owner, AttributeSetType);
+		if (AttributeSet != nullptr)
+		{
+			AttributeSet->Rename(TEXT("Attribute"), Owner);
+			AttributeSet->InitAttributeSet();
+		}
+	}
 }

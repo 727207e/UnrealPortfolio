@@ -2,6 +2,7 @@
 
 
 #include "Character/UPMeleeEnemyCharacter.h"
+#include "GAS/State/UPACEntityState.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 
@@ -43,13 +44,9 @@ AUPMeleeEnemyCharacter::AUPMeleeEnemyCharacter()
 	{
 		ComboActionMontage = ComboMontageRef.Object;
 	}
-
-	static ConstructorHelpers::FObjectFinder<UUPACEntityState> EnemyEntityeRef(TEXT("/Script/Engine.Blueprint'/Game/Blueprint/GA/State/BPAC_EnemyMelee.BPAC_EnemyMelee'"));
-	if (EnemyEntityeRef.Object)
-	{
-		EnemyEntity = EnemyEntityeRef.Object;
-	}
 }
+
+
 
 void AUPMeleeEnemyCharacter::BeginPlay()
 {
