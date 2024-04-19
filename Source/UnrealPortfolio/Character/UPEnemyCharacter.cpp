@@ -38,9 +38,10 @@ void AUPEnemyCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	if (EnemyEntityState)
+	if (EnemyEntityState && HasAuthority())
 	{
 		EnemyEntityState->PostInitialize();
+
 
 		///////////TEST CODE////////////////
 		UE_LOG(LogTemp, Log, TEXT("After Start"));

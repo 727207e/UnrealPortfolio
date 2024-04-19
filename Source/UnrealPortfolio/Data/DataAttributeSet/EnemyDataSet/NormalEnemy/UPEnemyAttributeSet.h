@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Data/DataAttributeSet/EntityAttributeSet.h"
+#include "AbilitySystemComponent.h"
 #include "UPEnemyAttributeSet.generated.h"
 
 /**
