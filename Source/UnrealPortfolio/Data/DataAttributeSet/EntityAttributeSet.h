@@ -78,4 +78,5 @@ public:
 protected:
 	virtual void SettingValue(FUPBaseTable table);
 	virtual FUPBaseTable GetTableData();
+
 };

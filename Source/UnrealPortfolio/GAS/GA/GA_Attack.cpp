@@ -17,16 +17,17 @@ void UGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 		CurrentComboData = AttackableCharacter->GetComboActionData();
 	}
 
-	/** Movement Setup **/
-	MovementCharacter = CastChecked<ICharacterMovementInterface>(ActorInfo->AvatarActor.Get());
-
 	/** PlayAttackTask Ability **/
 	UAbilityTask_PlayMontageAndWait* PlayAttackTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 		this,TEXT("PlayAttack"), AttackableCharacter->GetComboActionMontage(),1.0f,GetNextSection());
 	PlayAttackTask->OnCompleted.AddDynamic(this,&UGA_Attack::OnCompleteCallback);
 	PlayAttackTask->OnInterrupted.AddDynamic(this,&UGA_Attack::OnInterruptedCallback);
 	PlayAttackTask->ReadyForActivation();
-	StartComboTimer();
+
+	if (CurrentComboData)
+	{
+		StartComboTimer();
+	}
 }
 
 FName UGA_Attack::GetNextSection()

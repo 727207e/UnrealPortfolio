@@ -97,6 +97,23 @@ UAnimMontage* AUPBattleBaseCharacter::GetComboActionMontage()
 	return nullptr;
 }
 
+void AUPBattleBaseCharacter::CallGAS(int32 GameplayAbilityInputId)
+{
+	FGameplayAbilitySpec* Spec = ASC->FindAbilitySpecFromInputID(GameplayAbilityInputId);
+	if (Spec)
+	{
+		Spec->InputPressed = true;
+		if (Spec->IsActive())
+		{
+			ASC->AbilitySpecInputPressed(*Spec);
+		}
+		else
+		{
+			ASC->TryActivateAbility(Spec->Handle);
+		}
+	}
+}
+
 
 UAbilitySystemComponent* AUPBattleBaseCharacter::GetAbilitySystemComponent() const
 {

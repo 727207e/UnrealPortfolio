@@ -40,21 +40,24 @@ void AUPEnemyCharacter::PostInitializeComponents()
 
 	if (EnemyEntityState && HasAuthority())
 	{
-		EnemyEntityState->PostInitialize();
-
-
 		///////////TEST CODE////////////////
 		UE_LOG(LogTemp, Log, TEXT("After Start"));
 		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(this);
-		UEntityAttributeSet* TargetEntityAttribute = const_cast<UEntityAttributeSet*>(TargetASC->GetSet<UEntityAttributeSet>());
-
-		if (TargetEntityAttribute)
+		if (TargetASC)
 		{
-			UE_LOG(LogTemp, Log, TEXT("MinusOn, %f"), TargetASC->GetSet<UEntityAttributeSet>()->GetHp());
-			TargetEntityAttribute->SetHp(TargetEntityAttribute->GetHp() - 2);
+			EnemyEntityState->PostInitialize();
 
-			UE_LOG(LogTemp, Log, TEXT("MinusOn, %f"), TargetASC->GetSet<UEntityAttributeSet>()->GetHp());
+			UEntityAttributeSet* TargetEntityAttribute = const_cast<UEntityAttributeSet*>(TargetASC->GetSet<UEntityAttributeSet>());
+
+			if (TargetEntityAttribute)
+			{
+				UE_LOG(LogTemp, Log, TEXT("MinusOn, %f"), TargetASC->GetSet<UEntityAttributeSet>()->GetHp());
+				TargetEntityAttribute->SetHp(TargetEntityAttribute->GetHp() - 2);
+
+				UE_LOG(LogTemp, Log, TEXT("MinusOn, %f"), TargetASC->GetSet<UEntityAttributeSet>()->GetHp());
+			}
 		}
+
 		///////////TEST CODE////////////////
 	}
 }

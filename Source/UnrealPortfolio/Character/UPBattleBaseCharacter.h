@@ -53,7 +53,6 @@ protected:
 public:
 	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
-	
 	/** Character Animation **/
 	/** Character Animation **/
 	
@@ -70,4 +69,6 @@ protected:
 	virtual void SetDead() override;
 	virtual UAnimMontage* GetComboActionMontage() override;
 	FORCEINLINE virtual UUPComboActionData* GetComboActionData() const { return ComboActionData; }
+
+	virtual void CallGAS(int32 GameplayAbilityInputId);
 };

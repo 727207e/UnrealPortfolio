@@ -56,12 +56,12 @@ UAbilitySystemComponent* AUPMainCharacter::GetAbilitySystemComponent() const
 void AUPMainCharacter::OnAttackStart()
 {
 	if(!IsValid(ASC))	{	return; }
-	GASInputPressed(GAS_INPUT_ID_ATTACK_START);
+	CallGAS(GAS_INPUT_ID_ATTACK_START);
 }
 
 void AUPMainCharacter::OnSkillStart(int32 Index)
 {
-	GASInputPressed(Index);
+	CallGAS(Index);
 	UE_LOG(LogTemplateCharacter, Log, TEXT("Start : %d"), Index);
 }
 
@@ -77,7 +77,7 @@ void AUPMainCharacter::OnConsumableStart(int32 Index)
 
 void AUPMainCharacter::OnAvoidStart()
 {
-	GASInputPressed(GAS_INPUT_ID_AVOID_START);
+	CallGAS(GAS_INPUT_ID_AVOID_START);
 	UE_LOG(LogTemplateCharacter, Log, TEXT("AvoidStart"));
 }
 
@@ -290,24 +290,6 @@ void AUPMainCharacter::SetCameraComponent(ECharacterControlType CharacterControl
 	}
 
 	CameraComponent->SetRelativeTransform(CameraTransform);
-}
-
-void AUPMainCharacter::GASInputPressed(int32 GameplayAbilityInputId)
-{ 
-	FGameplayAbilitySpec* Spec = ASC->FindAbilitySpecFromInputID(GameplayAbilityInputId);
-	if(Spec)
-	{
-		Spec->InputPressed = true;
-		if(Spec->IsActive())
-		{
-			ASC->AbilitySpecInputPressed(*Spec);
-		}
-		else
-		{
-			ASC->TryActivateAbility(Spec->Handle);
-		}
-	}
-	
 }
 
 /** Interface **/
