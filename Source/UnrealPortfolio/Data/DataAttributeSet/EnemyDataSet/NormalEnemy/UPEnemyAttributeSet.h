@@ -14,9 +14,7 @@ UCLASS()
 class UNREALPORTFOLIO_API UUPEnemyAttributeSet : public UEntityAttributeSet
 {
 	GENERATED_BODY()
-
-	typedef UEntityAttributeSet Super;
-
+	
 public:
 	UUPEnemyAttributeSet();
 
