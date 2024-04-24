@@ -89,10 +89,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual  void SetCharacterControl(ECharacterControlType NewCharacterControlType, FTransform TargetTransform = FTransform()) override;
 	
-	/** Game Ability System**/
-protected:
-	void GASInputPressed(int32 GameplayAbilityInputId);
-	
 public:
 	/** Movement Character Interface **/
 	virtual ECharacterControlType GetCharacterControl() override;

@@ -2,6 +2,8 @@
 
 
 #include "Character/UPMeleeEnemyCharacter.h"
+#include "GAS/State/UPACEntityState.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 
 AUPMeleeEnemyCharacter::AUPMeleeEnemyCharacter()
@@ -28,7 +30,7 @@ AUPMeleeEnemyCharacter::AUPMeleeEnemyCharacter()
 		TrousersMesh->SetSkeletalMesh(TrousersMeshRef.Object);
 	}
 
-	static ConstructorHelpers::FClassFinder<UAnimInstance> CharacterAnimRef(TEXT("/Game/Blueprint/Animation/Enemy/ABP_MeleeEnemy.ABP_MeleeEnemy_C"));
+	static ConstructorHelpers::FClassFinder<UAnimInstance> CharacterAnimRef(TEXT("/Game/Blueprint/Animation/Enemy/ABP_NormalEnemy.ABP_NormalEnemy_C"));
 	if (CharacterAnimRef.Class)
 	{
 		GetMesh()->SetAnimInstanceClass(CharacterAnimRef.Class);
@@ -37,12 +39,14 @@ AUPMeleeEnemyCharacter::AUPMeleeEnemyCharacter()
 	}
 	
 	
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> ComboMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Blueprint/Animation/Enemy/AM_MeleeEnemyAttack.AM_MeleeEnemyAttack'"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> ComboMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Blueprint/Animation/Enemy/Melee/AM_MeleeEnemyAttack.AM_MeleeEnemyAttack'"));
 	if (ComboMontageRef.Object)
 	{
 		ComboActionMontage = ComboMontageRef.Object;
 	}
 }
+
+
 
 void AUPMeleeEnemyCharacter::BeginPlay()
 {
@@ -57,16 +61,8 @@ void AUPMeleeEnemyCharacter::SetDead()
 {
 	if (GetMesh() && BeltMesh && TrousersMesh)
 	{
-		//// 새로운 위치로 캐릭터를 이동시킵니다.
-		//SetActorLocation(GetCurLocation() + FVector(0,0,500));
-
-		GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		//BeltMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		//TrousersMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-
-		GetMesh()->SetSimulatePhysics(true);
-		//BeltMesh->SetSimulatePhysics(true);
-		//TrousersMesh->SetSimulatePhysics(true);
-		//GetMesh()->SetAllBodiesSimulatePhysics(true);
+		MeshSetSimulatePhysics(GetMesh(), GetCapsuleComponent());
+		MeshSetSimulatePhysics(BeltMesh);
+		MeshSetSimulatePhysics(TrousersMesh);
 	}
 }

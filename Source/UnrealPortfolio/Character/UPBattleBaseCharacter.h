@@ -31,6 +31,9 @@ protected:
 	/** When use to Client Character Initialize **/
 	virtual void OnRep_PlayerState() override;
 
+	UFUNCTION(Server, Unreliable)
+	void ServerASCSyncRequest();
+
 	/** Game Ability System **/
 	/** Game Ability System **/
 	
@@ -43,18 +46,13 @@ protected:
 	UPROPERTY(EditAnywhere, Category = GAS)
 	TMap<int32, TSubclassOf<class UGameplayAbility>> StartInputAbilities;
 
-private:
-	void SetupASCHostPlayer();
-	
-	void SetupASCClientPlayer();
 protected:
-	void SetupASCEnemyCharacter();
-
+	virtual void SetupASCHostPlayer(AActor* InOwnerActor);
+	virtual void SetupASCClientPlayer();
 	
 public:
 	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
-	
 	/** Character Animation **/
 	/** Character Animation **/
 	
@@ -71,4 +69,6 @@ protected:
 	virtual void SetDead() override;
 	virtual UAnimMontage* GetComboActionMontage() override;
 	FORCEINLINE virtual UUPComboActionData* GetComboActionData() const { return ComboActionData; }
+
+	virtual void CallGAS(int32 GameplayAbilityInputId);
 };
