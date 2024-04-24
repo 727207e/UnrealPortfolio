@@ -59,6 +59,8 @@ void UUPACChatGenerator::AddChatMessageOnOwningClient_Implementation(const FStri
 // Called when the game starts
 void UUPACChatGenerator::BeginPlay()
 {
+	Super::BeginPlay();
+
 	APlayerController* OwnerController = Cast<APlayerController>(GetOwner());
 	if (OwnerController->IsLocalController())
 	{
