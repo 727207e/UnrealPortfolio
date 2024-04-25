@@ -21,6 +21,7 @@ void UAnimNotify_GASAttackHitCheck::Notify(USkeletalMeshComponent* MeshComp, UAn
 		{
 			FGameplayEventData PayloadData;
 			PayloadData.EventMagnitude = ComboAttackLevel;
+			UE_LOG(LogTemp,Log,TEXT("In"));
 			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(OwnerActor, TriggetTag,PayloadData);
 		}
 	}

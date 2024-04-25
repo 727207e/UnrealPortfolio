@@ -52,8 +52,8 @@ void AUPMeleeEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	FTimerHandle DeadTimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, this, &AUPMeleeEnemyCharacter::SetDead, 5.0f, false);
+	//FTimerHandle DeadTimerHandle;
+	//GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, this, &AUPMeleeEnemyCharacter::SetDead, 5.0f, false);
 }
 
 

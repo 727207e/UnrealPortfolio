@@ -64,6 +64,7 @@ void AUPEnemyCharacter::PostInitializeComponents()
 
 void AUPEnemyCharacter::MeshSetSimulatePhysics(USkeletalMeshComponent* targetMesh, UCapsuleComponent* targetCapsule)
 {
+	UE_LOG(LogTemp, Log, TEXT("MeshSetSimulatePhysics"));
 	targetMesh->SetCollisionProfileName(TEXT("PhysicsActor"));
 	targetMesh->SetAnimInstanceClass(nullptr);
 	targetMesh->SetSimulatePhysics(true);

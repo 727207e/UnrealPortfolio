@@ -39,8 +39,15 @@ AUPMainCharacter::AUPMainCharacter()
 	{
 		DeadMontage = DeadActionMontageRef.Object;
 	}
+
+	static ConstructorHelpers::FObjectFinder<UUPComboActionData> ComboActionDataRef(TEXT("/Game/Data/AttackData/DA_MainCharacter_Attack"));
+	if (ComboActionDataRef.Object)
+	{
+		ComboActionData = ComboActionDataRef.Object;
+	}
+
 	
-		ComboActionData = nullptr;
+	
 	SetupPlayerCamera();
 }
 
