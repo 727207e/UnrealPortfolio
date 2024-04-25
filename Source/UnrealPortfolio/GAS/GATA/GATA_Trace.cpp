@@ -41,12 +41,13 @@ FGameplayAbilityTargetDataHandle AGATA_Trace::MakeTargetData() const
 	const float AttackRange = 100.0f;
 	const float AttackRadius = 50.f;
 
-	FCollisionQueryParams Params(SCENE_QUERY_STAT(UABTA_Trace), false, Character);
+	FCollisionQueryParams Params(SCENE_QUERY_STAT(CHANNEL_UPTRACE), false, Character);
 	const FVector Forward = Character->GetActorForwardVector();
 	const FVector Start = Character->GetActorLocation() + Forward * Character->GetCapsuleComponent()->GetScaledCapsuleRadius();
 	const FVector End = Start + Forward * AttackRange;
 
 	bool HitDetected = GetWorld()->SweepSingleByChannel(OutHitResult, Start, End, FQuat::Identity, CHANNEL_UPTRACE, FCollisionShape::MakeSphere(AttackRadius), Params);
+	
 
 	FGameplayAbilityTargetDataHandle DataHandle;
 	if (HitDetected)

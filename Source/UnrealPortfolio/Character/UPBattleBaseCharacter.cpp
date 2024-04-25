@@ -4,6 +4,7 @@
 #include "Character/UPBattleBaseCharacter.h"
 #include "AbilitySystemComponent.h"
 #include "UPPlayerState.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AUPBattleBaseCharacter::AUPBattleBaseCharacter()
 {
@@ -112,6 +113,19 @@ void AUPBattleBaseCharacter::CallGAS(int32 GameplayAbilityInputId)
 			ASC->TryActivateAbility(Spec->Handle);
 		}
 	}
+}
+
+void AUPBattleBaseCharacter::Hit(FVector_NetQuantizeNormal data)
+{
+	Knockback(data);
+}
+
+void AUPBattleBaseCharacter::Knockback(FVector_NetQuantizeNormal data)
+{
+	FVector BreakVector = data * -1000;
+	BreakVector.X = BreakVector.X + 100.0f;
+	BreakVector.Z = 0.0f;
+	LaunchCharacter(BreakVector,true,false);
 }
 
 

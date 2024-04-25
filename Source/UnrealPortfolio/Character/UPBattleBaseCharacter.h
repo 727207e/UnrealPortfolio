@@ -71,4 +71,9 @@ protected:
 	FORCEINLINE virtual UUPComboActionData* GetComboActionData() const { return ComboActionData; }
 
 	virtual void CallGAS(int32 GameplayAbilityInputId);
+	
+	virtual void Hit(FVector_NetQuantizeNormal data) override;
+protected:
+	void Knockback(FVector_NetQuantizeNormal data);
+	
 };

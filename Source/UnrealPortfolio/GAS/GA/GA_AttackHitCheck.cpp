@@ -5,6 +5,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GAS/AbilityTask/AbilityTask_Trace.h"
 #include "GAS/GATA/GATA_Trace.h"
+#include "Interface/AttackableCharacterInterface.h"
 
 UGA_AttackHitCheck::UGA_AttackHitCheck()
 {
@@ -24,6 +25,11 @@ void UGA_AttackHitCheck::OnTraceResultCallback(const FGameplayAbilityTargetDataH
 	if (UAbilitySystemBlueprintLibrary::TargetDataHasHitResult(TargetDataHandle, 0))
 	{
 		FHitResult HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, 0);
+		IAttackableCharacterInterface* HitCharacter =  Cast<IAttackableCharacterInterface>(HitResult.GetActor());
+		if(HitCharacter)
+		{
+			HitCharacter->Hit(HitResult.Normal);
+		}
 	}
 
 	bool bReplicatedEndAbility = true;

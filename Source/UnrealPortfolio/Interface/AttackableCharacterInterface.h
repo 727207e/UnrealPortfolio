@@ -24,5 +24,6 @@ class UNREALPORTFOLIO_API IAttackableCharacterInterface
 public:
 	virtual UAnimMontage* GetComboActionMontage() = 0;
 	virtual UUPComboActionData* GetComboActionData() const = 0;
+	virtual void Hit(FVector_NetQuantizeNormal data) = 0;
 public:
 };
