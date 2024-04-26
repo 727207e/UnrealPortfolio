@@ -121,17 +121,9 @@ void AUPBattleBaseCharacter::CallGAS(int32 GameplayAbilityInputId)
 	}
 }
 
-void AUPBattleBaseCharacter::LookAt(const FVector& TargetLocation)
-{
-	FVector TargetDirection = TargetLocation - GetActorLocation();
-	TargetDirection.Z = 0;
-	SetActorRotation(TargetDirection.Rotation());
-}
-
-
 void AUPBattleBaseCharacter::Hit(FVector TargetLocation, TObjectPtr<class AGameplayEventDataRequest> ActionData)
 {
-	LookAt(TargetLocation);
+	LookTarget(TargetLocation);
 	Knockback(ActionData);
 	PlayHitAnimation();
 }
