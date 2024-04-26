@@ -20,6 +20,11 @@ void UGA_NPCInteractor::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
                                         const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
                                         const FGameplayEventData* TriggerEventData)
 {
+	if (!IsLocallyControlled())
+	{
+		return;
+	}
+
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	auto MainCharacter = CastChecked<AUPMainCharacter>(ActorInfo->AvatarActor);
 	CharacterMovementInterface = MainCharacter;
