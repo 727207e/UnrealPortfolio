@@ -39,8 +39,19 @@ AUPMainCharacter::AUPMainCharacter()
 	{
 		DeadMontage = DeadActionMontageRef.Object;
 	}
-	
-		ComboActionData = nullptr;
+
+	/** Setup Hit Montage **/
+	static::ConstructorHelpers::FObjectFinder<UAnimMontage> HitAnimMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Blueprint/Animation/MainCharacter/Montages/MT_HitBig.MT_HitBig'"));
+	if(HitAnimMontageRef.Object)
+	{
+		HitMontage = HitAnimMontageRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UUPComboActionData> ComboActionDataRef(TEXT("/Script/UnrealPortfolio.UPComboActionData'/Game/Data/AttackData/DA_MainCharacter_Attack.DA_MainCharacter_Attack'"));
+	if (ComboActionDataRef.Object)
+	{
+		ComboActionData = ComboActionDataRef.Object;
+	}
 	SetupPlayerCamera();
 }
 

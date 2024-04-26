@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "GameplayTagContainer.h"
+#include "GAS/Actor/GameplayEventDataRequest.h"
 #include "Data/UPComboActionData.h"
 #include "AttackableCharacterInterface.generated.h"
 
@@ -24,5 +24,6 @@ class UNREALPORTFOLIO_API IAttackableCharacterInterface
 public:
 	virtual UAnimMontage* GetComboActionMontage() = 0;
 	virtual UUPComboActionData* GetComboActionData() const = 0;
-public:
+	virtual void Hit(FVector TargetLocation, TObjectPtr<class AGameplayEventDataRequest> ActionData) = 0;
+	virtual void PlayHitAnimation() = 0;
 };

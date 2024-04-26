@@ -57,11 +57,15 @@ public:
 	/** Character Animation **/
 	
 protected:
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
 	TObjectPtr<class UUPComboActionData> ComboActionData;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
 	TObjectPtr<class UAnimMontage> ComboActionMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
+	TObjectPtr<class UAnimMontage> HitMontage;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
 	TObjectPtr<class  UAnimMontage> DeadMontage;
@@ -70,5 +74,16 @@ protected:
 	virtual UAnimMontage* GetComboActionMontage() override;
 	FORCEINLINE virtual UUPComboActionData* GetComboActionData() const { return ComboActionData; }
 
+	UFUNCTION(BlueprintCallable , Category = GAS)
 	virtual void CallGAS(int32 GameplayAbilityInputId);
+	virtual void Hit(FVector TargetLocation, TObjectPtr<class AGameplayEventDataRequest> ActionData) override;
+	virtual void PlayHitAnimation() override;
+	
+	void Knockback(TObjectPtr<class AGameplayEventDataRequest> ActionData);
+
+	UPROPERTY(EditAnywhere, Category = TableData)
+	TObjectPtr<UDataTable> ActionDataTable;
+protected:
+	void LookAt(const FVector& TargetLocation);
+	
 };

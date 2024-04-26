@@ -3,6 +3,7 @@
 
 #include "GAS/Animation/AnimNotify_GASAttackHitCheck.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "GAS/Actor/GameplayEventDataRequest.h"
 class UAbilitySystemComponent;
 FString UAnimNotify_GASAttackHitCheck::GetNotifyName_Implementation() const
 {
@@ -16,12 +17,18 @@ void UAnimNotify_GASAttackHitCheck::Notify(USkeletalMeshComponent* MeshComp, UAn
 
 	if (MeshComp)
 	{
-		AActor* OwnerActor = MeshComp->GetOwner();
-		if (OwnerActor)
+		if (AActor* OwnerActor = MeshComp->GetOwner())
 		{
 			FGameplayEventData PayloadData;
+			
+			/** Set Event Data **/
 			PayloadData.EventMagnitude = ComboAttackLevel;
-			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(OwnerActor, TriggetTag,PayloadData);
+			AGameplayEventDataRequest* ActionData = NewObject<AGameplayEventDataRequest>();
+			ActionData->ActionId = ActionId;
+			ActionData->ActionRowName = ActionRowName;
+			PayloadData.Instigator = ActionData;
+			
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(OwnerActor, TriggerTag,PayloadData);
 		}
 	}
 }
