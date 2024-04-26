@@ -92,6 +92,12 @@ public:
 public:
 	/** Movement Character Interface **/
 	virtual ECharacterControlType GetCharacterControl() override;
+
 	virtual void SetCharacterMovementMod(EMovementMode MovementMode) override;
-	
+
+	UFUNCTION(Server, Reliable)
+	void ServerSetControllerMovementMod(EMovementMode MovementMode, APlayerController* PlayerController);
+
+private :
+	void SetControllerMovementMod(EMovementMode MovementMode, APlayerController* PlayerController);
 };

@@ -83,7 +83,4 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = TableData)
 	TObjectPtr<UDataTable> ActionDataTable;
-protected:
-	void LookAt(const FVector& TargetLocation);
-	
 };

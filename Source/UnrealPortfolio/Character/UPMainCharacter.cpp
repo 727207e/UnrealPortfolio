@@ -302,16 +302,33 @@ void AUPMainCharacter::SetCameraComponent(ECharacterControlType CharacterControl
 /** Interface **/
 void AUPMainCharacter::SetCharacterMovementMod(EMovementMode MovementMode)
 {
-	if(MovementMode == EMovementMode::MOVE_None)
+	if (!HasAuthority())
 	{
-		DisableInput(GetLocalViewingPlayerController());
+		ServerSetControllerMovementMod(MovementMode, Cast<APlayerController>(GetController()));
+		return;
 	}
-	else if(MovementMode == MOVE_Walking)
+	else
 	{
-		EnableInput(GetLocalViewingPlayerController());
+		SetControllerMovementMod(MovementMode, GetLocalViewingPlayerController());
 	}
-	
-	GetCharacterMovement()->SetMovementMode(MovementMode);
+}
+
+void AUPMainCharacter::ServerSetControllerMovementMod_Implementation(EMovementMode MovementMode, APlayerController* PlayerController)
+{
+	SetControllerMovementMod(MovementMode, PlayerController);
+}
+
+void AUPMainCharacter::SetControllerMovementMod(EMovementMode MovementMode, APlayerController* PlayerController)
+{
+	if (MovementMode == EMovementMode::MOVE_None)
+	{
+		DisableInput(PlayerController);
+	}
+	else if (MovementMode == MOVE_Walking)
+	{
+		EnableInput(PlayerController);
+	}
+	PlayerController->GetCharacter()->GetCharacterMovement()->SetMovementMode(MovementMode);
 }
 
 ECharacterControlType AUPMainCharacter::GetCharacterControl()
