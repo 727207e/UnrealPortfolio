@@ -14,7 +14,6 @@ void UGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 	AttackableCharacter = CastChecked<IAttackableCharacterInterface>(ActorInfo->AvatarActor.Get());
 	if(AttackableCharacter)
 	{
-		UE_LOG(LogTemp,Log,TEXT("CurrentComboData"));
 		CurrentComboData = AttackableCharacter->GetComboActionData();
 	}
 
@@ -39,7 +38,7 @@ FName UGA_Attack::GetNextSection()
 	if (CurrentComboData)
 	{
 		CurrentCombo = FMath::Clamp(CurrentCombo + 1, 1, CurrentComboData->MaxComboCount);
-		FName NextSection = *FString::Printf(TEXT("%s%d"), *CurrentComboData->MontageSectionNamePrefix, CurrentCombo);
+		const FName NextSection = *FString::Printf(TEXT("%s%d"), *CurrentComboData->MontageSectionNamePrefix, CurrentCombo);
 		return NextSection;
 	}
 	else
@@ -50,26 +49,25 @@ FName UGA_Attack::GetNextSection()
 
 void UGA_Attack::OnCompleteCallback()
 {
-	bool bReplicatedEndAbility = true;
-	bool bWasCancelled = false;
+	constexpr bool bReplicatedEndAbility = true;
+	constexpr bool bWasCancelled = false;
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, bReplicatedEndAbility, bWasCancelled);
 }
 
 void UGA_Attack::OnInterruptedCallback()
 {
-	bool bReplicatedEndAbility = true;
-	bool bWasCancelled = true;
+	constexpr bool bReplicatedEndAbility = true;
+	constexpr bool bWasCancelled = true;
 	EndAbility(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,bReplicatedEndAbility,bWasCancelled);
 }
 
 void UGA_Attack::StartComboTimer()
 {
-	int32 ComboIndex = CurrentCombo - 1;
+	const int32 ComboIndex = CurrentCombo - 1;
 	ensure(CurrentComboData->EffectiveFrameCount.IsValidIndex(ComboIndex));
 	const float ComboEffectiveTime = CurrentComboData->EffectiveFrameCount[ComboIndex] / CurrentComboData->FrameRate;
 	if (ComboEffectiveTime > 0.0f)
 	{
-		UE_LOG(LogTemp,Log,TEXT("ComboEffectiveTime"));
 		GetWorld()->GetTimerManager().SetTimer(ComboTimerHandle, this, &UGA_Attack::CheckComboInput, ComboEffectiveTime, false);
 	}
 	
@@ -95,12 +93,10 @@ void UGA_Attack::InputPressed(const FGameplayAbilitySpecHandle Handle, const FGa
 {
 	if (!ComboTimerHandle.IsValid())
 	{
-		UE_LOG(LogTemp,Log,TEXT("false"));
 		HasNextComboInput = false;
 	}
 	else
 	{
-		UE_LOG(LogTemp,Log,TEXT("true"));
 		HasNextComboInput = true;
 	}
 }
@@ -110,7 +106,6 @@ void UGA_Attack::CheckComboInput()
 	ComboTimerHandle.Invalidate();
 	if (HasNextComboInput)
 	{
-		UE_LOG(LogTemp,Log,TEXT("CheckComboInput"));
 		MontageJumpToSection(GetNextSection());
 		StartComboTimer();
 		HasNextComboInput = false;

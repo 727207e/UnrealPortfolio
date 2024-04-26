@@ -4,16 +4,22 @@
 #include "Character/UPBattleBaseCharacter.h"
 #include "AbilitySystemComponent.h"
 #include "UPPlayerState.h"
-#include "GameFramework/CharacterMovementComponent.h"
+#include "Data/DataTable/UPActionTable.h"
+#include "GAS/Actor/GameplayEventDataRequest.h"
 
 AUPBattleBaseCharacter::AUPBattleBaseCharacter()
 {
 	ASC = nullptr;
-	
+	static::ConstructorHelpers::FObjectFinder<UDataTable> TableDataRef(TEXT("/Script/Engine.DataTable'/Game/Data/ActionTableData/DT_ActionData.DT_ActionData'"));
+	if(TableDataRef.Object)
+	{
+		ActionDataTable = TableDataRef.Object;	
+	}
 }
 
 void AUPBattleBaseCharacter::SetDead()
 {
+	
 }
 
 
@@ -115,17 +121,45 @@ void AUPBattleBaseCharacter::CallGAS(int32 GameplayAbilityInputId)
 	}
 }
 
-void AUPBattleBaseCharacter::Hit(FVector_NetQuantizeNormal data)
+void AUPBattleBaseCharacter::LookAt(const FVector& TargetLocation)
 {
-	Knockback(data);
+	FVector TargetDirection = TargetLocation - GetActorLocation();
+	TargetDirection.Z = 0;
+	SetActorRotation(TargetDirection.Rotation());
 }
 
-void AUPBattleBaseCharacter::Knockback(FVector_NetQuantizeNormal data)
+
+void AUPBattleBaseCharacter::Hit(FVector TargetLocation, TObjectPtr<class AGameplayEventDataRequest> ActionData)
 {
-	FVector BreakVector = data * -1000;
-	BreakVector.X = BreakVector.X + 100.0f;
-	BreakVector.Z = 0.0f;
-	LaunchCharacter(BreakVector,true,false);
+	LookAt(TargetLocation);
+	Knockback(ActionData);
+	PlayHitAnimation();
+}
+
+void AUPBattleBaseCharacter::PlayHitAnimation()
+{
+	if(HitMontage)
+	{
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		AnimInstance->Montage_Play(HitMontage);
+	}
+}
+
+void AUPBattleBaseCharacter::Knockback(TObjectPtr<class AGameplayEventDataRequest> ActionData)
+{
+	const FText RowTableName = FText::FromName( ActionData->ActionRowName);
+	const FString RowTableNameString = RowTableName.ToString();
+	const TCHAR* RowTableNamePtr = *RowTableNameString;
+	const FName NextSection = *FString::Printf(TEXT("%s%d"), RowTableNamePtr, ActionData->ActionId);
+	if(const FUPActionTable* ActionTableData = ActionDataTable->FindRow<FUPActionTable>(FName(NextSection),TEXT("Finding Row")))
+	{
+		FVector BreakVector = GetActorForwardVector() * ActionTableData->NockbackDuration;
+		BreakVector.X = BreakVector.X + ActionTableData->NockbackSize;
+		BreakVector.Z = ActionTableData->NockbackUpSize;
+		LaunchCharacter(BreakVector,true,false);
+
+		
+	}
 }
 
 

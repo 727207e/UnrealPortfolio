@@ -11,6 +11,12 @@
 
 AUPEnemyCharacter::AUPEnemyCharacter()
 {
+	/** Setup Hit Montage **/
+	static::ConstructorHelpers::FObjectFinder<UAnimMontage> HitAnimMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Blueprint/Animation/Enemy/AM_NormalEnemyHit.AM_NormalEnemyHit'"));
+	if(HitAnimMontageRef.Object)
+	{
+		HitMontage = HitAnimMontageRef.Object;
+	}
 }
 
 void AUPEnemyCharacter::SetDead()

@@ -22,9 +22,11 @@ protected:
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 protected:
 	UPROPERTY(EditAnywhere)
-	FGameplayTag TriggetTag;
+	FGameplayTag TriggerTag;
 	UPROPERTY(EditAnywhere, Category = Anim)
 	float ComboAttackLevel;
 	UPROPERTY(EditAnywhere, Category = Data)
 	int32 ActionId;
+	UPROPERTY(EditAnywhere,Category = Data)
+	FName ActionRowName;
 };

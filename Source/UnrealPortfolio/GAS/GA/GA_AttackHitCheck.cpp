@@ -4,10 +4,11 @@
 #include "GAS/GA/GA_AttackHitCheck.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GAS/AbilityTask/AbilityTask_Trace.h"
+#include "GAS/Actor/GameplayEventDataRequest.h"
 #include "GAS/GATA/GATA_Trace.h"
 #include "Interface/AttackableCharacterInterface.h"
 
-UGA_AttackHitCheck::UGA_AttackHitCheck()
+UGA_AttackHitCheck::UGA_AttackHitCheck(): CurrentLevel(0)
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 }
@@ -15,6 +16,9 @@ UGA_AttackHitCheck::UGA_AttackHitCheck()
 void UGA_AttackHitCheck::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+	CurrentLevel = TriggerEventData->EventMagnitude;
+	CurrentAction = Cast<AGameplayEventDataRequest>(TriggerEventData->Instigator);
+	
 	UAbilityTask_Trace * AttackTraceTask = UAbilityTask_Trace::CreateTask(this, AGATA_Trace::StaticClass());
 	AttackTraceTask->OnComplete.AddDynamic(this, &UGA_AttackHitCheck::OnTraceResultCallback);
 	AttackTraceTask->ReadyForActivation();
@@ -24,15 +28,14 @@ void UGA_AttackHitCheck::OnTraceResultCallback(const FGameplayAbilityTargetDataH
 {
 	if (UAbilitySystemBlueprintLibrary::TargetDataHasHitResult(TargetDataHandle, 0))
 	{
-		FHitResult HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, 0);
-		IAttackableCharacterInterface* HitCharacter =  Cast<IAttackableCharacterInterface>(HitResult.GetActor());
-		if(HitCharacter)
+		const FHitResult HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, 0);
+		if(IAttackableCharacterInterface* HitCharacter = Cast<IAttackableCharacterInterface>(HitResult.GetActor()))
 		{
-			HitCharacter->Hit(HitResult.Normal);
+			HitCharacter->Hit(GetAvatarActorFromActorInfo()->GetActorLocation(),CurrentAction);
 		}
 	}
 
-	bool bReplicatedEndAbility = true;
-	bool bWasCancelled = false;
+	constexpr bool bReplicatedEndAbility = true;
+	constexpr bool bWasCancelled = false;
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, bReplicatedEndAbility, bWasCancelled);
 }
