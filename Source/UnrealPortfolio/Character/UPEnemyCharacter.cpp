@@ -8,6 +8,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "AI/UPNormalEnemyAIController.h"
+#include "Data/DataAttributeSet/EnemyDataSet/NormalEnemy/UPEnemyAttributeSet.h"
 
 
 AUPEnemyCharacter::AUPEnemyCharacter()
@@ -50,25 +51,7 @@ void AUPEnemyCharacter::PostInitializeComponents()
 
 	if (EnemyEntityState && HasAuthority())
 	{
-		///////////TEST CODE////////////////
-		UE_LOG(LogTemp, Log, TEXT("After Start"));
-		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(this);
-		if (TargetASC)
-		{
-			EnemyEntityState->PostInitialize();
-
-			UEntityAttributeSet* TargetEntityAttribute = const_cast<UEntityAttributeSet*>(TargetASC->GetSet<UEntityAttributeSet>());
-
-			if (TargetEntityAttribute)
-			{
-				UE_LOG(LogTemp, Log, TEXT("MinusOn, %f"), TargetASC->GetSet<UEntityAttributeSet>()->GetHp());
-				TargetEntityAttribute->SetHp(TargetEntityAttribute->GetHp() - 2);
-
-				UE_LOG(LogTemp, Log, TEXT("MinusOn, %f"), TargetASC->GetSet<UEntityAttributeSet>()->GetHp());
-			}
-		}
-
-		///////////TEST CODE////////////////
+		EnemyEntityState->PostInitialize();
 	}
 }
 
@@ -105,5 +88,12 @@ void AUPEnemyCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 
 void AUPEnemyCharacter::NormalAttack()
 {
-	CallGAS(0);
+	if (bCanAttack)
+	{
+		CallGAS(0);
+		bCanAttack = false;
+
+		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(this);
+		SetAttackDelay(TargetASC->GetSet<UUPEnemyAttributeSet>()->GetAttackRate());
+	}
 }

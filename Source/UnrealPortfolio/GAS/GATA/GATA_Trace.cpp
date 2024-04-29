@@ -6,14 +6,15 @@
 #include "GameFramework/Character.h"
 #include "Components/CapsuleComponent.h"
 #include "DrawDebugHelpers.h"
+#include "AbilitySystemComponent.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "Data/DataAttributeSet/EntityAttributeSet.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "defines/UPCollision.h"
 
 AGATA_Trace::AGATA_Trace()
 {
 }
-
-
 
 void AGATA_Trace::StartTargeting(UGameplayAbility* Ability)
 {
@@ -35,11 +36,25 @@ void AGATA_Trace::ConfirmTargetingAndContinue()
 
 FGameplayAbilityTargetDataHandle AGATA_Trace::MakeTargetData() const
 {
+	FGameplayAbilityTargetDataHandle DataHandle;
 	ACharacter* Character = CastChecked<ACharacter>(SourceActor);
+	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(SourceActor);
+	if (nullptr == TargetASC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Enemy Can't Find ASC"));
+		return DataHandle;
+	}
+
+	UEntityAttributeSet* TargetAttribute = const_cast<UEntityAttributeSet*>(TargetASC->GetSet<UEntityAttributeSet>());
+	if (nullptr == TargetAttribute)
+	{
+		UE_LOG(LogTemp, Error, TEXT("TA Trace Can't Find AttributeSet"));
+		return DataHandle;
+	}
 
 	FHitResult OutHitResult;
-	const float AttackRange = 100.0f;
-	const float AttackRadius = 50.f;
+	const float AttackRange = TargetAttribute->GetAttackRange();
+	const float AttackRadius = TargetAttribute->GetAttackSize();
 
 	FCollisionQueryParams Params(SCENE_QUERY_STAT(CHANNEL_UPTRACE), false, Character);
 	const FVector Forward = Character->GetActorForwardVector();
@@ -48,8 +63,6 @@ FGameplayAbilityTargetDataHandle AGATA_Trace::MakeTargetData() const
 
 	bool HitDetected = GetWorld()->SweepSingleByChannel(OutHitResult, Start, End, FQuat::Identity, CHANNEL_UPTRACE, FCollisionShape::MakeSphere(AttackRadius), Params);
 	
-
-	FGameplayAbilityTargetDataHandle DataHandle;
 	if (HitDetected)
 	{
 		FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit(OutHitResult);

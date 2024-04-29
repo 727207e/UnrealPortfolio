@@ -16,7 +16,6 @@ class UNREALPORTFOLIO_API UBTDecorator_AttackInRange : public UBTDecorator
 	
 public:
 	UBTDecorator_AttackInRange();
-
 protected:
 	virtual bool CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const override;
 };

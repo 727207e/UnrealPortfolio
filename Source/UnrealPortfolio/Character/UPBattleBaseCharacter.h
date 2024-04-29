@@ -87,7 +87,11 @@ protected:
 	UPROPERTY(EditAnywhere, Category = TableData)
 	TObjectPtr<UDataTable> ActionDataTable;
 
+	FTimerHandle AttackDelay;
+	void SetAttackDelay(float DelayTime);
+
 public :
+	bool bCanAttack;
 	virtual void AttackEndCallBack() override;
 	void AddAttackEndCallBack(const FOnEndAttackDelegate& OnEndAttack);
 	virtual void NormalAttack();

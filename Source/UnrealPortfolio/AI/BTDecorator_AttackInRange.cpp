@@ -3,6 +3,7 @@
 
 #include "AI/BTDecorator_AttackInRange.h"
 #include "AIController.h"
+#include "Character/UPBattleBaseCharacter.h"
 #include "defines/UPAIDefine.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
@@ -18,7 +19,7 @@ bool UBTDecorator_AttackInRange::CalculateRawConditionValue(UBehaviorTreeCompone
 {
 	bool bResult = Super::CalculateRawConditionValue(OwnerComp, NodeMemory);
 
-	APawn* ControllingPawn = OwnerComp.GetAIOwner()->GetPawn();
+	AUPBattleBaseCharacter* ControllingPawn = Cast<AUPBattleBaseCharacter>(OwnerComp.GetAIOwner()->GetPawn());
 	if (nullptr == ControllingPawn)
 	{
 		return false;
@@ -46,8 +47,7 @@ bool UBTDecorator_AttackInRange::CalculateRawConditionValue(UBehaviorTreeCompone
 
 	float DistanceToTarget = ControllingPawn->GetDistanceTo(Target);
 	float AttackRangeWithRadius = TargetAttribute->GetAttackRange();
-
-	UE_LOG(LogTemp, Error, TEXT("EEEEE %f"), AttackRangeWithRadius);
 	bResult = (DistanceToTarget <= AttackRangeWithRadius);
-	return bResult;
+
+	return bResult && (ControllingPawn->bCanAttack);
 }
