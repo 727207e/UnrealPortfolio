@@ -3,6 +3,7 @@
 
 #include "Character/UPBattleBaseCharacter.h"
 #include "AbilitySystemComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "UPPlayerState.h"
 #include "Data/DataTable/UPActionTable.h"
 #include "GAS/Actor/GameplayEventDataRequest.h"
@@ -10,10 +11,17 @@
 AUPBattleBaseCharacter::AUPBattleBaseCharacter()
 {
 	ASC = nullptr;
+
 	static::ConstructorHelpers::FObjectFinder<UDataTable> TableDataRef(TEXT("/Script/Engine.DataTable'/Game/Data/ActionTableData/DT_ActionData.DT_ActionData'"));
 	if(TableDataRef.Object)
 	{
 		ActionDataTable = TableDataRef.Object;	
+	}
+
+	static::ConstructorHelpers::FObjectFinder<UNiagaraSystem> EffectRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/DownloadAssets/SlashHitVFX/NS/NS_Hit_GroundCrack.NS_Hit_GroundCrack'"));
+	if(EffectRef.Object)
+	{
+		Effect = EffectRef.Object;
 	}
 }
 
@@ -149,8 +157,28 @@ void AUPBattleBaseCharacter::Knockback(TObjectPtr<class AGameplayEventDataReques
 		BreakVector.X = BreakVector.X + ActionTableData->NockbackSize;
 		BreakVector.Z = ActionTableData->NockbackUpSize;
 		LaunchCharacter(BreakVector,true,false);
-
+		EffectTest();
 		
+	}
+}
+
+void AUPBattleBaseCharacter::EffectTest()
+{
+	if(Effect)
+	{
+		//로케이션 기준
+		//NiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Effect, FVector::ZeroVector, FRotator::ZeroRotator, FVector::OneVector);
+
+		//스켈레톤 기준
+		FString SocketName = TEXT("hand_r");
+		UNiagaraFunctionLibrary::SpawnSystemAttached(
+			Effect,
+			GetMesh(),
+			*SocketName,
+			FVector::ZeroVector,
+			FRotator::ZeroRotator,
+			EAttachLocation::KeepRelativeOffset,
+			true);
 	}
 }
 

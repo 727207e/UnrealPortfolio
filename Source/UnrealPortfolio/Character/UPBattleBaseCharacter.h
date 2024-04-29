@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Character/UPCharacter.h"
 #include "AbilitySystemInterface.h"
+#include "NiagaraSystem.h"
 #include "Interface/AbilitySystemGetInterface.h"
 #include "Interface/AttackableCharacterInterface.h"
 #include "UPBattleBaseCharacter.generated.h"
@@ -83,4 +84,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = TableData)
 	TObjectPtr<UDataTable> ActionDataTable;
+	UNiagaraSystem* Effect;
+	UNiagaraComponent* NiagaraComponent;
+
+private:
+	void EffectTest();
+	
 };
