@@ -8,6 +8,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "AI/UPNormalEnemyAIController.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Data/DataAttributeSet/EnemyDataSet/NormalEnemy/UPEnemyAttributeSet.h"
 
 
@@ -51,7 +52,14 @@ void AUPEnemyCharacter::PostInitializeComponents()
 
 	if (EnemyEntityState && HasAuthority())
 	{
-		EnemyEntityState->PostInitialize();
+		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(this);
+		if (TargetASC)
+		{
+			EnemyEntityState->PostInitialize();
+
+
+			GetCharacterMovement()->MaxWalkSpeed *= TargetASC->GetSet<UUPEnemyAttributeSet>()->GetMovementSpeed();
+		}
 	}
 }
 
