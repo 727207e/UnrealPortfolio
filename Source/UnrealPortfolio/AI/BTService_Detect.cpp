@@ -50,9 +50,6 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 
 	float DetectRadius = TargetAttribute->GetTargetSearchingRange();
 
-	UE_LOG(LogTemp, Error, TEXT("Radius : %f"), DetectRadius);
-	UE_LOG(LogTemp, Error, TEXT("Hp : %f"), TargetAttribute->GetHp());
-
 	TArray<FOverlapResult> OverlapResults;
 	FCollisionQueryParams CollisionQueryParam(SCENE_QUERY_STAT(Detect), false, ControllingPawn);
 	bool bResult = World->OverlapMultiByChannel(
@@ -81,8 +78,5 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 		}
 	}
 
-	OwnerComp.GetBlackboardComponent()->SetValueAsObject(BBKEY_TARGET, nullptr);
 	DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Red, false, 2.0f);
 }
-
-

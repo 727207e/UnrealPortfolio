@@ -154,9 +154,23 @@ void AUPBattleBaseCharacter::Knockback(TObjectPtr<class AGameplayEventDataReques
 	}
 }
 
+void AUPBattleBaseCharacter::AttackEndCallBack()
+{
+	OnEndAttackDelegate.Broadcast();
+	OnEndAttackDelegate.Clear();
+}
+
+void AUPBattleBaseCharacter::AddAttackEndCallBack(const FOnEndAttackDelegate& OnEndAttack)
+{
+	OnEndAttackDelegate = OnEndAttack;
+}
+
+void AUPBattleBaseCharacter::NormalAttack()
+{
+	
+}
 
 UAbilitySystemComponent* AUPBattleBaseCharacter::GetAbilitySystemComponent() const
 {
 	return ASC;
 }
-

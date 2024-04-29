@@ -26,4 +26,5 @@ public:
 	virtual UUPComboActionData* GetComboActionData() const = 0;
 	virtual void Hit(FVector TargetLocation, TObjectPtr<class AGameplayEventDataRequest> ActionData) = 0;
 	virtual void PlayHitAnimation() = 0;
+	virtual void AttackEndCallBack() = 0;
 };

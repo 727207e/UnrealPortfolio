@@ -12,6 +12,9 @@
 /**
  * 
  */
+
+DECLARE_MULTICAST_DELEGATE(FOnEndAttackDelegate);
+
 UCLASS()
 class UNREALPORTFOLIO_API AUPBattleBaseCharacter : public AUPCharacter
 	, public IAbilitySystemInterface
@@ -83,4 +86,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = TableData)
 	TObjectPtr<UDataTable> ActionDataTable;
+
+public :
+	virtual void AttackEndCallBack() override;
+	void AddAttackEndCallBack(const FOnEndAttackDelegate& OnEndAttack);
+	virtual void NormalAttack();
+
+private:
+	FOnEndAttackDelegate OnEndAttackDelegate;
 };

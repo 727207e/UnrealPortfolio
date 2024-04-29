@@ -12,6 +12,7 @@
 /**
  * 
  */
+
 UCLASS()
 class UNREALPORTFOLIO_API UGA_Attack : public UGameplayAbility
 {
@@ -44,11 +45,11 @@ protected:
 	UFUNCTION()
 	void CheckComboInput();
 	
-	protected:
-    	UPROPERTY()
-    	TObjectPtr<class UUPComboActionData> CurrentComboData;
+protected:
+    UPROPERTY()
+    TObjectPtr<class UUPComboActionData> CurrentComboData;
     
-    	uint8 CurrentCombo = 0;
-    	FTimerHandle ComboTimerHandle;
-    	bool HasNextComboInput = false;
+    uint8 CurrentCombo = 0;
+    FTimerHandle ComboTimerHandle;
+    bool HasNextComboInput = false;
 };

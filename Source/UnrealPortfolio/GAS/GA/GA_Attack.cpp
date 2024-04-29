@@ -86,6 +86,8 @@ void UGA_Attack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGame
     	CurrentComboData = nullptr;
     	CurrentCombo = 0;
     	HasNextComboInput = false;
+
+		AttackableCharacter->AttackEndCallBack();
 }
 
 void UGA_Attack::InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,

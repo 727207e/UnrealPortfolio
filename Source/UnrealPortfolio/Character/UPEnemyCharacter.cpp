@@ -102,3 +102,8 @@ void AUPEnemyCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 	ASC->AddSpawnedAttribute(EnemyEntityState->AttributeSet);
 	ASC->InitAbilityActorInfo(InOwnerActor, this);
 }
+
+void AUPEnemyCharacter::NormalAttack()
+{
+	CallGAS(0);
+}

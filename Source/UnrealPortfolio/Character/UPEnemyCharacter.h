@@ -30,4 +30,6 @@ protected :
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Entity)
 	TObjectPtr<class UUPACEntityState> EnemyEntityState;
 
+public :
+	virtual void NormalAttack() override;
 };
