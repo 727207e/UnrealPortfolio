@@ -26,6 +26,8 @@ public:
 	virtual bool PreGameplayEffectExecute(struct FGameplayEffectModCallbackData& Data) override;
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 
+	virtual void InitAttributeSet() override;
+
 protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
@@ -36,7 +38,4 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData TargetSearchingRange;
-
-protected:
-	virtual void SettingValue(FUPBaseTable table) override;
 };

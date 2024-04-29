@@ -3,6 +3,7 @@
 
 #include "Data/DataAttributeSet/EnemyDataSet/NormalEnemy/UPEnemyAttributeSet.h"
 #include "Data/DataAsset/Enemy/UPNormalEnemyTable.h"
+#include "Data/DataAsset/UPBaseTable.h"
 #include "GameplayEffectExtension.h"
 
 UUPEnemyAttributeSet::UUPEnemyAttributeSet()
@@ -29,13 +30,13 @@ void UUPEnemyAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCal
 	Super::PostGameplayEffectExecute(Data);
 }
 
-void UUPEnemyAttributeSet::SettingValue(FUPBaseTable table)
+void UUPEnemyAttributeSet::InitAttributeSet()
 {
-	Super::SettingValue(table);
+	FUPNormalEnemyTable NormalTable = GetTableData<FUPNormalEnemyTable>();
 
-	FUPNormalEnemyTable* NormalTable = static_cast<FUPNormalEnemyTable*>(&table);
+	SettingValue(NormalTable);
 
-	SetMyAttackKnockback(NormalTable->MyAttackKnockback);
-	SetFleezeTime(NormalTable->FleezeTime);
-	SetTargetSearchingRange(NormalTable->TargetSearchingRange);
+	SetMyAttackKnockback(NormalTable.MyAttackKnockback);
+	SetFleezeTime(NormalTable.FleezeTime);
+	SetTargetSearchingRange(NormalTable.TargetSearchingRange);
 }

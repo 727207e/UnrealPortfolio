@@ -39,6 +39,7 @@ public:
 	virtual bool PreGameplayEffectExecute(struct FGameplayEffectModCallbackData& Data) override;
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 
+
 	virtual void InitAttributeSet();
 
 public:
@@ -76,7 +77,44 @@ public:
 	FString StatName;
 
 protected:
-	virtual void SettingValue(FUPBaseTable table);
-	virtual FUPBaseTable GetTableData();
+	template <typename T>
+	void SettingValue(T BaseTablePtr);
 
+	template <typename T>
+	T GetTableData();
 };
+
+
+template <typename T>
+void UEntityAttributeSet::SettingValue(T BaseTablePtr)
+{
+	FUPBaseTable* table = static_cast<FUPBaseTable*>(&BaseTablePtr);
+
+	SetHp(table->MaxHp);
+	SetMaxHp(table->MaxHp);
+	SetAttack(table->Attack);
+	SetAttackRange(table->AttackRange);
+	SetAttackSize(table->AttackSize);
+	SetArmor(table->Armor);
+	SetAttackSpeed(table->AttackSpeed);
+	SetAttackRate(table->AttackRate);
+	SetMovementSpeed(table->MovementSpeed);
+}
+
+template <typename T>
+T UEntityAttributeSet::GetTableData()
+{
+	check(BaseStat);
+	TArray<FName> RowNames = BaseStat->GetRowNames();
+	T table;
+	for (int i = 0; i < RowNames.Num(); ++i)
+	{
+		if (StatName.Equals(RowNames[i].ToString()))
+		{
+			table = *(BaseStat->FindRow<T>(RowNames[i], RowNames[i].ToString()));
+			break;
+		}
+	}
+
+	return table;
+}
