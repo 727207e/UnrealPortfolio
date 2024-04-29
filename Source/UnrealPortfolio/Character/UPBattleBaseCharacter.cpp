@@ -34,6 +34,7 @@ void AUPBattleBaseCharacter::PossessedBy(AController* NewController)
 		if (PS)
 		{
 			ASC = PS->GetAbilitySystemComponent();
+			AttributeSet = PS->GetMainCharacterAttributeSet();
 			SetupASCHostPlayer(PS);
 			PlayerController->ConsoleCommand(TEXT("showdebug abilitysystem"));
 		}

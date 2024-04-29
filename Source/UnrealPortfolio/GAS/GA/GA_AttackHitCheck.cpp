@@ -7,6 +7,8 @@
 #include "GAS/Actor/GameplayEventDataRequest.h"
 #include "GAS/GATA/GATA_Trace.h"
 #include "Interface/AttackableCharacterInterface.h"
+#include "Data/DataAttributeSet/EntityAttributeSet.h"
+#include "Data/DataAttributeSet/EnemyDataSet/NormalEnemy/UPEnemyAttributeSet.h"
 
 UGA_AttackHitCheck::UGA_AttackHitCheck(): CurrentLevel(0)
 {
@@ -32,6 +34,22 @@ void UGA_AttackHitCheck::OnTraceResultCallback(const FGameplayAbilityTargetDataH
 		if(IAttackableCharacterInterface* HitCharacter = Cast<IAttackableCharacterInterface>(HitResult.GetActor()))
 		{
 			HitCharacter->Hit(GetAvatarActorFromActorInfo()->GetActorLocation(),CurrentAction);
+			UAbilitySystemComponent* SourceASC = GetAbilitySystemComponentFromActorInfo_Checked();
+			UAbilitySystemComponent* TargetASC =  UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(HitResult.GetActor());
+			if(!SourceASC || !TargetASC)
+			{
+				return;
+			}
+
+			const UEntityAttributeSet* SourceAttribute = SourceASC->GetSet<UEntityAttributeSet>();
+			UEntityAttributeSet* TargetAttribute = const_cast<UEntityAttributeSet*>(TargetASC->GetSet<UEntityAttributeSet>());
+			if(!SourceAttribute || !TargetAttribute)
+			{
+				return;
+			}
+
+			const float AttackDamage = SourceAttribute->GetAttackRate();
+			TargetAttribute->SetHp(TargetAttribute->GetHp() - AttackDamage);
 		}
 	}
 

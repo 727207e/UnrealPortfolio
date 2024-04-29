@@ -12,6 +12,7 @@
 #include "Data/UPCharacterControlData.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GAS/Attribute/UPMainCharacterAttributeSet.h"
 #include "GAS/GA/GA_Attack.h"
 #include "GAS/GA/GA_NPCInteractor.h"
 #include "Gimmick/UPNPCDetectorSceneComponent.h"

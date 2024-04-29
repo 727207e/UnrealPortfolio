@@ -3,11 +3,14 @@
 
 #include "Character/UPPlayerState.h"
 #include "AbilitySystemComponent.h"
+#include "GAS/Attribute/UPMainCharacterAttributeSet.h"
 #include "Interface/AbilitySystemGetInterface.h"
 
 AUPPlayerState::AUPPlayerState()
 {
 	ASC = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("ASC"));
+	AttributeSet = CreateDefaultSubobject<UUPMainCharacterAttributeSet>(TEXT("AttributeSet"));
+	
 	ASC->SetIsReplicated(true);
 	ASC->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 }
@@ -15,5 +18,10 @@ AUPPlayerState::AUPPlayerState()
 UAbilitySystemComponent* AUPPlayerState::GetAbilitySystemComponent() const
 {
 	return ASC;
+}
+
+UUPMainCharacterAttributeSet* AUPPlayerState::GetMainCharacterAttributeSet() const
+{
+	return  AttributeSet;
 }
 

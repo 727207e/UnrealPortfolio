@@ -83,4 +83,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = TableData)
 	TObjectPtr<UDataTable> ActionDataTable;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UEntityAttributeSet> AttributeSet;
 };

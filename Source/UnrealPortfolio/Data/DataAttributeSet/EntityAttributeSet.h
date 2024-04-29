@@ -29,12 +29,13 @@ public:
 	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, MaxHp);
 	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, Attack);
 	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, AttackRange);
+	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, AttackRadius);
 	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, AttackSize);
 	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, Armor);
 	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, AttackSpeed);
 	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, AttackRate);
 	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, MovementSpeed);
-
+	
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 	virtual bool PreGameplayEffectExecute(struct FGameplayEffectModCallbackData& Data) override;
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
@@ -53,6 +54,9 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData AttackRange;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData AttackRadius;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData AttackSize;
