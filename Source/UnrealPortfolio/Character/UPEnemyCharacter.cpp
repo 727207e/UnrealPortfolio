@@ -7,6 +7,7 @@
 #include "GAS/State/UPACEntityState.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "AI/UPNormalEnemyAIController.h"
 
 
 AUPEnemyCharacter::AUPEnemyCharacter()
@@ -17,6 +18,9 @@ AUPEnemyCharacter::AUPEnemyCharacter()
 	{
 		HitMontage = HitAnimMontageRef.Object;
 	}
+
+	AIControllerClass = AUPNormalEnemyAIController::StaticClass();
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
 
 void AUPEnemyCharacter::SetDead()
