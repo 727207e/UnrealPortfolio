@@ -3,7 +3,6 @@
 
 #include "Character/UPMainCharacter.h"
 #include "AbilitySystemComponent.h"
-#include "Character/UPPlayerState.h"
 #include "Player/UPPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
@@ -12,7 +11,6 @@
 #include "Data/UPCharacterControlData.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "GAS/Attribute/UPMainCharacterAttributeSet.h"
 #include "GAS/GA/GA_Attack.h"
 #include "GAS/GA/GA_NPCInteractor.h"
 #include "Gimmick/UPNPCDetectorSceneComponent.h"

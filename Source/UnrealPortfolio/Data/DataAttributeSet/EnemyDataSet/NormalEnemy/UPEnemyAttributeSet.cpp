@@ -34,8 +34,7 @@ void UUPEnemyAttributeSet::SettingValue(FUPBaseTable table)
 	Super::SettingValue(table);
 
 	FUPNormalEnemyTable* NormalTable = static_cast<FUPNormalEnemyTable*>(&table);
-
-	SetMyAttackKnockback(NormalTable->MyAttackKnockback);
+	
 	SetFleezeTime(NormalTable->FleezeTime);
 	SetTargetSearchingRange(NormalTable->TargetSearchingRange);
 }

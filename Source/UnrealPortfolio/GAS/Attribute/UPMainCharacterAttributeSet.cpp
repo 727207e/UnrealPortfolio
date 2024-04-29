@@ -5,7 +5,4 @@
 
 UUPMainCharacterAttributeSet::UUPMainCharacterAttributeSet() 
 {
-	AttackRange = 100.0f;
-	AttackRadius = 50.f;
-	AttackRate = 30.0f;
 }
