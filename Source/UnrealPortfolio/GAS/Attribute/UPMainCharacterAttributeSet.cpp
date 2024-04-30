@@ -3,7 +3,7 @@
 
 #include "GAS/Attribute/UPMainCharacterAttributeSet.h"
 
-#include "UPGameSingleton.h"
+#include "Game/UPGameSingleton.h"
 #include "Data/DataAsset/MainCharacter/UPMainCharacterClassTable.h"
 
 UUPMainCharacterAttributeSet::UUPMainCharacterAttributeSet() 

@@ -3,7 +3,7 @@
 
 #include "Character/UPBattleBaseCharacter.h"
 #include "AbilitySystemComponent.h"
-#include "UPGameSingleton.h"
+#include "Game/UPGameSingleton.h"
 #include "UPPlayerState.h"
 #include "Data/DataTable/UPActionTable.h"
 #include "GAS/Actor/GameplayEventDataRequest.h"

@@ -7,7 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "NiagaraFunctionLibrary.h"
-#include "UPGameSingleton.h"
+#include "Game/UPGameSingleton.h"
 #include "UPPlayerState.h"
 #include "Camera/CameraComponent.h"
 #include "Data/UPCharacterControlData.h"
