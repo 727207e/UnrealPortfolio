@@ -90,16 +90,13 @@ protected:
 	
 	void Knockback(TObjectPtr<class AGameplayEventDataRequest> ActionData);
 
-	UPROPERTY(EditAnywhere, Category = TableData)
-	TObjectPtr<UDataTable> ActionDataTable;
-
 	FTimerHandle AttackDelay;
 	void SetAttackDelay(float DelayTime);
 
 public :
 	bool bCanAttack;
 	virtual void AttackEndCallBack() override;
-	void AddAttackEndCallBack(const FOnEndAttackDelegate& OnEndAttack);	//¼öÁ¤ µÇ´ÂÁö È®ÀÎÇØº¼°Í.
+	void AddAttackEndCallBack(const FOnEndAttackDelegate& OnEndAttack);	//ï¿½ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Øºï¿½ï¿½ï¿½.
 	virtual void NormalAttack();
 
 public :

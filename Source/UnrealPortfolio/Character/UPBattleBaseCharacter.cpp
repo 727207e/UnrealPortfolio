@@ -11,11 +11,6 @@
 AUPBattleBaseCharacter::AUPBattleBaseCharacter()
 {
 	ASC = nullptr;
-	static::ConstructorHelpers::FObjectFinder<UDataTable> TableDataRef(TEXT("/Script/Engine.DataTable'/Game/Data/ActionTableData/DT_ActionData.DT_ActionData'"));
-	if(TableDataRef.Object)
-	{
-		ActionDataTable = TableDataRef.Object;	
-	}
 
 	bCanAttack = true;
 }
