@@ -3,6 +3,9 @@
 
 #include "GAS/GA/GA_Attack.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
+#include "AbilitySystemComponent.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "Data/DataAttributeSet/EntityAttributeSet.h"
 #include "Character/UPMainCharacter.h"
 
 void UGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -17,11 +20,27 @@ void UGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 		CurrentComboData = AttackableCharacter->GetComboActionData();
 	}
 
+	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(ActorInfo->AvatarActor.Get());
+	if (nullptr == TargetASC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("GA_Attack Can't Find ASC"));
+		return;
+	}
+
+	UEntityAttributeSet* TargetAttribute = const_cast<UEntityAttributeSet*>(TargetASC->GetSet<UEntityAttributeSet>());
+	if (nullptr == TargetAttribute)
+	{
+		UE_LOG(LogTemp, Error, TEXT("GA_Attack Can't Find AttributeSet"));
+		return;
+	}
+
 	/** PlayAttackTask Ability **/
 	UAbilityTask_PlayMontageAndWait* PlayAttackTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 	this,TEXT("PlayAttack"),
 	AttackableCharacter->GetComboActionMontage(),
-	1.0f,GetNextSection());
+	TargetAttribute->GetAttackSpeed(),
+	GetNextSection());
+
 	PlayAttackTask->OnCompleted.AddDynamic(this,&UGA_Attack::OnCompleteCallback);
 	PlayAttackTask->OnInterrupted.AddDynamic(this,&UGA_Attack::OnInterruptedCallback);
 	PlayAttackTask->ReadyForActivation();
@@ -70,7 +89,6 @@ void UGA_Attack::StartComboTimer()
 	{
 		GetWorld()->GetTimerManager().SetTimer(ComboTimerHandle, this, &UGA_Attack::CheckComboInput, ComboEffectiveTime, false);
 	}
-	
 }
 
 void UGA_Attack::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -86,6 +104,8 @@ void UGA_Attack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGame
     	CurrentComboData = nullptr;
     	CurrentCombo = 0;
     	HasNextComboInput = false;
+
+		AttackableCharacter->AttackEndCallBack();
 }
 
 void UGA_Attack::InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,

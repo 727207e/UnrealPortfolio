@@ -11,6 +11,13 @@
 AUPBattleBaseCharacter::AUPBattleBaseCharacter()
 {
 	ASC = nullptr;
+	static::ConstructorHelpers::FObjectFinder<UDataTable> TableDataRef(TEXT("/Script/Engine.DataTable'/Game/Data/ActionTableData/DT_ActionData.DT_ActionData'"));
+	if(TableDataRef.Object)
+	{
+		ActionDataTable = TableDataRef.Object;	
+	}
+
+	bCanAttack = true;
 }
 
 void AUPBattleBaseCharacter::SetDead()
@@ -106,6 +113,8 @@ UAnimMontage* AUPBattleBaseCharacter::GetComboActionMontage()
 void AUPBattleBaseCharacter::CallGAS(int32 GameplayAbilityInputId)
 {
 	FGameplayAbilitySpec* Spec = ASC->FindAbilitySpecFromInputID(GameplayAbilityInputId);
+	UsingGAArray.Add(*Spec);
+
 	if (Spec)
 	{
 		Spec->InputPressed = true;
@@ -118,6 +127,21 @@ void AUPBattleBaseCharacter::CallGAS(int32 GameplayAbilityInputId)
 			ASC->TryActivateAbility(Spec->Handle);
 		}
 	}
+}
+
+TArray<FGameplayAbilitySpec> AUPBattleBaseCharacter::GetUsingGas(int32 GameplayAbilityInputId)
+{
+	TArray<FGameplayAbilitySpec> Result;
+
+	for (FGameplayAbilitySpec GASpec : UsingGAArray)
+	{
+		if (GASpec.InputID == GameplayAbilityInputId)
+		{
+			Result.Add(GASpec);
+		}
+	}
+
+	return Result;
 }
 
 void AUPBattleBaseCharacter::Hit(FVector TargetLocation, TObjectPtr<class AGameplayEventDataRequest> ActionData)
@@ -134,6 +158,8 @@ void AUPBattleBaseCharacter::PlayHitAnimation()
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		AnimInstance->Montage_Play(HitMontage);
 	}
+
+	OnHitDelegate.Broadcast();
 }
 
 void AUPBattleBaseCharacter::Knockback(TObjectPtr<class AGameplayEventDataRequest> ActionData)
@@ -150,14 +176,46 @@ void AUPBattleBaseCharacter::Knockback(TObjectPtr<class AGameplayEventDataReques
 		BreakVector.X = BreakVector.X + ActionRowData->NockbackSize;
 		BreakVector.Z = ActionRowData->NockbackUpSize;
 		LaunchCharacter(BreakVector,true,false);
-
-		
 	}
 }
 
+void AUPBattleBaseCharacter::SetAttackDelay(float DelayTime)
+{
+	UE_LOG(LogTemp, Log, TEXT("Timer Start %f"), DelayTime);
+	GetWorld()->GetTimerManager().SetTimer(AttackDelay, FTimerDelegate::CreateLambda([=, this] 
+		{
+			UE_LOG(LogTemp, Log, TEXT("Timer Done"));
+			bCanAttack = true;
+		}), DelayTime, false);
+}
+
+void AUPBattleBaseCharacter::AttackEndCallBack()
+{
+	OnEndAttackDelegate.Broadcast();
+	OnEndAttackDelegate.Clear();
+}
+
+void AUPBattleBaseCharacter::AddAttackEndCallBack(const FOnEndAttackDelegate& OnEndAttack)
+{
+	OnEndAttackDelegate = OnEndAttack;
+}
+
+void AUPBattleBaseCharacter::NormalAttack()
+{
+	
+}
+
+void AUPBattleBaseCharacter::AddOnEndAttackDelegate(FOnEndAttackDelegate& Delegate)
+{
+	OnEndAttackDelegate = Delegate;
+}
+
+void AUPBattleBaseCharacter::AddOnHitDelegate(FOnHitDelegate& Delegate)
+{
+	OnHitDelegate = Delegate;
+}
 
 UAbilitySystemComponent* AUPBattleBaseCharacter::GetAbilitySystemComponent() const
 {
 	return ASC;
 }
-

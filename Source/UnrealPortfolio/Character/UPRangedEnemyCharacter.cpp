@@ -28,9 +28,6 @@ AUPRangedEnemyCharacter::AUPRangedEnemyCharacter()
 void AUPRangedEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	FTimerHandle DeadTimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, this, &AUPRangedEnemyCharacter::SetDead, 5.0f, false);
 }
 
 void AUPRangedEnemyCharacter::SetDead()
