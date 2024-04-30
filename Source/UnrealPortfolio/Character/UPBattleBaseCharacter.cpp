@@ -3,6 +3,7 @@
 
 #include "Character/UPBattleBaseCharacter.h"
 #include "AbilitySystemComponent.h"
+#include "Game/UPGameSingleton.h"
 #include "UPPlayerState.h"
 #include "Data/DataTable/UPActionTable.h"
 #include "GAS/Actor/GameplayEventDataRequest.h"
@@ -36,6 +37,8 @@ void AUPBattleBaseCharacter::PossessedBy(AController* NewController)
 		if (PS)
 		{
 			ASC = PS->GetAbilitySystemComponent();
+			AttributeSet = PS->GetMainCharacterAttributeSet();
+			
 			SetupASCHostPlayer(PS);
 			PlayerController->ConsoleCommand(TEXT("showdebug abilitysystem"));
 		}
@@ -93,6 +96,7 @@ void AUPBattleBaseCharacter::SetupASCClientPlayer()
 	{
 		ASC = PS->GetAbilitySystemComponent();
 		ASC->InitAbilityActorInfo(PS, this);
+		AttributeSet = PS->GetMainCharacterAttributeSet();
 	}
 }
 
@@ -165,11 +169,13 @@ void AUPBattleBaseCharacter::Knockback(TObjectPtr<class AGameplayEventDataReques
 	const FString RowTableNameString = RowTableName.ToString();
 	const TCHAR* RowTableNamePtr = *RowTableNameString;
 	const FName NextSection = *FString::Printf(TEXT("%s%d"), RowTableNamePtr, ActionData->ActionId);
-	if(const FUPActionTable* ActionTableData = ActionDataTable->FindRow<FUPActionTable>(FName(NextSection),TEXT("Finding Row")))
+
+	const auto ActionTableData  = UUPGameSingleton::Get().ActionDataTable;
+	if(const FUPActionTable* ActionRowData = ActionTableData->FindRow<FUPActionTable>(FName(NextSection),TEXT("Finding Row")))
 	{
-		FVector BreakVector = GetActorForwardVector() * ActionTableData->NockbackDuration;
-		BreakVector.X = BreakVector.X + ActionTableData->NockbackSize;
-		BreakVector.Z = ActionTableData->NockbackUpSize;
+		FVector BreakVector = GetActorForwardVector() * ActionRowData->NockbackDuration;
+		BreakVector.X = BreakVector.X + ActionRowData->NockbackSize;
+		BreakVector.Z = ActionRowData->NockbackUpSize;
 		LaunchCharacter(BreakVector,true,false);
 	}
 }

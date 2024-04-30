@@ -11,7 +11,7 @@ struct FUPBaseTable : public FTableRowBase
 	GENERATED_BODY()
 
 public:
-	FUPBaseTable() : MaxHp(0.0f), Attack(0.0f), AttackRange(0.0f), AttackSize(0.0f), Armor(0.0f), AttackSpeed(0.0f), AttackRate(0.0f) , MovementSpeed(0.0f) {}
+	FUPBaseTable() : MaxHp(0.0f), Attack(0.0f), AttackRange(0.0f), AttackSize(0.0f), Armor(0.0f), AttackSpeed(0.0f), AttackRate(0.0f), AttackRadius(0.0f) , MovementSpeed(0.0f) {}
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
 	float MaxHp;
@@ -33,6 +33,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
 	float AttackRate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+	float AttackRadius;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
 	float MovementSpeed;

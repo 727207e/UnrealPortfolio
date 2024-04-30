@@ -107,4 +107,7 @@ public :
 	FOnHitDelegate OnHitDelegate;
 	void AddOnEndAttackDelegate(FOnEndAttackDelegate& Deleagte);
 	void AddOnHitDelegate(FOnHitDelegate& Delegate);
+	
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UEntityAttributeSet> AttributeSet;
 };
