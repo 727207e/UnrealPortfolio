@@ -30,7 +30,6 @@ public:
 	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, Attack);
 	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, AttackRange);
 	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, AttackRadius);
-	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, AttackSize);
 	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, Armor);
 	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, AttackSpeed);
 	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, AttackRate);
@@ -58,9 +57,6 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData AttackRadius;
-
-	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData AttackSize;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData Armor;
@@ -98,7 +94,6 @@ void UEntityAttributeSet::SettingValue(T BaseTablePtr)
 	SetMaxHp(table->MaxHp);
 	SetAttack(table->Attack);
 	SetAttackRange(table->AttackRange);
-	SetAttackSize(table->AttackSize);
 	SetArmor(table->Armor);
 	SetAttackSpeed(table->AttackSpeed);
 	SetAttackRate(table->AttackRate);

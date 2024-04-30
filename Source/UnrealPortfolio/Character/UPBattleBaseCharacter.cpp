@@ -160,7 +160,6 @@ void AUPBattleBaseCharacter::PlayHitAnimation()
 	}
 
 	OnHitDelegate.Broadcast();
-	OnHitDelegate.Clear();
 }
 
 void AUPBattleBaseCharacter::Knockback(TObjectPtr<class AGameplayEventDataRequest> ActionData)
@@ -208,20 +207,12 @@ void AUPBattleBaseCharacter::NormalAttack()
 
 void AUPBattleBaseCharacter::AddOnEndAttackDelegate(FOnEndAttackDelegate& Delegate)
 {
-	OnEndAttackDelegate.AddLambda([&]()
-		{
-			Delegate.Broadcast();
-			Delegate.Clear();
-		});
+	OnEndAttackDelegate = Delegate;
 }
 
 void AUPBattleBaseCharacter::AddOnHitDelegate(FOnHitDelegate& Delegate)
 {
-	OnHitDelegate.AddLambda([&]()
-		{
-			Delegate.Broadcast();
-			Delegate.Clear();
-		});
+	OnHitDelegate = Delegate;
 }
 
 UAbilitySystemComponent* AUPBattleBaseCharacter::GetAbilitySystemComponent() const

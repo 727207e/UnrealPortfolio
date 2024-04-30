@@ -17,7 +17,6 @@ void UUPMainCharacterAttributeSet::MainCharacterSettingValue(const FUPMainCharac
 	SetHp(Table.MaxHp);
 	SetAttack(Table.Attack);
 	SetAttackRange(Table.AttackRange);
-	SetAttackSize(Table.AttackSize);
 	SetArmor(Table.Armor);
 	SetAttackSpeed(Table.AttackSpeed);
 	SetAttackRadius(Table.AttackRadius);
@@ -25,7 +24,6 @@ void UUPMainCharacterAttributeSet::MainCharacterSettingValue(const FUPMainCharac
 	SetMovementSpeed(Table.MovementSpeed);
 	SetMaxMp(Table.MaxMp);
 	SetMp(Table.MaxMp);
-	
 }
 
 void UUPMainCharacterAttributeSet::InitAttributeSet()

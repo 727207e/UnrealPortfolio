@@ -44,9 +44,12 @@ EBTNodeResult::Type UBTTask_FindTarget::ExecuteTask(UBehaviorTreeComponent& Owne
 	//공격 받으면 캔슬
 	FOnHitDelegate OnHitDelegate;
 	OnHitDelegate.AddLambda([&]() {
-		FindTargetGAS.Ability->CancelAbility(FindTargetGAS.Handle, FindTargetGAS.Ability->GetCurrentActorInfo(), FindTargetGAS.ActivationInfo, true);
-		BbComponent->SetValueAsBool(BBKEY_TARGETFIND, true);
-		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+			if (FindTargetGAS.Ability)
+			{
+				FindTargetGAS.Ability->CancelAbility(FindTargetGAS.Handle, FindTargetGAS.Ability->GetCurrentActorInfo(), FindTargetGAS.ActivationInfo, true);
+				BbComponent->SetValueAsBool(BBKEY_TARGETFIND, true);
+				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+			}
 		});
 	EnemyCharacter->AddOnHitDelegate(OnHitDelegate);
 
