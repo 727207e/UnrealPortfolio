@@ -8,19 +8,20 @@
 #include "DrawDebugHelpers.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "defines/UPCollision.h"
+#include "AbilitySystemComponent.h"
+#include "GAS/Attribute/UPMainCharacterAttributeSet.h"
+#include "Data/DataAttributeSet/EntityAttributeSet.h"
+#include "AbilitySystemBlueprintLibrary.h"
 
 AGATA_Trace::AGATA_Trace()
 {
+	
 }
-
-
 
 void AGATA_Trace::StartTargeting(UGameplayAbility* Ability)
 {
 	Super::StartTargeting(Ability);
-    
 	SourceActor = Ability->GetCurrentActorInfo()->AvatarActor.Get();
-	
 }
 
 void AGATA_Trace::ConfirmTargetingAndContinue()
@@ -37,9 +38,21 @@ FGameplayAbilityTargetDataHandle AGATA_Trace::MakeTargetData() const
 {
 	ACharacter* Character = CastChecked<ACharacter>(SourceActor);
 
+	UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(SourceActor);
+	if(!ASC)
+	{
+		return FGameplayAbilityTargetDataHandle();
+	}
+
+	const UEntityAttributeSet* AttributeSet = ASC->GetSet<UEntityAttributeSet>();
+	if(!AttributeSet)
+	{
+		return FGameplayAbilityTargetDataHandle();
+	}
+	
 	FHitResult OutHitResult;
-	const float AttackRange = 100.0f;
-	const float AttackRadius = 50.f;
+	const float AttackRange = AttributeSet->GetAttackRange();
+	const float AttackRadius = AttributeSet->GetAttackRadius();
 
 	FCollisionQueryParams Params(SCENE_QUERY_STAT(CHANNEL_UPTRACE), false, Character);
 	const FVector Forward = Character->GetActorForwardVector();

@@ -14,7 +14,7 @@ void UEntityAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute
 {
 	if (Attribute == GetHpAttribute())
 	{
-		NewValue = NewValue < 0.0f ? 0.0f : NewValue;
+		NewValue = FMath::Clamp(NewValue, 0.0f,GetMaxHp());
 	}
 }
 
@@ -43,6 +43,7 @@ void UEntityAttributeSet::SettingValue(FUPBaseTable table)
 	SetArmor(table.Armor);
 	SetAttackSpeed(table.AttackSpeed);
 	SetAttackRate(table.AttackRate);
+	SetAttackRadius(table.AttackRadius);
 	SetMovementSpeed(table.MovementSpeed);
 }
 

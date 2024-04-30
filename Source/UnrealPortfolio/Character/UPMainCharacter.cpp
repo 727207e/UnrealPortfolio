@@ -3,13 +3,15 @@
 
 #include "Character/UPMainCharacter.h"
 #include "AbilitySystemComponent.h"
-#include "Character/UPPlayerState.h"
 #include "Player/UPPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Game/UPGameSingleton.h"
+#include "UPPlayerState.h"
 #include "Camera/CameraComponent.h"
 #include "Data/UPCharacterControlData.h"
+#include "Data/DataAsset/MainCharacter/UPMainCharacterClassTable.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GAS/GA/GA_Attack.h"
@@ -154,7 +156,6 @@ void AUPMainCharacter::OnNPCInteraction()
 
 void AUPMainCharacter::BeginPlay()
 {
-
 	Super::BeginPlay();
 	SetCharacterControl(ECharacterControlType::TopDown);
 
@@ -186,6 +187,7 @@ void AUPMainCharacter::PlayDeadAnimation()
 void AUPMainCharacter::SetupGasInput(AController* NewController)
 {
 	IUPControllerInterface* ControllerInterface = CastChecked<IUPControllerInterface>(NewController);
+
 	if (ControllerInterface)
 	{
 		ControllerInterface->SetPossessCharacterInterface(this);
@@ -329,6 +331,25 @@ void AUPMainCharacter::SetControllerMovementMod(EMovementMode MovementMode, APla
 		EnableInput(PlayerController);
 	}
 	PlayerController->GetCharacter()->GetCharacterMovement()->SetMovementMode(MovementMode);
+}
+
+void AUPMainCharacter::SetMainCharacterTableData() const
+{
+    const auto MainCharacterData = UUPGameSingleton::Get().GetCurrentMainCharacterData();
+	GetMesh()->SetSkeletalMesh(MainCharacterData.Mesh);
+	AttributeSet->InitAttributeSet();
+}
+
+void AUPMainCharacter::SetupASCClientPlayer()
+{
+	Super::SetupASCClientPlayer();
+	SetMainCharacterTableData();
+}
+
+void AUPMainCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
+{
+	Super::SetupASCHostPlayer(InOwnerActor);
+	SetMainCharacterTableData();
 }
 
 ECharacterControlType AUPMainCharacter::GetCharacterControl()

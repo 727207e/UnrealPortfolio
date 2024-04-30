@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
+#include "GAS/Attribute/UPMainCharacterAttributeSet.h"
 #include "Interface/AbilitySystemGetInterface.h"
 #include "UPPlayerState.generated.h"
 
@@ -19,8 +20,11 @@ public:
 	AUPPlayerState();
 
 	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	UUPMainCharacterAttributeSet* GetMainCharacterAttributeSet() const;
 
 protected:
 	UPROPERTY(EditAnywhere, Category = GAS)
 	TObjectPtr<class UAbilitySystemComponent> ASC;
+	UPROPERTY(EditAnywhere,Category = GAS)
+	TObjectPtr<class UUPMainCharacterAttributeSet> AttributeSet;
 };
