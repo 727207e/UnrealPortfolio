@@ -109,6 +109,8 @@ UAnimMontage* AUPBattleBaseCharacter::GetComboActionMontage()
 void AUPBattleBaseCharacter::CallGAS(int32 GameplayAbilityInputId)
 {
 	FGameplayAbilitySpec* Spec = ASC->FindAbilitySpecFromInputID(GameplayAbilityInputId);
+	UsingGAArray.Add(*Spec);
+
 	if (Spec)
 	{
 		Spec->InputPressed = true;
@@ -121,6 +123,21 @@ void AUPBattleBaseCharacter::CallGAS(int32 GameplayAbilityInputId)
 			ASC->TryActivateAbility(Spec->Handle);
 		}
 	}
+}
+
+TArray<FGameplayAbilitySpec> AUPBattleBaseCharacter::GetUsingGas(int32 GameplayAbilityInputId)
+{
+	TArray<FGameplayAbilitySpec> Result;
+
+	for (FGameplayAbilitySpec GASpec : UsingGAArray)
+	{
+		if (GASpec.InputID == GameplayAbilityInputId)
+		{
+			Result.Add(GASpec);
+		}
+	}
+
+	return Result;
 }
 
 void AUPBattleBaseCharacter::Hit(FVector TargetLocation, TObjectPtr<class AGameplayEventDataRequest> ActionData)
@@ -137,6 +154,9 @@ void AUPBattleBaseCharacter::PlayHitAnimation()
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		AnimInstance->Montage_Play(HitMontage);
 	}
+
+	OnHitDelegate.Broadcast();
+	OnHitDelegate.Clear();
 }
 
 void AUPBattleBaseCharacter::Knockback(TObjectPtr<class AGameplayEventDataRequest> ActionData)
@@ -151,8 +171,6 @@ void AUPBattleBaseCharacter::Knockback(TObjectPtr<class AGameplayEventDataReques
 		BreakVector.X = BreakVector.X + ActionTableData->NockbackSize;
 		BreakVector.Z = ActionTableData->NockbackUpSize;
 		LaunchCharacter(BreakVector,true,false);
-
-		
 	}
 }
 
@@ -180,6 +198,24 @@ void AUPBattleBaseCharacter::AddAttackEndCallBack(const FOnEndAttackDelegate& On
 void AUPBattleBaseCharacter::NormalAttack()
 {
 	
+}
+
+void AUPBattleBaseCharacter::AddOnEndAttackDelegate(FOnEndAttackDelegate& Delegate)
+{
+	OnEndAttackDelegate.AddLambda([&]()
+		{
+			Delegate.Broadcast();
+			Delegate.Clear();
+		});
+}
+
+void AUPBattleBaseCharacter::AddOnHitDelegate(FOnHitDelegate& Delegate)
+{
+	OnHitDelegate.AddLambda([&]()
+		{
+			Delegate.Broadcast();
+			Delegate.Clear();
+		});
 }
 
 UAbilitySystemComponent* AUPBattleBaseCharacter::GetAbilitySystemComponent() const

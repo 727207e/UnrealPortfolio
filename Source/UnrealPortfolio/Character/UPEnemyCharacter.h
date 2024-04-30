@@ -9,6 +9,9 @@
 /**
  * 
  */
+
+DECLARE_DELEGATE(FOnEndAnimDelegate);
+
 UCLASS()
 class UNREALPORTFOLIO_API AUPEnemyCharacter : public AUPBattleBaseCharacter
 {
@@ -32,4 +35,13 @@ protected :
 
 public :
 	virtual void NormalAttack() override;
+	FGameplayAbilitySpec FindTarget();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
+	TObjectPtr<class UAnimMontage> FindTargetMontage;
+
+	FOnEndAnimDelegate OnEndAnimDelegate;
+	void SetDelegate(const FOnEndAnimDelegate& OnEndAnim);
+
+	void OnFindTargetEnd();
 };

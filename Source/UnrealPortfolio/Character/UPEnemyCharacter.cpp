@@ -8,6 +8,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "AI/UPNormalEnemyAIController.h"
+#include "GAS/Actor/GameplayEventDataRequest.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Data/DataAttributeSet/EnemyDataSet/NormalEnemy/UPEnemyAttributeSet.h"
 
@@ -16,9 +17,14 @@ AUPEnemyCharacter::AUPEnemyCharacter()
 {
 	/** Setup Hit Montage **/
 	static::ConstructorHelpers::FObjectFinder<UAnimMontage> HitAnimMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Blueprint/Animation/Enemy/AM_NormalEnemyHit.AM_NormalEnemyHit'"));
-	if(HitAnimMontageRef.Object)
+	if (HitAnimMontageRef.Object)
 	{
 		HitMontage = HitAnimMontageRef.Object;
+	}
+	static::ConstructorHelpers::FObjectFinder<UAnimMontage> FindTargetMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Blueprint/Animation/Enemy/AM_NormalEnemyFoundTarget.AM_NormalEnemyFoundTarget'"));
+	if (FindTargetMontageRef.Object)
+	{
+		FindTargetMontage = FindTargetMontageRef.Object;
 	}
 
 	AIControllerClass = AUPNormalEnemyAIController::StaticClass();
@@ -65,7 +71,6 @@ void AUPEnemyCharacter::PostInitializeComponents()
 
 void AUPEnemyCharacter::MeshSetSimulatePhysics(USkeletalMeshComponent* targetMesh, UCapsuleComponent* targetCapsule)
 {
-	UE_LOG(LogTemp, Log, TEXT("MeshSetSimulatePhysics"));
 	targetMesh->SetCollisionProfileName(TEXT("PhysicsActor"));
 	targetMesh->SetAnimInstanceClass(nullptr);
 	targetMesh->SetSimulatePhysics(true);
@@ -104,4 +109,27 @@ void AUPEnemyCharacter::NormalAttack()
 		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(this);
 		SetAttackDelay(TargetASC->GetSet<UUPEnemyAttributeSet>()->GetAttackRate());
 	}
+}
+
+FGameplayAbilitySpec AUPEnemyCharacter::FindTarget()
+{
+	CallGAS(1);
+	auto UsingGas = GetUsingGas(1);
+	
+	if (UsingGas.Num() > 0)
+	{
+		return UsingGas[0];
+	}
+
+	return FGameplayAbilitySpec();
+}
+
+void AUPEnemyCharacter::OnFindTargetEnd()
+{
+	OnEndAnimDelegate.ExecuteIfBound();
+}
+
+void AUPEnemyCharacter::SetDelegate(const FOnEndAnimDelegate& OnEndAnim)
+{
+	OnEndAnimDelegate = OnEndAnim;
 }

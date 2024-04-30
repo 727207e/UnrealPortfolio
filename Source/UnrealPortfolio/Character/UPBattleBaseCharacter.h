@@ -7,6 +7,7 @@
 #include "AbilitySystemInterface.h"
 #include "Interface/AbilitySystemGetInterface.h"
 #include "Interface/AttackableCharacterInterface.h"
+#include "AbilitySystemComponent.h"
 #include "UPBattleBaseCharacter.generated.h"
 
 /**
@@ -14,6 +15,7 @@
  */
 
 DECLARE_MULTICAST_DELEGATE(FOnEndAttackDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnHitDelegate);
 
 UCLASS()
 class UNREALPORTFOLIO_API AUPBattleBaseCharacter : public AUPCharacter
@@ -49,12 +51,16 @@ protected:
 	UPROPERTY(EditAnywhere, Category = GAS)
 	TMap<int32, TSubclassOf<class UGameplayAbility>> StartInputAbilities;
 
+	UPROPERTY()
+	TArray<FGameplayAbilitySpec> UsingGAArray;
+
 protected:
 	virtual void SetupASCHostPlayer(AActor* InOwnerActor);
 	virtual void SetupASCClientPlayer();
 	
 public:
 	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	TArray<FGameplayAbilitySpec> GetUsingGas(int32 GameplayAbilityInputId);
 
 	/** Character Animation **/
 	/** Character Animation **/
@@ -93,9 +99,12 @@ protected:
 public :
 	bool bCanAttack;
 	virtual void AttackEndCallBack() override;
-	void AddAttackEndCallBack(const FOnEndAttackDelegate& OnEndAttack);
+	void AddAttackEndCallBack(const FOnEndAttackDelegate& OnEndAttack);	//수정 되는지 확인해볼것.
 	virtual void NormalAttack();
 
-private:
+public :
 	FOnEndAttackDelegate OnEndAttackDelegate;
+	FOnHitDelegate OnHitDelegate;
+	void AddOnEndAttackDelegate(FOnEndAttackDelegate& Deleagte);
+	void AddOnHitDelegate(FOnHitDelegate& Delegate);
 };
