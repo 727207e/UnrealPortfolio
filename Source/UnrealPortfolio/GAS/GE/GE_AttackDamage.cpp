@@ -5,12 +5,7 @@
 
 UGE_AttackDamage::UGE_AttackDamage()
 {
-	DurationPolicy = EGameplayEffectDurationType::Instant;
 
-	FGameplayModifierInfo HpModifier;
-	HpModifier.Attribute = FGameplayAttribute();
-
-	Modifiers.Add(HpModifier);
 }
 
 float UGE_AttackDamage::CalculateArmorRatio(float BaseDamage, float AttributeArmor)
