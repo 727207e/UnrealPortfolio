@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Data/DataAsset/MainCharacter/UPMainCharacterClassTable.h"
 #include "Data/DataAttributeSet/EntityAttributeSet.h"
 #include "UPMainCharacterAttributeSet.generated.h"
 
@@ -21,12 +22,18 @@ class UNREALPORTFOLIO_API UUPMainCharacterAttributeSet : public UEntityAttribute
 	GENERATED_BODY()
 
 public:
-
 	UUPMainCharacterAttributeSet();
+
+	ATTRIBUTE_ACCESSORS(UUPMainCharacterAttributeSet, Mp);
+	ATTRIBUTE_ACCESSORS(UUPMainCharacterAttributeSet, MaxMp);
 	
 	UPROPERTY(BlueprintReadOnly, Category = "MP", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData Mp;
 	
 	UPROPERTY(BlueprintReadOnly, Category = "MP", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData MaxMp;
+	
+	void MainCharacterSettingValue(const FUPMainCharacterClassTable& Table);
+
+	virtual  void InitAttributeSet() override;
 };

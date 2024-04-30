@@ -80,10 +80,7 @@ protected:
 	virtual void PlayHitAnimation() override;
 	
 	void Knockback(TObjectPtr<class AGameplayEventDataRequest> ActionData);
-
-	UPROPERTY(EditAnywhere, Category = TableData)
-	TObjectPtr<UDataTable> ActionDataTable;
-
+	
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UEntityAttributeSet> AttributeSet;
 };

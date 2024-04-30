@@ -60,7 +60,7 @@ public:
 	IUPEntityInterface* GetNPCEntityInterface();
 
 protected:
-	//Movement
+	/** Movement **/ 
 	float FollowTime; // For how long it has been pressed
 	FVector CachedDestination;
 
@@ -100,4 +100,10 @@ public:
 
 private :
 	void SetControllerMovementMod(EMovementMode MovementMode, APlayerController* PlayerController);
+
+protected:
+	/** Setup MainCharacter Table Data **/
+	void SetData();
+	
+	
 };

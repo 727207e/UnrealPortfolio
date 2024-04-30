@@ -43,6 +43,7 @@ void UEntityAttributeSet::SettingValue(FUPBaseTable table)
 	SetArmor(table.Armor);
 	SetAttackSpeed(table.AttackSpeed);
 	SetAttackRate(table.AttackRate);
+	SetAttackRadius(table.AttackRadius);
 	SetMovementSpeed(table.MovementSpeed);
 }
 
