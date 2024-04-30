@@ -103,7 +103,9 @@ private :
 
 protected:
 	/** Setup MainCharacter Table Data **/
-	void SetData();
-	
+	void SetMainCharacterTableData() const;
+
+	virtual  void SetupASCClientPlayer() override;
+	virtual  void SetupASCHostPlayer(AActor* InOwnerActor) override;
 	
 };

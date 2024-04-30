@@ -156,7 +156,6 @@ void AUPMainCharacter::OnNPCInteraction()
 
 void AUPMainCharacter::BeginPlay()
 {
-	SetData();
 	Super::BeginPlay();
 	SetCharacterControl(ECharacterControlType::TopDown);
 
@@ -334,12 +333,23 @@ void AUPMainCharacter::SetControllerMovementMod(EMovementMode MovementMode, APla
 	PlayerController->GetCharacter()->GetCharacterMovement()->SetMovementMode(MovementMode);
 }
 
-void AUPMainCharacter::SetData()
+void AUPMainCharacter::SetMainCharacterTableData() const
 {
     const auto MainCharacterData = UUPGameSingleton::Get().GetCurrentMainCharacterData();
 	GetMesh()->SetSkeletalMesh(MainCharacterData.Mesh);
 	AttributeSet->InitAttributeSet();
-	
+}
+
+void AUPMainCharacter::SetupASCClientPlayer()
+{
+	Super::SetupASCClientPlayer();
+	SetMainCharacterTableData();
+}
+
+void AUPMainCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
+{
+	Super::SetupASCHostPlayer(InOwnerActor);
+	SetMainCharacterTableData();
 }
 
 ECharacterControlType AUPMainCharacter::GetCharacterControl()

@@ -89,6 +89,7 @@ void AUPBattleBaseCharacter::SetupASCClientPlayer()
 	{
 		ASC = PS->GetAbilitySystemComponent();
 		ASC->InitAbilityActorInfo(PS, this);
+		AttributeSet = PS->GetMainCharacterAttributeSet();
 	}
 }
 
