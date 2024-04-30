@@ -1,0 +1,4 @@
+,S1_Damage,S1_AttackNumber,S1_KnockBack,S1_AttackRange,S1_AttackSpeed,S1_AttackRadius,S2_Damage,S2_AttackNumber,S2_KnockBack,S2_AttackRange,S2_AttackSpeed,S2_AttackRadius,S3_Damage,S3_AttackNumber,S3_KnockBack,S3_AttackRange,S3_AttackSpeed,S3_AttackRadius,S4_Damage,S4_AttackNumber,S4_KnockBack,S4_AttackRange,S4_AttackSpeed,S4_AttackRadius,Origin_Damage,Origin_AttackNumber,Origin_KnockBack,Origin_AttackRange,Origin_AttackSpeed,Origin_AttackRadius
+Phase1,10,3,1,1,0.5,0.5,10,2,1,5,0.5,0.5,0,0,0,0,0,0,0,0,0,0,0,0,3,1,1,2,1,1
+Phase2,10,5,1,1,0.5,0.5,10,2,3,5,0.5,0.5,10,1,3,1,0.5,5,0,0,0,0,0,0,3,1,1,2,1,1
+Phase3,10,8,1,1,1,1,10,2,3,5,1,1,10,2,3,1,1,5,0,5,0,0,1,0,5,1,1,2,2,1
