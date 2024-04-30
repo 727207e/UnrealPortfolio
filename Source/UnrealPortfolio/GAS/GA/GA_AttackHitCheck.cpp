@@ -9,6 +9,7 @@
 #include "Interface/AttackableCharacterInterface.h"
 #include "Data/DataAttributeSet/EntityAttributeSet.h"
 #include "Data/DataAttributeSet/EnemyDataSet/NormalEnemy/UPEnemyAttributeSet.h"
+#include "Tag/GameplayTags.h"
 
 UGA_AttackHitCheck::UGA_AttackHitCheck(): CurrentLevel(0)
 {
@@ -45,20 +46,21 @@ void UGA_AttackHitCheck::OnTraceResultCallback(const FGameplayAbilityTargetDataH
 		
 			const UEntityAttributeSet* SourceAttribute = SourceASC->GetSet<UEntityAttributeSet>();
 			UEntityAttributeSet* TargetAttribute = const_cast<UEntityAttributeSet*>(TargetASC->GetSet<UEntityAttributeSet>());
+			
 			if(!SourceAttribute || !TargetAttribute)
 			{
 				return;
 			}
-		
-			// 	const float AttackDamage = SourceAttribute->GetAttackRate();
-			// 	TargetAttribute->SetHp(TargetAttribute->GetHp() - AttackDamage);
-			// }
-		 	
-		
+			
 			FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(AttackDamageEffect);
 			if(EffectSpecHandle.IsValid())
 			{
-				EffectSpecHandle.Data->SetSetByCallerMagnitude(FName(""),-SourceAttribute->GetAttackRate());
+				const float TargetAttributeArmor = TargetAttribute->GetArmor();
+				float ArmorRatio = (TargetAttributeArmor / (TargetAttributeArmor + 50.0f));
+				ArmorRatio = FMath::RoundToFloat(ArmorRatio * 1000.0f) / 1000.0f;
+				const float ArmorCalcDamage =  SourceAttribute->GetAttackRate() * (1.0f - ArmorRatio);
+				
+				EffectSpecHandle.Data->SetSetByCallerMagnitude(TAG_DATA_DAMAGE,-ArmorCalcDamage);
 				ApplyGameplayEffectSpecToTarget(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,EffectSpecHandle,TargetDataHandle);
 			}
 		}
