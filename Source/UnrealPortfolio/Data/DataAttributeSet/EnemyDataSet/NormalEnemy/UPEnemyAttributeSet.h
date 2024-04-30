@@ -18,6 +18,7 @@ class UNREALPORTFOLIO_API UUPEnemyAttributeSet : public UEntityAttributeSet
 public:
 	UUPEnemyAttributeSet();
 	
+	ATTRIBUTE_ACCESSORS(UUPEnemyAttributeSet, MyAttackKnockback);
 	ATTRIBUTE_ACCESSORS(UUPEnemyAttributeSet, FleezeTime);
 	ATTRIBUTE_ACCESSORS(UUPEnemyAttributeSet, TargetSearchingRange);
 

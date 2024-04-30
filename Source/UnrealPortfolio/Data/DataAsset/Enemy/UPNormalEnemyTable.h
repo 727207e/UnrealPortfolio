@@ -12,7 +12,11 @@ struct FUPNormalEnemyTable : public FUPBaseTable
 	GENERATED_BODY()
 
 public:
-	FUPNormalEnemyTable() : FleezeTime(0.0f), TargetSearchingRange(0.0f) {}
+	FUPNormalEnemyTable() :MyAttackKnockback(0.0f),  FleezeTime(0.0f), TargetSearchingRange(0.0f) {}
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+	float MyAttackKnockback;
+	
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
 	float FleezeTime;
