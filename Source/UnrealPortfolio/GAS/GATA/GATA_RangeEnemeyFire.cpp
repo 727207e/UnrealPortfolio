@@ -16,6 +16,7 @@
 AGATA_RangeEnemeyFire::AGATA_RangeEnemeyFire()
 {
 	SocketName = "FirePos";
+	AutoDestroyTime = 2;
 
 	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 	SetRootComponent(Sphere);
@@ -61,8 +62,8 @@ void AGATA_RangeEnemeyFire::ConfirmTargetingAndContinue()
 	MuzzleComponent->SetAsset(ProjectileFX);
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AGATA_RangeEnemeyFire::OnOverlapBegin);
 
-	//타이머 시작 (10초뒤 자동 파괴)
-	//데이터 제작 및 브로드캐스트 (FGameplayAbilityTargetDataHandle -> 비어있는 걸로) 
+	FTimerHandle DeadTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, this, &AGATA_RangeEnemeyFire::AutoDestroy, AutoDestroyTime, false);
 }
 
 void AGATA_RangeEnemeyFire::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult)
@@ -117,4 +118,12 @@ void AGATA_RangeEnemeyFire::SettingProjectile()
 	CurrentTransform.SetRotation(SourceCharacter->GetActorQuat());
 
 	SetActorTransform(CurrentTransform);
+}
+
+void AGATA_RangeEnemeyFire::AutoDestroy()
+{
+	FGameplayAbilityTargetDataHandle DataHandle;
+	TargetDataReadyDelegate.Broadcast(DataHandle);
+
+	return;
 }

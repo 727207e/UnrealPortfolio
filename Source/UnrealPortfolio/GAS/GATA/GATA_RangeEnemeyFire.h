@@ -38,7 +38,6 @@ public :
 	TObjectPtr<class UNiagaraComponent> MuzzleComponent;
 
 public :
-	virtual void BeginPlay() override;
 	virtual void ConfirmTargetingAndContinue() override;
 	
 	UFUNCTION()
@@ -47,4 +46,6 @@ public :
 private :
 	FName SocketName;
 	void SettingProjectile();
+	void AutoDestroy();
+	float AutoDestroyTime;
 };
