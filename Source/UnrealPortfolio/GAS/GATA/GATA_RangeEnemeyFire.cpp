@@ -9,11 +9,14 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Character/UPMainCharacter.h"
 #include "Data/DataAttributeSet/EntityAttributeSet.h"
 
 AGATA_RangeEnemeyFire::AGATA_RangeEnemeyFire()
 {
+	SocketName = "FirePos";
+
 	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 	SetRootComponent(Sphere);
 
@@ -49,22 +52,17 @@ AGATA_RangeEnemeyFire::AGATA_RangeEnemeyFire()
 	SetReplicateMovement(true);
 }
 
-void AGATA_RangeEnemeyFire::BeginPlay()
-{
-	Super::BeginPlay();
-
-	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), MuzzleFX, GetActorLocation());
-	MuzzleComponent->SetAsset(ProjectileFX);
-
-	//타이머 시작 (10초뒤 자동 파괴)
-	//데이터 제작 및 브로드캐스트 (FGameplayAbilityTargetDataHandle -> 비어있는 걸로) 
-}
-
 void AGATA_RangeEnemeyFire::ConfirmTargetingAndContinue()
 {
 	bDestroyOnConfirmation = false;
 
+	SettingProjectile();
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), MuzzleFX, GetActorLocation());
+	MuzzleComponent->SetAsset(ProjectileFX);
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AGATA_RangeEnemeyFire::OnOverlapBegin);
+
+	//타이머 시작 (10초뒤 자동 파괴)
+	//데이터 제작 및 브로드캐스트 (FGameplayAbilityTargetDataHandle -> 비어있는 걸로) 
 }
 
 void AGATA_RangeEnemeyFire::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult)
@@ -96,4 +94,27 @@ void AGATA_RangeEnemeyFire::OnOverlapBegin(UPrimitiveComponent* OverlappedCompon
 	DataHandle.Add(TargetData);
 	TargetDataReadyDelegate.Broadcast(DataHandle);
 	return;
+}
+
+void AGATA_RangeEnemeyFire::SettingProjectile()
+{
+	ACharacter* SourceCharacter = CastChecked<ACharacter>(SourceActor);
+	USkeletalMeshComponent* SkeletalMeshComponent = SourceCharacter->GetMesh();
+	if (!SkeletalMeshComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("GATA_RangeEnemyFire : Skeletal mesh component not found."));
+		return;
+	}
+
+	if (!SkeletalMeshComponent->DoesSocketExist(SocketName))
+	{
+		UE_LOG(LogTemp, Error, TEXT("GATA_RangeEnemyFire : Skeletal mesh component not found."));
+		return;
+	}
+
+	FTransform CurrentTransform = GetActorTransform();
+	CurrentTransform.SetLocation(SkeletalMeshComponent->GetSocketLocation(SocketName));
+	CurrentTransform.SetRotation(SourceCharacter->GetActorQuat());
+
+	SetActorTransform(CurrentTransform);
 }
