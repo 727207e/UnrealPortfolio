@@ -5,6 +5,7 @@
 #include "Engine/DataTable.h"
 #include "Data/DataAsset/UPBaseTable.h"
 #include "GameplayEffectExtension.h"
+#include "Tag/GameplayTags.h"
 
 UEntityAttributeSet::UEntityAttributeSet()
 {
@@ -26,6 +27,14 @@ bool UEntityAttributeSet::PreGameplayEffectExecute(FGameplayEffectModCallbackDat
 void UEntityAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
+
+	if((GetHp() <= 0.0f) && !bOutOfHp)
+	{
+		Data.Target.AddLooseGameplayTag(TAG_CHARACTER_ISDEAD);
+		OnOutOfHp.Broadcast();
+	}
+
+	bOutOfHp = (GetHp() <= 0.0f);
 }
 
 void UEntityAttributeSet::InitAttributeSet()

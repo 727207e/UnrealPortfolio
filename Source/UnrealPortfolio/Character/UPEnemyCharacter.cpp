@@ -36,6 +36,7 @@ void AUPEnemyCharacter::PreInitializeComponents()
 			this->AddOwnedComponent(EnemyEntityState);
 			EnemyEntityState->RegisterComponent();
 			EnemyEntityState->InitEntityState(this);
+			EnemyEntityState->AttributeSet->OnOutOfHp.AddDynamic(this,&ThisClass::OnOutOfHp);
 		}
 	}
 }
@@ -97,4 +98,9 @@ void AUPEnemyCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 
 	ASC->AddSpawnedAttribute(EnemyEntityState->AttributeSet);
 	ASC->InitAbilityActorInfo(InOwnerActor, this);
+}
+
+void AUPEnemyCharacter::OnOutOfHp()
+{
+	Super::OnOutOfHp();
 }

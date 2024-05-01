@@ -83,4 +83,7 @@ protected:
 	
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UEntityAttributeSet> AttributeSet;
+	UFUNCTION()
+	virtual void OnOutOfHp();
+	
 };

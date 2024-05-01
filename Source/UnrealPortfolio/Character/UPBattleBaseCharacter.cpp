@@ -15,7 +15,7 @@ AUPBattleBaseCharacter::AUPBattleBaseCharacter()
 
 void AUPBattleBaseCharacter::SetDead()
 {
-	
+	SetActorEnableCollision(false);
 }
 
 
@@ -153,6 +153,11 @@ void AUPBattleBaseCharacter::Knockback(TObjectPtr<class AGameplayEventDataReques
 
 		
 	}
+}
+
+void AUPBattleBaseCharacter::OnOutOfHp()
+{
+	SetDead();
 }
 
 

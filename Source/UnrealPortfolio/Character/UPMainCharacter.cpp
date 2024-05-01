@@ -174,7 +174,6 @@ void AUPMainCharacter::SetDead()
 	Super::SetDead();
 	SetCharacterMovementMod(MOVE_None);
 	PlayDeadAnimation();
-	SetActorEnableCollision(false);
 }
 
 void AUPMainCharacter::PlayDeadAnimation()
@@ -338,6 +337,7 @@ void AUPMainCharacter::SetMainCharacterTableData() const
     const auto MainCharacterData = UUPGameSingleton::Get().GetCurrentMainCharacterData();
 	GetMesh()->SetSkeletalMesh(MainCharacterData.Mesh);
 	AttributeSet->InitAttributeSet();
+	AttributeSet->OnOutOfHp.AddDynamic(this,&ThisClass::OnOutOfHp);
 }
 
 void AUPMainCharacter::SetupASCClientPlayer()
@@ -351,6 +351,18 @@ void AUPMainCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 	Super::SetupASCHostPlayer(InOwnerActor);
 	SetMainCharacterTableData();
 }
+
+void AUPMainCharacter::OnOutOfHp()
+{
+	Super::OnOutOfHp();
+	
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if(PlayerController)
+	{
+		DisableInput(PlayerController);
+	}
+}
+
 
 ECharacterControlType AUPMainCharacter::GetCharacterControl()
 {

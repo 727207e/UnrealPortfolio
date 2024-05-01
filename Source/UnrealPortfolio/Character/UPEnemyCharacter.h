@@ -29,5 +29,6 @@ protected :
 	TSubclassOf<class UUPACEntityState> EnemyEntityStateType;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Entity)
 	TObjectPtr<class UUPACEntityState> EnemyEntityState;
-
+	virtual void OnOutOfHp() override;
+	
 };

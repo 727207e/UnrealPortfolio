@@ -8,6 +8,8 @@
 #include "Data/DataAsset/UPBaseTable.h"
 #include "EntityAttributeSet.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOutOfHpDelegate);
+
 #define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
 	GAMEPLAYATTRIBUTE_PROPERTY_GETTER(ClassName, PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
@@ -79,6 +81,10 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FString StatName;
 
+	/** Dead **/
+	mutable FOutOfHpDelegate OnOutOfHp;
+	bool bOutOfHp = false;
+	
 protected:
 	virtual void SettingValue(FUPBaseTable table);
 	virtual FUPBaseTable GetTableData();
