@@ -48,8 +48,7 @@ AGATA_RangeEnemeyFire::AGATA_RangeEnemeyFire()
 	MuzzleComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("MuzzleComponent"));
 	MuzzleComponent->SetupAttachment(RootComponent);
 
-	SetReplicates(true);
-	SetReplicateMovement(true);
+	bReplicates = true;
 }
 
 void AGATA_RangeEnemeyFire::ConfirmTargetingAndContinue()
@@ -128,10 +127,9 @@ void AGATA_RangeEnemeyFire::SettingProjectile()
 
 void AGATA_RangeEnemeyFire::AutoDestroy()
 {
+	UE_LOG(LogTemp, Error, TEXT("dddd"));
 	FGameplayAbilityTargetDataHandle DataHandle;
 	TargetDataReadyDelegate.Broadcast(DataHandle);
 
 	return;
 }
-
-
