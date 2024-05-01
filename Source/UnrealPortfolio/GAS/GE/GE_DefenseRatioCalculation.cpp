@@ -33,21 +33,24 @@ void UGE_DefenseRatioCalculation::Execute_Implementation(
 	EvaluationParameters.SourceTags = SourceTags;
 	EvaluationParameters.TargetTags = TargetTags;
 
-	float AttackRate = Spec.GetSetByCallerMagnitude(TAG_DATA_DAMAGE,false,-1.0f);
-
+	const float AttackRate = Spec.GetSetByCallerMagnitude(TAG_DATA_DAMAGE,false,-1.0f);
 	float Armor = 0.0f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().ArmorDef,EvaluationParameters,Armor);
-
-	float Hp = 0.0f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().HpDef,EvaluationParameters,Hp);
-
-	float TestDamage = 70.0f;
-	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics().HpProperty,EGameplayModOp::Additive,TestDamage));
+	const float DamageDone = CalculateDoneDamageWithArmor(AttackRate,Armor);
+	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics().HpProperty,EGameplayModOp::Additive,DamageDone));
 }
 
 const FDamageStatics& UGE_DefenseRatioCalculation::DamageStatics()
 {
 	static FDamageStatics DmgStatics;
 	return DmgStatics;
+}
+
+float UGE_DefenseRatioCalculation::CalculateDoneDamageWithArmor(float AttackRate, float Armor) const
+{
+	const float ArmorRatio = (Armor / (Armor + ArmorReductionConstant));
+	const float ArmorRatioRound = FMath::RoundToFloat(ArmorRatio * RoundCondition) / RoundCondition;
+	const float DamageDone = (AttackRate * (MaxRatio - ArmorRatioRound));
+	return  DamageDone;
 }
 

@@ -55,12 +55,7 @@ void UGA_AttackHitCheck::OnTraceResultCallback(const FGameplayAbilityTargetDataH
 			FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(AttackDamageEffect);
 			if(EffectSpecHandle.IsValid())
 			{
-				const float TargetAttributeArmor = TargetAttribute->GetArmor();
-				float ArmorRatio = (TargetAttributeArmor / (TargetAttributeArmor + 50.0f));
-				ArmorRatio = FMath::RoundToFloat(ArmorRatio * 1000.0f) / 1000.0f;
-				const float ArmorCalcDamage =  SourceAttribute->GetAttackRate() * (1.0f - ArmorRatio);
-				
-				EffectSpecHandle.Data->SetSetByCallerMagnitude(TAG_DATA_DAMAGE,-ArmorCalcDamage);
+				EffectSpecHandle.Data->SetSetByCallerMagnitude(TAG_DATA_DAMAGE,-SourceAttribute->GetAttackRate());
 				ApplyGameplayEffectSpecToTarget(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,EffectSpecHandle,TargetDataHandle);
 			}
 		}
