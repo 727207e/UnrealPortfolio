@@ -3,9 +3,14 @@
 
 #include "GAS/GATA/GATA_RangeEnemeyFire.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Abilities/GameplayAbility.h"
 #include "NiagaraComponent.h"
 #include "Components/SphereComponent.h"
+#include "AbilitySystemComponent.h"
+#include "AbilitySystemBlueprintLibrary.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Character/UPMainCharacter.h"
+#include "Data/DataAttributeSet/EntityAttributeSet.h"
 
 AGATA_RangeEnemeyFire::AGATA_RangeEnemeyFire()
 {
@@ -50,5 +55,45 @@ void AGATA_RangeEnemeyFire::BeginPlay()
 
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), MuzzleFX, GetActorLocation());
 	MuzzleComponent->SetAsset(ProjectileFX);
+
+	//타이머 시작 (10초뒤 자동 파괴)
+	//데이터 제작 및 브로드캐스트 (FGameplayAbilityTargetDataHandle -> 비어있는 걸로) 
 }
 
+void AGATA_RangeEnemeyFire::ConfirmTargetingAndContinue()
+{
+	bDestroyOnConfirmation = false;
+
+	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AGATA_RangeEnemeyFire::OnOverlapBegin);
+}
+
+void AGATA_RangeEnemeyFire::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult)
+{
+	AUPMainCharacter* MainCharacter = Cast<AUPMainCharacter>(OtherActor);
+	if (MainCharacter == nullptr)
+	{
+		return;
+	}
+
+	FGameplayAbilityTargetDataHandle DataHandle;
+	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(SourceActor);
+	if (nullptr == TargetASC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("GATA_RangeEnemyFire Can't Find ASC"));
+		TargetDataReadyDelegate.Broadcast(DataHandle);
+		return;
+	}
+
+	const UEntityAttributeSet* AttributeSet = TargetASC->GetSet<UEntityAttributeSet>();
+	if (!AttributeSet)
+	{
+		UE_LOG(LogTemp, Error, TEXT("GATA_RangeEnemyFire Can't Find AttributeSet"));
+		TargetDataReadyDelegate.Broadcast(DataHandle);
+		return;
+	}
+
+	FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit(SweepHitResult);
+	DataHandle.Add(TargetData);
+	TargetDataReadyDelegate.Broadcast(DataHandle);
+	return;
+}

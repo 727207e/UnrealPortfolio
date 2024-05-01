@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Abilities/GameplayAbilityTargetActor.h"
+#include "GAS/GATA/GATA_Trace.h"
 #include "GATA_RangeEnemeyFire.generated.h"
 
 class UNiagaraSystem;
@@ -11,7 +11,7 @@ class UNiagaraSystem;
  * 
  */
 UCLASS()
-class UNREALPORTFOLIO_API AGATA_RangeEnemeyFire : public AGameplayAbilityTargetActor
+class UNREALPORTFOLIO_API AGATA_RangeEnemeyFire : public AGATA_Trace
 {
 	GENERATED_BODY()
 	
@@ -39,4 +39,8 @@ public :
 
 public :
 	virtual void BeginPlay() override;
+	virtual void ConfirmTargetingAndContinue() override;
+
+private :
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult);
 };
