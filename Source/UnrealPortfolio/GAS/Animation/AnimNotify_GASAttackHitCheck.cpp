@@ -19,6 +19,12 @@ void UAnimNotify_GASAttackHitCheck::Notify(USkeletalMeshComponent* MeshComp, UAn
 	{
 		if (AActor* OwnerActor = MeshComp->GetOwner())
 		{
+			UAbilitySystemComponent* AbilitySystemComponent = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OwnerActor);
+			if (nullptr == AbilitySystemComponent)
+			{
+				return;
+			}
+
 			FGameplayEventData PayloadData;
 			
 			/** Set Event Data **/

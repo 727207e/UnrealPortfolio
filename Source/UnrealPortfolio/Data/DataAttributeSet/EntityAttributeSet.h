@@ -98,6 +98,8 @@ void UEntityAttributeSet::SettingValue(T BaseTablePtr)
 	SetAttackSpeed(table->AttackSpeed);
 	SetAttackRate(table->AttackRate);
 	SetMovementSpeed(table->MovementSpeed);
+
+	InitHp(GetMaxHp());
 }
 
 template <typename T>

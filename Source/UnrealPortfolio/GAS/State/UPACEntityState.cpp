@@ -14,7 +14,7 @@ UUPACEntityState::UUPACEntityState()
 
 void UUPACEntityState::InitEntityState(AActor* Owner)
 {
-	ASC = NewObject<UAbilitySystemComponent>(Owner, UAbilitySystemComponent::StaticClass());
+	ASC = NewObject<UAbilitySystemComponent>(Owner, UAbilitySystemComponent::StaticClass(), TEXT("ASC"));
 	
 	Owner->AddOwnedComponent(ASC);
 	ASC->RegisterComponent();

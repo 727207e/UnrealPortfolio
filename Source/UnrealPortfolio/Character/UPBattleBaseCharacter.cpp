@@ -68,6 +68,7 @@ void AUPBattleBaseCharacter::ServerASCSyncRequest_Implementation()
 
 void AUPBattleBaseCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 {
+
 	ASC->InitAbilityActorInfo(InOwnerActor, this);
 
 	for (const auto& StartAbility : StartAbilities)
@@ -176,10 +177,8 @@ void AUPBattleBaseCharacter::Knockback(TObjectPtr<class AGameplayEventDataReques
 
 void AUPBattleBaseCharacter::SetAttackDelay(float DelayTime)
 {
-	UE_LOG(LogTemp, Log, TEXT("Timer Start %f"), DelayTime);
 	GetWorld()->GetTimerManager().SetTimer(AttackDelay, FTimerDelegate::CreateLambda([=, this] 
 		{
-			UE_LOG(LogTemp, Log, TEXT("Timer Done"));
 			bCanAttack = true;
 		}), DelayTime, false);
 }
