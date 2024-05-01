@@ -4,7 +4,9 @@
 #include "GAS/Animation/AnimNotify_GASAttackHitCheck.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GAS/Actor/GameplayEventDataRequest.h"
+
 class UAbilitySystemComponent;
+
 FString UAnimNotify_GASAttackHitCheck::GetNotifyName_Implementation() const
 {
 	return TEXT("GAS");

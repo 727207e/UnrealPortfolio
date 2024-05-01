@@ -48,5 +48,4 @@ private :
 	FName SocketName;
 	void SettingProjectile();
 	void AutoDestroy();
-	float AutoDestroyTime;
 };

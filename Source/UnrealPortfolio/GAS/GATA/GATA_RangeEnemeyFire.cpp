@@ -16,7 +16,6 @@
 AGATA_RangeEnemeyFire::AGATA_RangeEnemeyFire()
 {
 	SocketName = "FirePos";
-	AutoDestroyTime = 2;
 
 	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 	SetRootComponent(Sphere);
@@ -62,8 +61,22 @@ void AGATA_RangeEnemeyFire::ConfirmTargetingAndContinue()
 	MuzzleComponent->SetAsset(ProjectileFX);
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AGATA_RangeEnemeyFire::OnOverlapBegin);
 
+	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(SourceActor);
+	if (nullptr == TargetASC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("GATA_RangeEnemyFire Can't Find ASC"));
+		return;
+	}
+
+	const UEntityAttributeSet* AttributeSet = TargetASC->GetSet<UEntityAttributeSet>();
+	if (!AttributeSet)
+	{
+		UE_LOG(LogTemp, Error, TEXT("GATA_RangeEnemyFire Can't Find AttributeSet"));
+		return;
+	}
+
 	FTimerHandle DeadTimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, this, &AGATA_RangeEnemeyFire::AutoDestroy, AutoDestroyTime, false);
+	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, this, &AGATA_RangeEnemeyFire::AutoDestroy, AttributeSet->GetAttackRadius(), false);
 }
 
 void AGATA_RangeEnemeyFire::Destroyed()
@@ -83,21 +96,6 @@ void AGATA_RangeEnemeyFire::OnOverlapBegin(UPrimitiveComponent* OverlappedCompon
 	}
 
 	FGameplayAbilityTargetDataHandle DataHandle;
-	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(SourceActor);
-	if (nullptr == TargetASC)
-	{
-		UE_LOG(LogTemp, Error, TEXT("GATA_RangeEnemyFire Can't Find ASC"));
-		TargetDataReadyDelegate.Broadcast(DataHandle);
-		return;
-	}
-
-	const UEntityAttributeSet* AttributeSet = TargetASC->GetSet<UEntityAttributeSet>();
-	if (!AttributeSet)
-	{
-		UE_LOG(LogTemp, Error, TEXT("GATA_RangeEnemyFire Can't Find AttributeSet"));
-		TargetDataReadyDelegate.Broadcast(DataHandle);
-		return;
-	}
 
 	FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit(SweepHitResult);
 	DataHandle.Add(TargetData);
