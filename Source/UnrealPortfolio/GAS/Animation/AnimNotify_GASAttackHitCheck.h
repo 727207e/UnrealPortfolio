@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
 #include "GameplayTagContainer.h"
+#include "GAS/GATA/GATA_Trace.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
 #include "AnimNotify_GASAttackHitCheck.generated.h"
 
@@ -29,4 +30,6 @@ protected:
 	int32 ActionId;
 	UPROPERTY(EditAnywhere,Category = Data)
 	FName ActionRowName;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
+	TSubclassOf<AGATA_Trace> TargetTA;
 };

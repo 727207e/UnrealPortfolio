@@ -33,6 +33,7 @@ void UAnimNotify_GASAttackHitCheck::Notify(USkeletalMeshComponent* MeshComp, UAn
 			ActionData->ActionId = ActionId;
 			ActionData->ActionRowName = ActionRowName;
 			PayloadData.Instigator = ActionData;
+			PayloadData.OptionalObject = TargetTA.Get();
 			
 			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(OwnerActor, TriggerTag,PayloadData);
 		}
