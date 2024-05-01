@@ -66,6 +66,14 @@ void AGATA_RangeEnemeyFire::ConfirmTargetingAndContinue()
 	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, this, &AGATA_RangeEnemeyFire::AutoDestroy, AutoDestroyTime, false);
 }
 
+void AGATA_RangeEnemeyFire::Destroyed()
+{
+	Super::Destroyed();
+
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitFX, GetActorLocation());
+	MuzzleComponent->SetAsset(ProjectileFX);
+}
+
 void AGATA_RangeEnemeyFire::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult)
 {
 	AUPMainCharacter* MainCharacter = Cast<AUPMainCharacter>(OtherActor);
@@ -127,3 +135,5 @@ void AGATA_RangeEnemeyFire::AutoDestroy()
 
 	return;
 }
+
+
