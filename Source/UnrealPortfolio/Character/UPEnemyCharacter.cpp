@@ -10,7 +10,7 @@
 #include "AI/UPNormalEnemyAIController.h"
 #include "GAS/Actor/GameplayEventDataRequest.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Data/DataAttributeSet/EnemyDataSet/NormalEnemy/UPEnemyAttributeSet.h"
+#include "Data/DataAttributeSet/EntityAttributeSet.h"
 
 
 AUPEnemyCharacter::AUPEnemyCharacter()
@@ -64,7 +64,7 @@ void AUPEnemyCharacter::PostInitializeComponents()
 			EnemyEntityState->PostInitialize();
 
 
-			GetCharacterMovement()->MaxWalkSpeed *= TargetASC->GetSet<UUPEnemyAttributeSet>()->GetMovementSpeed();
+			GetCharacterMovement()->MaxWalkSpeed *= TargetASC->GetSet<UEntityAttributeSet>()->GetMovementSpeed();
 		}
 	}
 }
@@ -85,6 +85,7 @@ void AUPEnemyCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 {
 	if (nullptr == EnemyEntityState)
 	{
+		UE_LOG(LogTemp, Error, TEXT("EnemyCharacter No Enemy Entity State"));
 		return;
 	}
 
@@ -94,7 +95,6 @@ void AUPEnemyCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 	{
 		Super::SetupASCHostPlayer(InOwnerActor);
 	}
-
 	ASC->AddSpawnedAttribute(EnemyEntityState->AttributeSet);
 	ASC->InitAbilityActorInfo(InOwnerActor, this);
 }
@@ -107,7 +107,7 @@ void AUPEnemyCharacter::NormalAttack()
 		bCanAttack = false;
 
 		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(this);
-		SetAttackDelay(TargetASC->GetSet<UUPEnemyAttributeSet>()->GetAttackRate());
+		SetAttackDelay(TargetASC->GetSet<UEntityAttributeSet>()->GetAttackRate());
 	}
 }
 
