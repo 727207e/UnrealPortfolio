@@ -107,6 +107,6 @@ protected:
 
 	virtual  void SetupASCClientPlayer() override;
 	virtual  void SetupASCHostPlayer(AActor* InOwnerActor) override;
-	virtual void OnOutOfHp() override;
+	virtual void OnDead() override;
 	
 };

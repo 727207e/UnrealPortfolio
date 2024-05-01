@@ -47,7 +47,7 @@ void AUPEnemyCharacter::PreInitializeComponents()
 			this->AddOwnedComponent(EnemyEntityState);
 			EnemyEntityState->RegisterComponent();
 			EnemyEntityState->InitEntityState(this);
-			EnemyEntityState->AttributeSet->OnOutOfHp.AddDynamic(this,&ThisClass::OnOutOfHp);
+			EnemyEntityState->AttributeSet->OnDead.AddDynamic(this,&ThisClass::OnDead);
 		}
 	}
 }
@@ -100,9 +100,9 @@ void AUPEnemyCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 }
 
 
-void AUPEnemyCharacter::OnOutOfHp()
+void AUPEnemyCharacter::OnDead()
 {
-	Super::OnOutOfHp();
+	Super::OnDead();
 }
 
 void AUPEnemyCharacter::NormalAttack()

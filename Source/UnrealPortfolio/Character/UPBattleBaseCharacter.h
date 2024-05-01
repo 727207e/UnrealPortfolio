@@ -108,6 +108,6 @@ public :
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UEntityAttributeSet> AttributeSet;
 	UFUNCTION()
-	virtual void OnOutOfHp();
+	virtual void OnDead();
 	
 };

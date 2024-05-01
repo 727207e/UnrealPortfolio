@@ -31,7 +31,7 @@ void UEntityAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCall
 	if((GetHp() <= 0.0f) && !bOutOfHp)
 	{
 		Data.Target.AddLooseGameplayTag(TAG_CHARACTER_ISDEAD);
-		OnOutOfHp.Broadcast();
+		OnDead.Broadcast();
 	}
 
 	bOutOfHp = (GetHp() <= 0.0f);

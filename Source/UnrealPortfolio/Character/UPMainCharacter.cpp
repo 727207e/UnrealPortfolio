@@ -337,7 +337,7 @@ void AUPMainCharacter::SetMainCharacterTableData() const
     const auto MainCharacterData = UUPGameSingleton::Get().GetCurrentMainCharacterData();
 	GetMesh()->SetSkeletalMesh(MainCharacterData.Mesh);
 	AttributeSet->InitAttributeSet();
-	AttributeSet->OnOutOfHp.AddDynamic(this,&ThisClass::OnOutOfHp);
+	AttributeSet->OnDead.AddDynamic(this,&ThisClass::OnDead);
 }
 
 void AUPMainCharacter::SetupASCClientPlayer()
@@ -352,9 +352,9 @@ void AUPMainCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 	SetMainCharacterTableData();
 }
 
-void AUPMainCharacter::OnOutOfHp()
+void AUPMainCharacter::OnDead()
 {
-	Super::OnOutOfHp();
+	Super::OnDead();
 	
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if(PlayerController)

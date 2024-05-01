@@ -8,7 +8,7 @@
 #include "Data/DataAsset/UPBaseTable.h"
 #include "EntityAttributeSet.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOutOfHpDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeadDelegate);
 
 #define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
 	GAMEPLAYATTRIBUTE_PROPERTY_GETTER(ClassName, PropertyName) \
@@ -79,7 +79,7 @@ public:
 	FString StatName;
 
 	/** Dead **/
-	mutable FOutOfHpDelegate OnOutOfHp;
+	mutable FOnDeadDelegate OnDead;
 	bool bOutOfHp = false;
 	
 protected:

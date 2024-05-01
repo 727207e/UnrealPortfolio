@@ -176,7 +176,7 @@ void AUPBattleBaseCharacter::Knockback(TObjectPtr<class AGameplayEventDataReques
 }
 
 
-void AUPBattleBaseCharacter::OnOutOfHp()
+void AUPBattleBaseCharacter::OnDead()
 {
 	SetDead();
 }

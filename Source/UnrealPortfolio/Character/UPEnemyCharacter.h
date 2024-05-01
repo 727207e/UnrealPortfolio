@@ -33,7 +33,7 @@ protected :
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Entity)
 	TObjectPtr<class UUPACEntityState> EnemyEntityState;
 
-	virtual void OnOutOfHp() override;
+	virtual void OnDead() override;
 	
 
 
