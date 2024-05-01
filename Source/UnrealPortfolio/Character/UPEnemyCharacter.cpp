@@ -8,7 +8,6 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "AI/UPNormalEnemyAIController.h"
-#include "GAS/Actor/GameplayEventDataRequest.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Data/DataAttributeSet/EntityAttributeSet.h"
 
@@ -48,6 +47,7 @@ void AUPEnemyCharacter::PreInitializeComponents()
 			this->AddOwnedComponent(EnemyEntityState);
 			EnemyEntityState->RegisterComponent();
 			EnemyEntityState->InitEntityState(this);
+			EnemyEntityState->AttributeSet->OnDead.AddDynamic(this,&ThisClass::OnDead);
 		}
 	}
 }
@@ -99,6 +99,12 @@ void AUPEnemyCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 	ASC->InitAbilityActorInfo(InOwnerActor, this);
 }
 
+
+void AUPEnemyCharacter::OnDead()
+{
+	Super::OnDead();
+}
+
 void AUPEnemyCharacter::NormalAttack()
 {
 	if (bCanAttack)
@@ -133,3 +139,4 @@ void AUPEnemyCharacter::SetDelegate(const FOnEndAnimDelegate& OnEndAnim)
 {
 	OnEndAnimDelegate = OnEndAnim;
 }
+

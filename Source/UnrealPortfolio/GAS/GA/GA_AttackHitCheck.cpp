@@ -9,6 +9,7 @@
 #include "Interface/AttackableCharacterInterface.h"
 #include "Data/DataAttributeSet/EntityAttributeSet.h"
 #include "Data/DataAttributeSet/EnemyDataSet/NormalEnemy/UPEnemyAttributeSet.h"
+#include "Tag/GameplayTags.h"
 
 UGA_AttackHitCheck::UGA_AttackHitCheck(): CurrentLevel(0)
 {
@@ -31,6 +32,8 @@ void UGA_AttackHitCheck::OnTraceResultCallback(const FGameplayAbilityTargetDataH
 	if (UAbilitySystemBlueprintLibrary::TargetDataHasHitResult(TargetDataHandle, 0))
 	{
 		const FHitResult HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, 0);
+
+
 		if(IAttackableCharacterInterface* HitCharacter = Cast<IAttackableCharacterInterface>(HitResult.GetActor()))
 		{
 			HitCharacter->Hit(GetAvatarActorFromActorInfo()->GetActorLocation(),CurrentAction);
@@ -40,16 +43,21 @@ void UGA_AttackHitCheck::OnTraceResultCallback(const FGameplayAbilityTargetDataH
 			{
 				return;
 			}
-
+		
 			const UEntityAttributeSet* SourceAttribute = SourceASC->GetSet<UEntityAttributeSet>();
 			UEntityAttributeSet* TargetAttribute = const_cast<UEntityAttributeSet*>(TargetASC->GetSet<UEntityAttributeSet>());
+			
 			if(!SourceAttribute || !TargetAttribute)
 			{
 				return;
 			}
-
-			const float AttackDamage = SourceAttribute->GetAttackRate();
-			TargetAttribute->SetHp(TargetAttribute->GetHp() - AttackDamage);
+			
+			FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(AttackDamageEffect);
+			if(EffectSpecHandle.IsValid())
+			{
+				EffectSpecHandle.Data->SetSetByCallerMagnitude(TAG_DATA_DAMAGE,-SourceAttribute->GetAttackRate());
+				ApplyGameplayEffectSpecToTarget(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,EffectSpecHandle,TargetDataHandle);
+			}
 		}
 	}
 

@@ -17,7 +17,7 @@ AUPBattleBaseCharacter::AUPBattleBaseCharacter()
 
 void AUPBattleBaseCharacter::SetDead()
 {
-	
+	SetActorEnableCollision(false);
 }
 
 
@@ -173,6 +173,12 @@ void AUPBattleBaseCharacter::Knockback(TObjectPtr<class AGameplayEventDataReques
 		BreakVector.Z = ActionRowData->NockbackUpSize;
 		LaunchCharacter(BreakVector,true,false);
 	}
+}
+
+
+void AUPBattleBaseCharacter::OnDead()
+{
+	SetDead();
 }
 
 void AUPBattleBaseCharacter::SetAttackDelay(float DelayTime)
