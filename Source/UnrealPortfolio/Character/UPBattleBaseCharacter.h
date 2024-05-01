@@ -107,4 +107,7 @@ public :
 	
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UEntityAttributeSet> AttributeSet;
+	UFUNCTION()
+	virtual void OnDead();
+	
 };

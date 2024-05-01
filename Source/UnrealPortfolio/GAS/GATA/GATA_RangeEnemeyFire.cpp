@@ -127,7 +127,6 @@ void AGATA_RangeEnemeyFire::SettingProjectile()
 
 void AGATA_RangeEnemeyFire::AutoDestroy()
 {
-	UE_LOG(LogTemp, Error, TEXT("dddd"));
 	FGameplayAbilityTargetDataHandle DataHandle;
 	TargetDataReadyDelegate.Broadcast(DataHandle);
 

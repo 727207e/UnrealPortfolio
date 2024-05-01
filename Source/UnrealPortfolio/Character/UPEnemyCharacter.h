@@ -33,6 +33,10 @@ protected :
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Entity)
 	TObjectPtr<class UUPACEntityState> EnemyEntityState;
 
+	virtual void OnDead() override;
+	
+
+
 public :
 	virtual void NormalAttack() override;
 	FGameplayAbilitySpec FindTarget();
