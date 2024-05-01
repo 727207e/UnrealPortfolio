@@ -6,6 +6,9 @@
 #include "GameFramework/Character.h"
 #include "Components/CapsuleComponent.h"
 #include "DrawDebugHelpers.h"
+#include "AbilitySystemComponent.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "Data/DataAttributeSet/EntityAttributeSet.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "defines/UPCollision.h"
 #include "AbilitySystemComponent.h"
@@ -36,7 +39,14 @@ void AGATA_Trace::ConfirmTargetingAndContinue()
 
 FGameplayAbilityTargetDataHandle AGATA_Trace::MakeTargetData() const
 {
+	FGameplayAbilityTargetDataHandle DataHandle;
 	ACharacter* Character = CastChecked<ACharacter>(SourceActor);
+	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(SourceActor);
+	if (nullptr == TargetASC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Enemy Can't Find ASC"));
+		return DataHandle;
+	}
 
 	UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(SourceActor);
 	if(!ASC)
@@ -47,6 +57,7 @@ FGameplayAbilityTargetDataHandle AGATA_Trace::MakeTargetData() const
 	const UEntityAttributeSet* AttributeSet = ASC->GetSet<UEntityAttributeSet>();
 	if(!AttributeSet)
 	{
+		UE_LOG(LogTemp, Error, TEXT("TA Trace Can't Find AttributeSet"));
 		return FGameplayAbilityTargetDataHandle();
 	}
 	
@@ -61,8 +72,6 @@ FGameplayAbilityTargetDataHandle AGATA_Trace::MakeTargetData() const
 
 	bool HitDetected = GetWorld()->SweepSingleByChannel(OutHitResult, Start, End, FQuat::Identity, CHANNEL_UPTRACE, FCollisionShape::MakeSphere(AttackRadius), Params);
 	
-
-	FGameplayAbilityTargetDataHandle DataHandle;
 	if (HitDetected)
 	{
 		FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit(OutHitResult);

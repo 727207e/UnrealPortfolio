@@ -11,6 +11,8 @@
 AUPBattleBaseCharacter::AUPBattleBaseCharacter()
 {
 	ASC = nullptr;
+
+	bCanAttack = true;
 }
 
 void AUPBattleBaseCharacter::SetDead()
@@ -66,6 +68,7 @@ void AUPBattleBaseCharacter::ServerASCSyncRequest_Implementation()
 
 void AUPBattleBaseCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 {
+
 	ASC->InitAbilityActorInfo(InOwnerActor, this);
 
 	for (const auto& StartAbility : StartAbilities)
@@ -106,6 +109,8 @@ UAnimMontage* AUPBattleBaseCharacter::GetComboActionMontage()
 void AUPBattleBaseCharacter::CallGAS(int32 GameplayAbilityInputId)
 {
 	FGameplayAbilitySpec* Spec = ASC->FindAbilitySpecFromInputID(GameplayAbilityInputId);
+	UsingGAArray.Add(*Spec);
+
 	if (Spec)
 	{
 		Spec->InputPressed = true;
@@ -118,6 +123,21 @@ void AUPBattleBaseCharacter::CallGAS(int32 GameplayAbilityInputId)
 			ASC->TryActivateAbility(Spec->Handle);
 		}
 	}
+}
+
+TArray<FGameplayAbilitySpec> AUPBattleBaseCharacter::GetUsingGas(int32 GameplayAbilityInputId)
+{
+	TArray<FGameplayAbilitySpec> Result;
+
+	for (FGameplayAbilitySpec GASpec : UsingGAArray)
+	{
+		if (GASpec.InputID == GameplayAbilityInputId)
+		{
+			Result.Add(GASpec);
+		}
+	}
+
+	return Result;
 }
 
 void AUPBattleBaseCharacter::Hit(FVector TargetLocation, TObjectPtr<class AGameplayEventDataRequest> ActionData)
@@ -134,6 +154,8 @@ void AUPBattleBaseCharacter::PlayHitAnimation()
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		AnimInstance->Montage_Play(HitMontage);
 	}
+
+	OnHitDelegate.Broadcast();
 }
 
 void AUPBattleBaseCharacter::Knockback(TObjectPtr<class AGameplayEventDataRequest> ActionData)
@@ -150,19 +172,50 @@ void AUPBattleBaseCharacter::Knockback(TObjectPtr<class AGameplayEventDataReques
 		BreakVector.X = BreakVector.X + ActionRowData->NockbackSize;
 		BreakVector.Z = ActionRowData->NockbackUpSize;
 		LaunchCharacter(BreakVector,true,false);
-
-		
 	}
 }
+
 
 void AUPBattleBaseCharacter::OnOutOfHp()
 {
 	SetDead();
 }
 
+void AUPBattleBaseCharacter::SetAttackDelay(float DelayTime)
+{
+	GetWorld()->GetTimerManager().SetTimer(AttackDelay, FTimerDelegate::CreateLambda([=, this] 
+		{
+			bCanAttack = true;
+		}), DelayTime, false);
+}
+
+void AUPBattleBaseCharacter::AttackEndCallBack()
+{
+	OnEndAttackDelegate.Broadcast();
+	OnEndAttackDelegate.Clear();
+}
+
+void AUPBattleBaseCharacter::AddAttackEndCallBack(const FOnEndAttackDelegate& OnEndAttack)
+{
+	OnEndAttackDelegate = OnEndAttack;
+}
+
+void AUPBattleBaseCharacter::NormalAttack()
+{
+	
+}
+
+void AUPBattleBaseCharacter::AddOnEndAttackDelegate(FOnEndAttackDelegate& Delegate)
+{
+	OnEndAttackDelegate = Delegate;
+}
+
+void AUPBattleBaseCharacter::AddOnHitDelegate(FOnHitDelegate& Delegate)
+{
+	OnHitDelegate = Delegate;
+}
 
 UAbilitySystemComponent* AUPBattleBaseCharacter::GetAbilitySystemComponent() const
 {
 	return ASC;
 }
-

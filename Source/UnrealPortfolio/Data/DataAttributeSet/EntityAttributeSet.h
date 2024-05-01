@@ -32,7 +32,6 @@ public:
 	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, Attack);
 	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, AttackRange);
 	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, AttackRadius);
-	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, AttackSize);
 	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, Armor);
 	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, AttackSpeed);
 	ATTRIBUTE_ACCESSORS(UEntityAttributeSet, AttackRate);
@@ -41,6 +40,7 @@ public:
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 	virtual bool PreGameplayEffectExecute(struct FGameplayEffectModCallbackData& Data) override;
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
+
 
 	virtual void InitAttributeSet();
 
@@ -59,9 +59,6 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData AttackRadius;
-
-	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData AttackSize;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData Armor;
@@ -86,7 +83,45 @@ public:
 	bool bOutOfHp = false;
 	
 protected:
-	virtual void SettingValue(FUPBaseTable table);
-	virtual FUPBaseTable GetTableData();
+	template <typename T>
+	void SettingValue(T BaseTablePtr);
 
+	template <typename T>
+	T GetTableData();
 };
+
+
+template <typename T>
+void UEntityAttributeSet::SettingValue(T BaseTablePtr)
+{
+	FUPBaseTable* table = static_cast<FUPBaseTable*>(&BaseTablePtr);
+
+	SetHp(table->MaxHp);
+	SetMaxHp(table->MaxHp);
+	SetAttack(table->Attack);
+	SetAttackRange(table->AttackRange);
+	SetArmor(table->Armor);
+	SetAttackSpeed(table->AttackSpeed);
+	SetAttackRate(table->AttackRate);
+	SetMovementSpeed(table->MovementSpeed);
+
+	InitHp(GetMaxHp());
+}
+
+template <typename T>
+T UEntityAttributeSet::GetTableData()
+{
+	check(BaseStat);
+	TArray<FName> RowNames = BaseStat->GetRowNames();
+	T table;
+	for (int i = 0; i < RowNames.Num(); ++i)
+	{
+		if (StatName.Equals(RowNames[i].ToString()))
+		{
+			table = *(BaseStat->FindRow<T>(RowNames[i], RowNames[i].ToString()));
+			break;
+		}
+	}
+
+	return table;
+}
