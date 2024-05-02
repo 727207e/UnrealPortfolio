@@ -7,7 +7,7 @@
 #include "GAS/State/UPACEntityState.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "AI/UPNormalEnemyAIController.h"
+#include "AI/UPEnemyAIController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Data/DataAttributeSet/EntityAttributeSet.h"
 
@@ -26,7 +26,7 @@ AUPEnemyCharacter::AUPEnemyCharacter()
 		FindTargetMontage = FindTargetMontageRef.Object;
 	}
 
-	AIControllerClass = AUPNormalEnemyAIController::StaticClass();
+	AIControllerClass = AUPEnemyAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
 

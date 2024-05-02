@@ -2,6 +2,7 @@
 
 
 #include "Character/UPBossCharacter.h"
+#include "AI/UPBossAIController.h"
 
 AUPBossCharacter::AUPBossCharacter()
 {
@@ -22,6 +23,9 @@ AUPBossCharacter::AUPBossCharacter()
 	{
 		ComboActionMontage = ComboMontageRef.Object;
 	}
+
+	AIControllerClass = AUPBossAIController::StaticClass();
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
 
 void AUPBossCharacter::BeginPlay()
