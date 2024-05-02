@@ -13,7 +13,7 @@
 
 UGA_AttackHitCheck::UGA_AttackHitCheck(): CurrentLevel(0)
 {
-	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerExecution;
 
 	CurrentTA = AGATA_Trace::StaticClass();
 }
