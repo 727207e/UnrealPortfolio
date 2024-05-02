@@ -5,6 +5,4 @@
 #define TAG_ACTOR_INTERACTION FGameplayTag::RequestGameplayTag(FName("Actor.Action.Interaction"))
 #define TAG_DATA_DAMAGE FGameplayTag::RequestGameplayTag(FName("Data.Damage"))
 #define TAG_CHARACTER_ISDEAD FGameplayTag::RequestGameplayTag(FName("Character.State.IsDead"))
-
-//Boss
-#define TAG_BOSS_ATTACK FGameplayTag::RequestGameplayTag(FName("Character.Boss.BossAttack"))
+#define TAG_CHARACTER_SKILL FGameplayTag::RequestGameplayTag(FName("Character.Action.Skill"))
