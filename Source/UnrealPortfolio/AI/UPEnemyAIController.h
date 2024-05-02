@@ -17,7 +17,7 @@ class UNREALPORTFOLIO_API AUPEnemyAIController : public AAIController
 public :
 	AUPEnemyAIController();
 
-	void RunAI();
+	virtual void RunAI();
 	void StopAI();
 
 protected :

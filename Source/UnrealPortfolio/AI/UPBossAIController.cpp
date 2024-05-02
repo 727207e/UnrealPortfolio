@@ -8,13 +8,13 @@
 
 AUPBossAIController::AUPBossAIController()
 {
-	static ConstructorHelpers::FObjectFinder<UBlackboardData> BBAssetRef(TEXT("/Script/AIModule.BlackboardData'/Game/Blueprint/Animation/Enemy/AI/BB_NormalEnemy.BB_NormalEnemy'"));
+	static ConstructorHelpers::FObjectFinder<UBlackboardData> BBAssetRef(TEXT("/Script/AIModule.BlackboardData'/Game/Blueprint/Animation/Enemy/AI/BB_Boss.BB_Boss'"));
 	if (nullptr != BBAssetRef.Object)
 	{
 		BBAsset = BBAssetRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UBehaviorTree> BTAssetRef(TEXT("/Script/AIModule.BehaviorTree'/Game/Blueprint/Animation/Enemy/AI/BT_NormalEnemy.BT_NormalEnemy'"));
+	static ConstructorHelpers::FObjectFinder<UBehaviorTree> BTAssetRef(TEXT("/Script/AIModule.BehaviorTree'/Game/Blueprint/Animation/Enemy/AI/BT_Boss.BT_Boss'"));
 	if (nullptr != BTAssetRef.Object)
 	{
 		BTAsset = BTAssetRef.Object;
