@@ -16,6 +16,7 @@ UBTService_SetTargetAndSkill::UBTService_SetTargetAndSkill()
 {
 	NodeName = TEXT("SetTargetAndSkill");
 	Interval = 1.0f;
+	bGameStartFirst = true;
 }
 
 void UBTService_SetTargetAndSkill::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
@@ -26,13 +27,24 @@ void UBTService_SetTargetAndSkill::TickNode(UBehaviorTreeComponent& OwnerComp, u
 	int32 CurTimer = TargetBlackBoard->GetValueAsInt(BBKEY_CHANGETIMER);
 	if (CurTimer < NewSearchLimitTime)
 	{
-		TargetBlackBoard->SetValueAsInt(BBKEY_CHANGETIMER, CurTimer++);
+		TargetBlackBoard->SetValueAsInt(BBKEY_CHANGETIMER, ++CurTimer);
 		return;
 	}
 
 	TargetBlackBoard->SetValueAsInt(BBKEY_CHANGETIMER, 0);
 	TargetBlackBoard->SetValueAsObject(BBKEY_TARGET, ChangeTarget());
 	TargetBlackBoard->SetValueAsInt(BBKEY_SKILLNUMBER, ChangeSkillNumber(OwnerComp));
+}
+
+void UBTService_SetTargetAndSkill::OnSearchStart(FBehaviorTreeSearchData& SearchData)
+{
+	Super::OnSearchStart(SearchData);
+
+	if (bGameStartFirst)
+	{
+		SearchData.OwnerComp.GetBlackboardComponent()->SetValueAsInt(BBKEY_CHANGETIMER, 99);
+		bGameStartFirst = false;
+	}
 }
 
 APawn* UBTService_SetTargetAndSkill::ChangeTarget()
@@ -47,6 +59,8 @@ APawn* UBTService_SetTargetAndSkill::ChangeTarget()
 			return PlayerController->GetPawn();
 		}
 	}
+
+	return nullptr;
 }
 
 int32 UBTService_SetTargetAndSkill::ChangeSkillNumber(UBehaviorTreeComponent& OwnerComp)

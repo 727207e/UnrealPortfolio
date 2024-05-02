@@ -19,9 +19,11 @@ public :
 
 protected:
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
+	virtual void OnSearchStart(FBehaviorTreeSearchData& SearchData);
 
 private :
 	const float NewSearchLimitTime = 5.0f;
 	APawn* ChangeTarget();
 	int32 ChangeSkillNumber(class UBehaviorTreeComponent& OwnerComp);
+	bool bGameStartFirst;
 };
