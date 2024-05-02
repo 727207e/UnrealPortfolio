@@ -14,6 +14,8 @@
 UGA_AttackHitCheck::UGA_AttackHitCheck(): CurrentLevel(0)
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+
+	CurrentTA = AGATA_Trace::StaticClass();
 }
 
 void UGA_AttackHitCheck::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
@@ -21,8 +23,13 @@ void UGA_AttackHitCheck::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	CurrentLevel = TriggerEventData->EventMagnitude;
 	CurrentAction = Cast<AGameplayEventDataRequest>(TriggerEventData->Instigator);
-	
-	UAbilityTask_Trace * AttackTraceTask = UAbilityTask_Trace::CreateTask(this, AGATA_Trace::StaticClass());
+
+	if (TriggerEventData->OptionalObject)
+	{
+		CurrentTA = Cast<UClass>(TriggerEventData->OptionalObject);
+	}
+
+	UAbilityTask_Trace * AttackTraceTask = UAbilityTask_Trace::CreateTask(this, CurrentTA);
 	AttackTraceTask->OnComplete.AddDynamic(this, &UGA_AttackHitCheck::OnTraceResultCallback);
 	AttackTraceTask->ReadyForActivation();
 }

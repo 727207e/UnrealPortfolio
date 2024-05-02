@@ -4,7 +4,9 @@
 #include "GAS/Animation/AnimNotify_GASAttackHitCheck.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GAS/Actor/GameplayEventDataRequest.h"
+
 class UAbilitySystemComponent;
+
 FString UAnimNotify_GASAttackHitCheck::GetNotifyName_Implementation() const
 {
 	return TEXT("GAS");
@@ -33,6 +35,7 @@ void UAnimNotify_GASAttackHitCheck::Notify(USkeletalMeshComponent* MeshComp, UAn
 			ActionData->ActionId = ActionId;
 			ActionData->ActionRowName = ActionRowName;
 			PayloadData.Instigator = ActionData;
+			PayloadData.OptionalObject = TargetTA.Get();
 			
 			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(OwnerActor, TriggerTag,PayloadData);
 		}

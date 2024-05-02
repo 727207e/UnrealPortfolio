@@ -26,5 +26,7 @@ protected:
 	TSubclassOf<class UGameplayEffect> AttackBuffEffect;
 	UPROPERTY(EditAnywhere, Category = "GAS")
 	TObjectPtr<class AGameplayEventDataRequest> CurrentAction;
+	UClass* CurrentTA;
 	float CurrentLevel;
+
 };

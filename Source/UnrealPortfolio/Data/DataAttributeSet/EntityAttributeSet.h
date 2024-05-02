@@ -102,6 +102,7 @@ void UEntityAttributeSet::SettingValue(T BaseTablePtr)
 	SetAttackRange(table->AttackRange);
 	SetArmor(table->Armor);
 	SetAttackSpeed(table->AttackSpeed);
+	SetAttackRadius(table->AttackRadius);
 	SetAttackRate(table->AttackRate);
 	SetMovementSpeed(table->MovementSpeed);
 
