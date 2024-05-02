@@ -4,26 +4,25 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
-#include "UPNormalEnemyAIController.generated.h"
+#include "UPEnemyAIController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class UNREALPORTFOLIO_API AUPNormalEnemyAIController : public AAIController
+class UNREALPORTFOLIO_API AUPEnemyAIController : public AAIController
 {
 	GENERATED_BODY()
 
 public :
-	AUPNormalEnemyAIController();
+	AUPEnemyAIController();
 
-	void RunAI();
+	virtual void RunAI();
 	void StopAI();
 
 protected :
 	virtual void OnPossess(APawn* InPawn) override;
 
-private:
 	UPROPERTY()
 	TObjectPtr<class UBlackboardData> BBAsset;
 

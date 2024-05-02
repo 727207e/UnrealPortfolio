@@ -35,10 +35,9 @@ protected :
 
 	virtual void OnDead() override;
 	
-
-
 public :
 	virtual void NormalAttack() override;
+	virtual void OnSkill(int32 SkillNumber) override;
 	FGameplayAbilitySpec FindTarget();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
@@ -48,4 +47,7 @@ public :
 	void SetDelegate(const FOnEndAnimDelegate& OnEndAnim);
 
 	void OnFindTargetEnd();
+
+protected :
+	int32 AttackDelayTime;
 };

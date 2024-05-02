@@ -6,7 +6,9 @@
 #include "Game/UPGameSingleton.h"
 #include "UPPlayerState.h"
 #include "Data/DataTable/UPActionTable.h"
+#include "AbilitySystemBlueprintLibrary.h"
 #include "GAS/Actor/GameplayEventDataRequest.h"
+#include "Tag/GameplayTags.h"
 
 AUPBattleBaseCharacter::AUPBattleBaseCharacter()
 {
@@ -205,14 +207,23 @@ void AUPBattleBaseCharacter::NormalAttack()
 	
 }
 
-void AUPBattleBaseCharacter::AddOnEndAttackDelegate(FOnEndAttackDelegate& Delegate)
+void AUPBattleBaseCharacter::OnSkill(int32 SkillNumber)
 {
-	OnEndAttackDelegate = Delegate;
+	TArray<FGameplayAbilitySpecHandle> ActivatedAbilities;
+	FGameplayTagContainer tags(TAG_CHARACTER_SKILL);
+	ASC->FindAllAbilitiesWithTags(ActivatedAbilities, FGameplayTagContainer(TAG_CHARACTER_SKILL));
+
+	ASC->TryActivateAbility(ActivatedAbilities[SkillNumber]);
 }
 
 void AUPBattleBaseCharacter::AddOnHitDelegate(FOnHitDelegate& Delegate)
 {
 	OnHitDelegate = Delegate;
+}
+
+void AUPBattleBaseCharacter::AddOnEndAttackDelegate(FOnEndAttackDelegate& Delegate)
+{
+	OnEndAttackDelegate = Delegate;
 }
 
 UAbilitySystemComponent* AUPBattleBaseCharacter::GetAbilitySystemComponent() const

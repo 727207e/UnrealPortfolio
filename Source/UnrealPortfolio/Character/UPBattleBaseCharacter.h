@@ -98,6 +98,7 @@ public :
 	virtual void AttackEndCallBack() override;
 	void AddAttackEndCallBack(const FOnEndAttackDelegate& OnEndAttack);	//���� �Ǵ��� Ȯ���غ���.
 	virtual void NormalAttack();
+	virtual void OnSkill(int32 SkillNumber);
 
 public :
 	FOnEndAttackDelegate OnEndAttackDelegate;
