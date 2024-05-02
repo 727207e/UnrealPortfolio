@@ -42,7 +42,7 @@ void UBTService_SetTargetAndSkill::OnSearchStart(FBehaviorTreeSearchData& Search
 
 	if (bGameStartFirst)
 	{
-		SearchData.OwnerComp.GetBlackboardComponent()->SetValueAsInt(BBKEY_CHANGETIMER, 99);
+		SearchData.OwnerComp.GetBlackboardComponent()->SetValueAsInt(BBKEY_CHANGETIMER, 3);
 		bGameStartFirst = false;
 	}
 }
@@ -74,16 +74,11 @@ int32 UBTService_SetTargetAndSkill::ChangeSkillNumber(UBehaviorTreeComponent& Ow
 		return Result;
 	}
 
-	TArray<FGameplayAbilitySpec> ActivatedAbilities = TargetASC->GetActivatableAbilities();
+	TArray<FGameplayAbilitySpecHandle> ActivatedAbilities;
+	FGameplayTagContainer tags(TAG_CHARACTER_SKILL);
+	TargetASC->FindAllAbilitiesWithTags(ActivatedAbilities, FGameplayTagContainer(TAG_CHARACTER_SKILL));
 
-	for (FGameplayAbilitySpec AbilitySpec : ActivatedAbilities) 
-	{
-		if (AbilitySpec.Ability && AbilitySpec.Ability->AbilityTags.HasTag(TAG_BOSS_ATTACK))
-		{
-			Result++;
-		}
-	}
-	Result = std::rand() % Result;
+	Result = std::rand() % ActivatedAbilities.Num();
 
 	return Result;
 }

@@ -28,6 +28,7 @@ AUPEnemyCharacter::AUPEnemyCharacter()
 
 	AIControllerClass = AUPEnemyAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	AttackDelayTime = 3;
 }
 
 void AUPEnemyCharacter::SetDead()
@@ -107,14 +108,19 @@ void AUPEnemyCharacter::OnDead()
 
 void AUPEnemyCharacter::NormalAttack()
 {
-	if (bCanAttack)
-	{
-		CallGAS(0);
-		bCanAttack = false;
+	CallGAS(0);
+	bCanAttack = false;
 
-		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(this);
-		SetAttackDelay(TargetASC->GetSet<UEntityAttributeSet>()->GetAttackRate());
-	}
+	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(this);
+	SetAttackDelay(TargetASC->GetSet<UEntityAttributeSet>()->GetAttackRate());
+}
+
+void AUPEnemyCharacter::OnSkill(int32 SkillNumber)
+{
+	Super::OnSkill(SkillNumber);
+
+	bCanAttack = false;
+	SetAttackDelay(AttackDelayTime);
 }
 
 FGameplayAbilitySpec AUPEnemyCharacter::FindTarget()

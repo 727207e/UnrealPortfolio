@@ -13,9 +13,6 @@ void UGA_SkillBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
 	/** Attackable Setup **/
 	AttackableCharacter = CastChecked<IAttackableCharacterInterface>(ActorInfo->AvatarActor.Get());
 
-	/** Movement Setup **/
-	MovementCharacter = CastChecked<ICharacterMovementInterface>(ActorInfo->AvatarActor.Get());
-
 	if(TargetMontage)
 	{
 		/** PlayAttackTask Ability **/
@@ -38,6 +35,8 @@ void UGA_SkillBase::EndAbility(const FGameplayAbilitySpecHandle Handle, const FG
 	const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+
+	AttackableCharacter->AttackEndCallBack();
 }
 
 void UGA_SkillBase::InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,

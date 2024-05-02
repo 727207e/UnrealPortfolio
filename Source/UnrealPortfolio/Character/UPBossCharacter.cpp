@@ -26,6 +26,9 @@ AUPBossCharacter::AUPBossCharacter()
 
 	AIControllerClass = AUPBossAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
+	AttackDelayTime = 5;
+
 }
 
 void AUPBossCharacter::BeginPlay()
