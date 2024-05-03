@@ -65,6 +65,14 @@ void UGA_AttackHitCheck::OnTraceResultCallback(const FGameplayAbilityTargetDataH
 				EffectSpecHandle.Data->SetSetByCallerMagnitude(TAG_DATA_DAMAGE,-SourceAttribute->GetAttackRate());
 				ApplyGameplayEffectSpecToTarget(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,EffectSpecHandle,TargetDataHandle);
 			}
+
+			if (CurrentAction->ActionGC.IsValid())
+			{
+				FGameplayCueParameters CueParam;
+				CueParam.Location = HitResult.Location;
+
+				TargetASC->ExecuteGameplayCue(CurrentAction->ActionGC, CueParam);
+			}
 		}
 	}
 

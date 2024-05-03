@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "AbilitySystemComponent.h"
 #include "GameplayEventDataRequest.generated.h"
 
 UCLASS()
@@ -13,5 +14,5 @@ class UNREALPORTFOLIO_API AGameplayEventDataRequest : public AActor
 public:
 	int32 ActionId;
 	FName ActionRowName;
-
+	FGameplayTag ActionGC;
 };
