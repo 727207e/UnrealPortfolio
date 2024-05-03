@@ -30,20 +30,6 @@ EBTNodeResult::Type UBTTask_TurnToTarget::ExecuteTask(UBehaviorTreeComponent& Ow
 		return EBTNodeResult::Failed;
 	}
 
-	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(ControllingPawn);
-	if (nullptr == TargetASC)
-	{
-		UE_LOG(LogTemp, Error, TEXT("Enemy Can't Find ASC"));
-		return EBTNodeResult::Failed;
-	}
-
-	UUPEnemyAttributeSet* TargetAttribute = const_cast<UUPEnemyAttributeSet*>(TargetASC->GetSet<UUPEnemyAttributeSet>());
-	if (nullptr == TargetAttribute)
-	{
-		UE_LOG(LogTemp, Error, TEXT("Enemy Can't Find AttributeSet"));
-		return EBTNodeResult::Failed;
-	}
-
 	FVector LookVector = TargetPawn->GetActorLocation() - ControllingPawn->GetActorLocation();
 	LookVector.Z = 0.0f;
 	FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();

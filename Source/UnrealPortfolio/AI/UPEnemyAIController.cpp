@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UPNormalEnemyAIController.h"
+#include "UPEnemyAIController.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardData.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
-AUPNormalEnemyAIController::AUPNormalEnemyAIController()
+AUPEnemyAIController::AUPEnemyAIController()
 {
 	static ConstructorHelpers::FObjectFinder<UBlackboardData> BBAssetRef(TEXT("/Script/AIModule.BlackboardData'/Game/Blueprint/Animation/Enemy/AI/BB_NormalEnemy.BB_NormalEnemy'"));
 	if (nullptr != BBAssetRef.Object)
@@ -21,14 +21,14 @@ AUPNormalEnemyAIController::AUPNormalEnemyAIController()
 	}
 }
 
-void AUPNormalEnemyAIController::OnPossess(APawn* InPawn)
+void AUPEnemyAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
 	RunAI();
 }
 
-void AUPNormalEnemyAIController::RunAI()
+void AUPEnemyAIController::RunAI()
 {
 	UBlackboardComponent* BlackboardPtr = Blackboard.Get();
 	if (UseBlackboard(BBAsset, BlackboardPtr))
@@ -38,7 +38,7 @@ void AUPNormalEnemyAIController::RunAI()
 	}
 }
 
-void AUPNormalEnemyAIController::StopAI()
+void AUPEnemyAIController::StopAI()
 {
 	UBehaviorTreeComponent* BTComponent = Cast<UBehaviorTreeComponent>(BrainComponent);
 	if (BTComponent)

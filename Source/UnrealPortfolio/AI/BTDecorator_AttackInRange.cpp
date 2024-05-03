@@ -49,8 +49,5 @@ bool UBTDecorator_AttackInRange::CalculateRawConditionValue(UBehaviorTreeCompone
 	float AttackRangeWithRadius = TargetAttribute->GetAttackRange();
 	bResult = (DistanceToTarget <= AttackRangeWithRadius);
 
-
-	UE_LOG(LogTemp, Error, TEXT("Enemy Can't Find AttributeSet %f %f"), DistanceToTarget, AttackRangeWithRadius);
-
 	return bResult;
 }
