@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Data/DataAsset/MainCharacter/UPMainCharacterClassTable.h"
+#include "Data/DataTable/Widget/SlotWidgetModelData.h"
 #include "UPGameSingleton.generated.h"
 
 /**
@@ -22,11 +23,10 @@ public:
 		
 	UPROPERTY(EditAnywhere, Category = TableData)
 	TObjectPtr<UDataTable> ActionDataTable;
-
-	UPROPERTY(EditAnywhere, Category = TableData)
-	TObjectPtr<UDataTable> MainCharacterTable;
 	
-	TArray<FUPMainCharacterClassTable> MainCharacterArray;	
+	TArray<FUPMainCharacterClassTable> MainCharacterArray;
+
+	TArray<FSlotWidgetModelData> SlotWidgetModelDataArray;	
 
 	FORCEINLINE FUPMainCharacterClassTable GetCharacterData(int32 InLevel) const
 	{
@@ -40,5 +40,8 @@ public:
 	{
 		return  MainCharacterArray[CurrentMainCharacterId];
 	}
+	template<typename T>
+	void LoadDataTableToArray(const FString& DataTablePath, TArray<T>& OutArray);
 	
 };
+

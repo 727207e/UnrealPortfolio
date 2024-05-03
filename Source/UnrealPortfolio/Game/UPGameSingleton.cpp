@@ -14,26 +14,36 @@ UUPGameSingleton::UUPGameSingleton(): CurrentMainCharacterId(2)
 			ActionDataTable = ActionDataRef.Object;
 		}
 	}
+	LoadDataTableToArray(
+		TEXT("/Script/Engine.DataTable'/Game/Data/DataAttributeSet/MainCharacterDataSet/DT_MainCharacterTable.DT_MainCharacterTable'"),
+		MainCharacterArray);
 
-	static ConstructorHelpers::FObjectFinder<UDataTable> MainCharacterTableRef(TEXT(
-		"/Script/Engine.DataTable'/Game/Data/DataAttributeSet/MainCharacterDataSet/DT_MainCharacterTable.DT_MainCharacterTable'"));
-	if (nullptr != MainCharacterTableRef.Object)
-	{
-		if (MainCharacterTableRef.Object)
-		{
-			const UDataTable* DataTable = MainCharacterTableRef.Object;
-			check(DataTable->GetRowMap().Num() > 0);
+	LoadDataTableToArray(
+	TEXT("/Script/Engine.DataTable'/Game/Data/ModelWidgetTableData/DT_SlotModelWidgetData.DT_SlotModelWidgetData'"),
+	SlotWidgetModelDataArray);
+	
+}
+template <typename T>
+void UUPGameSingleton::LoadDataTableToArray(const FString& DataTablePath, TArray<T>& OutArray)
+{
+    static ConstructorHelpers::FObjectFinder<UDataTable> DataTableRef(*DataTablePath);
+    if (nullptr != DataTableRef.Object)
+    {
+        if (DataTableRef.Object)
+        {
+            const UDataTable* DataTable = DataTableRef.Object;
+            check(DataTable->GetRowMap().Num() > 0);
 
-			TArray<uint8*> ValueArray;
-			DataTable->GetRowMap().GenerateValueArray(ValueArray);
-			Algo::Transform(ValueArray, MainCharacterArray,
-			                [](uint8* Value)
-			                {
-				                return *reinterpret_cast<FUPMainCharacterClassTable*>(Value);
-			                }
-			);
-		}
-	}
+            TArray<uint8*> ValueArray;
+            DataTable->GetRowMap().GenerateValueArray(ValueArray);
+            Algo::Transform(ValueArray, OutArray,
+                            [](uint8* Value)
+                            {
+                                return *reinterpret_cast<T*>(Value);
+                            }
+            );
+        }
+    }
 }
 
 UUPGameSingleton& UUPGameSingleton::Get()
