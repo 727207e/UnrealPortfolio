@@ -32,4 +32,6 @@ protected:
 	FName ActionRowName;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
 	TSubclassOf<AGATA_Trace> TargetTA;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
+	FGameplayTag TargetGC;
 };

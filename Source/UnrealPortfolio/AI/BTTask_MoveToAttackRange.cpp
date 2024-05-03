@@ -33,12 +33,12 @@ EBTNodeResult::Type UBTTask_MoveToAttackRange::PerformMoveTask(UBehaviorTreeComp
 		return EBTNodeResult::Type::Failed;
 	}
 
-	if (TargetAttribute->GetAttackRange() >= 100)
+	if (TargetAttribute->GetAttackRange() >= 200)
 	{
 		AcceptableRadiusOffset = TargetAttribute->GetAttackRange() / 3;
+		AcceptableRadius = TargetAttribute->GetAttackRange() - AcceptableRadiusOffset;
 	}
 
-	AcceptableRadius = TargetAttribute->GetAttackRange() - AcceptableRadiusOffset;
 
 	EBTNodeResult::Type Result = Super::PerformMoveTask(OwnerComp, NodeMemory);
 	return Result;
