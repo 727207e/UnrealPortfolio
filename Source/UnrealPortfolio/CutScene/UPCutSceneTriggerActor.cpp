@@ -4,6 +4,7 @@
 #include "CutScene/UPCutSceneTriggerActor.h"
 #include "Components/BoxComponent.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "defines/UPCollision.h"
 #include "Character/UPMainCharacter.h"
 
@@ -17,6 +18,9 @@ AUPCutSceneTriggerActor::AUPCutSceneTriggerActor()
 	BoxRoot->SetCollisionProfileName(CPROFILE_UP_CUTSCENETRIGGER);
 
 	bIsTriggerFirst = true;
+	MoveLimitTime = 5.0f;
+	StayLimitTime = 2.0f;
+	ReturnLimitTime = 1.0f;
 }
 
 void AUPCutSceneTriggerActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult)
@@ -32,7 +36,7 @@ void AUPCutSceneTriggerActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp
 		return;
 	}
 	
-	AUPMainCharacter* MyCharacter = Cast<AUPMainCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	MyCharacter = Cast<AUPMainCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	if (MyCharacter != OtherActor)
 	{
 		return;
@@ -40,14 +44,30 @@ void AUPCutSceneTriggerActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp
 
 	bIsTriggerFirst = false;
 
-	UCameraComponent* MainCamera = MyCharacter->GetCameraComponent();
+	MainCamera = MyCharacter->GetCameraComponent();
 	MainCamera->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-	MainCamera->SetRelativeTransform(TargetCameraTrans->GetTransform());
+	StartTransform = MainCamera->GetComponentTransform();
+	TargetTransform = TargetCameraTrans->GetTransform();
 
-	GetWorld()->GetTimerManager().SetTimer(CameraMoveTimerHandle, this, &AUPCutSceneTriggerActor::CameraMoveTimer, 0.1f, true);
+	GetWorld()->GetTimerManager().SetTimer(CameraMoveTimerHandle, this, &AUPCutSceneTriggerActor::CameraMoveTimer, GetWorld()->DeltaTimeSeconds, true);
 }
 
 void AUPCutSceneTriggerActor::CameraMoveTimer()
 {
-	UE_LOG(LogTemp, Error, TEXT("11111"));
+	CurTime += GetWorld()->DeltaTimeSeconds;
+	FVector ResultLocation = FMath::Lerp(StartTransform.GetLocation(), TargetTransform.GetLocation(), CurTime / MoveLimitTime);
+	MainCamera->SetWorldLocation(ResultLocation);
+
+	FQuat ResultRotation = FMath::Lerp(StartTransform.GetRotation(), TargetTransform.GetRotation(), CurTime / MoveLimitTime);
+	MainCamera->SetWorldRotation(ResultRotation);
+
+	if (CurTime >= MoveLimitTime)
+	{
+		CurTime = 0;
+		GetWorld()->GetTimerManager().ClearTimer(CameraMoveTimerHandle);
+
+		GetWorld()->GetTimerManager().SetTimer(CameraMoveTimerHandle, FTimerDelegate::CreateLambda([&]() {
+				MyCharacter->SetCharacterControl(ECharacterControlType::TopDown);
+			}), StayLimitTime, false);
+	}
 }

@@ -27,4 +27,14 @@ private :
 	bool bIsTriggerFirst;
 	void CameraMoveTimer();
 	FTimerHandle CameraMoveTimerHandle;
+
+	class AUPMainCharacter* MyCharacter;
+	class UCameraComponent* MainCamera;
+	FTransform StartTransform;
+	FTransform TargetTransform;
+
+	float CurTime;
+	float MoveLimitTime;
+	float StayLimitTime;
+	float ReturnLimitTime;
 };
