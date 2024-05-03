@@ -6,4 +6,5 @@
 #define OVERLAP_ONLY_PAWN TEXT("OverlapOnlyPawn")
 #define CPROFILE_UP_TRACE TEXT("PlayerMeetNPC")
 #define CPROFILE_UP_NPC TEXT("NPCMeetPlayer")
+#define CPROFILE_UP_CUTSCENETRIGGER TEXT("CutSceneTrigger")
 #define CHANNEL_UPTRACE ECC_GameTraceChannel1 
