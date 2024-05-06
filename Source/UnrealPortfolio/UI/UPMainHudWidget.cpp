@@ -9,7 +9,7 @@ void UUPMainHudWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	for(int i =SkillSlotMinId ; i <= SkillSlotMaxId; i++)
+	for(int i = SkillSlotMinId ; i <= SkillSlotMaxId; i++)
 	{
 		const FName SlotSkillName = *FString::Printf(TEXT("%s%d"),TEXT("WBP_SkillSlot") ,i);
 		if(auto SkillSlotView = Cast<USlotViewWidget>(GetWidgetFromName(SlotSkillName)))
@@ -18,6 +18,23 @@ void UUPMainHudWidget::NativeConstruct()
 			SkillSlotViewArray.Add(SkillSlotView);
 		}
 	}
+
+	for(int i = ItemSlotMinId ; i <= ItemSlotMaxId; i++)
+	{
+		const FName SlotItemName = *FString::Printf(TEXT("%s%d"),TEXT("WBP_ItemSlot") ,i);
+		if(auto ItemSlotView = Cast<UItemSlotViewWidget>(GetWidgetFromName(SlotItemName)))
+		{
+			UE_LOG(LogTemp,Log,TEXT("Check"));
+			ItemSlotView->SetData(UUPGameSingleton::Get().SlotWidgetModelDataArray[i]);
+			ItemSlotViewArray.Add(ItemSlotView);
+		}
+		else
+		{
+			UE_LOG(LogTemp,Log,TEXT("Not Exsit"));
+			
+		}
+	}
+	
 }
 
 TArray<TObjectPtr<USlotViewWidget>> UUPMainHudWidget::GetSkillSlotArray()
