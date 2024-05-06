@@ -101,7 +101,6 @@ void UGA_SkillBase::SetData()
 			Cooldown = SkillData.CooldownTime;
 			MagicPoints = SkillData.MagicPoints;
 			TargetSkillAbilityIndex = SkillData.SKillAbilityIndex;
-			UE_LOG(LogTemp,Log,TEXT("CollDown %d"), Cooldown);
 		}
 	}
 	
