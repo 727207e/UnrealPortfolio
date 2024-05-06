@@ -9,12 +9,43 @@ void USlotViewWidget::NativeConstruct()
 	ImageIcon =  Cast<UImage>(GetWidgetFromName(TEXT("Image_Icon")));
 	TextKey =  Cast<UTextBlock>(GetWidgetFromName(TEXT("Text_Key")));
 	TextCount =  Cast<UTextBlock>(GetWidgetFromName(TEXT("Text_Count")));
+	
+	/** CoolDown **/
+	ImageCoolDownDimmed = Cast<UImage>(GetWidgetFromName(TEXT("Image_CoolDown")));
+	ImageCoolDownFill = Cast<UImage>(GetWidgetFromName(TEXT("Image_CoolDown")));
+	TextCoolDown = Cast<UTextBlock>(GetWidgetFromName(TEXT("Text_CoolDown")));
 }
 
-void USlotViewWidget::SetData(const FSlotWidgetModelData& Model) const
+void USlotViewWidget::SetData(const FSlotWidgetModelData& Model)
 {
+	SetIconSlot(Model);
 	ImageSlot->SetBrushResourceObject(Model.SlotTexture);
+	TextKey->SetText(FText::FromString(Model.KeyString));
+	ShowCollDown();
+	
+}
 
+void USlotViewWidget::StartCooldown(float CooldownEndTime)
+{
+	
+}
+
+void USlotViewWidget::HiddenCoolDown()
+{
+	ImageCoolDownDimmed->SetVisibility(ESlateVisibility::Hidden);
+	ImageCoolDownFill->SetVisibility(ESlateVisibility::Hidden);
+	TextCoolDown->SetVisibility(ESlateVisibility::Hidden);
+}
+
+void USlotViewWidget::ShowCollDown()
+{
+	ImageCoolDownDimmed->SetVisibility(ESlateVisibility::Visible);
+	ImageCoolDownFill->SetVisibility(ESlateVisibility::Visible);
+	TextCoolDown->SetVisibility(ESlateVisibility::Visible);
+}
+
+void USlotViewWidget::SetIconSlot(const FSlotWidgetModelData& Model)
+{
 	if(Model.IconTexture == nullptr)
 	{
 		TextCount->SetVisibility(ESlateVisibility::Hidden);
@@ -25,12 +56,8 @@ void USlotViewWidget::SetData(const FSlotWidgetModelData& Model) const
 		TextCount->SetText(FText::FromString(Model.CountString));
 		ImageIcon->SetBrushResourceObject(Model.IconTexture);
 	}
-	
-	TextKey->SetText(FText::FromString(Model.KeyString));
-	
 }
 
-void USlotViewWidget::StartCooldown(float CooldownEndTime)
-{
-	
-}
+
+
+

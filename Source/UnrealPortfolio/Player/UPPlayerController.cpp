@@ -40,6 +40,14 @@ void AUPPlayerController::BeginPlay()
 	{
 		UE_LOG(LogTemplateCharacter, Log, TEXT("Failed To Get PossessCharacter"));
 	}
+
+	
+	UClass* HudWidgetClass = LoadClass<UUserWidget>(nullptr, TEXT("/Game/UI/WBP_Hud.WBP_Hud_C"));
+	if(HudWidgetClass)
+	{
+		MainHudWidget = CastChecked<UUPMainHudWidget>(CreateWidget(GetWorld(),HudWidgetClass,TEXT("UUPMainHudWidget")));
+		MainHudWidget->AddToViewport();
+	}
 }
 
 void AUPPlayerController::SetupInputComponent()
@@ -169,6 +177,11 @@ void AUPPlayerController::ChatScroll(bool bUp)
 	{
 		ChatActorComponent->Scroll(bUp);
 	}
+}
+
+UUPMainHudWidget* AUPPlayerController::GetHud()
+{
+	return  MainHudWidget;
 }
 
 void AUPPlayerController::OnInputStarted()

@@ -6,6 +6,7 @@
 #include "Templates/SubclassOf.h"
 #include "GameFramework/PlayerController.h"
 #include "Interface/UPPossessCharacterInterface.h"
+#include "UI/UPMainHudWidget.h"
 #include "UPPlayerController.generated.h"
 
 /** Forward declaration to improve compiling times */
@@ -69,6 +70,10 @@ public:
 	UPROPERTY()
 	TObjectPtr<class UUPACChatGenerator> ChatActorComponent;
 
+	UPROPERTY()
+	TObjectPtr<class UUPMainHudWidget> MainHudWidget;
+	
+
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
 	uint32 bMoveToMouseCursor : 1;
@@ -98,6 +103,7 @@ private:
 	void ChatFocusOn();
 	void ChatScroll(bool bUp);
 
+	UUPMainHudWidget* GetHud();
 	IUPPossessCharacterInterface* PossessCharacter;
 	
 	/** Game Ability System Input Component **/
