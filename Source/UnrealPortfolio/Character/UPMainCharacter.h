@@ -7,6 +7,7 @@
 #include "UPBattleBaseCharacter.h"
 #include "Character/UPCharacter.h"
 #include "Interface/CharacterMovementInterface.h"
+#include "Interface/HUDControllerInterface.h"
 #include "Interface/UPPossessCharacterInterface.h"
 #include "Interface/UPUINpcInterface.h"
 #include "UPMainCharacter.generated.h"
@@ -15,6 +16,7 @@ UCLASS()
 class UNREALPORTFOLIO_API AUPMainCharacter : public AUPBattleBaseCharacter
 	,public IUPPossessCharacterInterface
 	,public ICharacterMovementInterface
+	,public IHUDControllerInterface
 {
 	GENERATED_BODY()
 private:
@@ -114,5 +116,10 @@ protected:
 	virtual  void SetupASCClientPlayer() override;
 	virtual  void SetupASCHostPlayer(AActor* InOwnerActor) override;
 	virtual void OnDead() override;
+
+public:
+	/** Get Hud from Interface **/
+
+	virtual TObjectPtr<UUPMainHudWidget> GetHudWidget() override;
 	
 };

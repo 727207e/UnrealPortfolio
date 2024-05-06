@@ -363,6 +363,13 @@ void AUPMainCharacter::OnDead()
 	}
 }
 
+TObjectPtr<UUPMainHudWidget> AUPMainCharacter::GetHudWidget()
+{
+	AUPPlayerController* PlayerController =  Cast<AUPPlayerController>(GetController());
+	const TObjectPtr<UUPMainHudWidget> PlayerHud  = Cast<UUPMainHudWidget>( PlayerController->GetHudWidget());
+	return PlayerHud;
+}
+
 
 ECharacterControlType AUPMainCharacter::GetCharacterControl()
 {

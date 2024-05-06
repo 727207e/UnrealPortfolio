@@ -15,7 +15,6 @@ UCLASS()
 class UNREALPORTFOLIO_API UGA_SkillBase : public UGameplayAbility
 {
 	GENERATED_BODY()
-
 protected:
 	IAttackableCharacterInterface*  AttackableCharacter;
 	ICharacterMovementInterface* MovementCharacter;
@@ -40,8 +39,10 @@ protected:
 	virtual void InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) override;
 	
 	UFUNCTION()
-	void OnCompleteCallback();
+	virtual void OnCompleteCallback();
 	UFUNCTION()
-	void OnInterruptedCallback();
+	virtual void OnInterruptedCallback();
+	
 	
 };
+
