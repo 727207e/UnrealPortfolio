@@ -27,6 +27,8 @@ struct FCameraMoveEvent
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<AActor> StartCameraTrans;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<class AUPCutSceneEvent> CutSceneEvent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UCurveFloat* CurveData;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

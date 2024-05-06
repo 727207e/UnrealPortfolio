@@ -7,6 +7,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "defines/UPCollision.h"
 #include "Character/UPMainCharacter.h"
+#include "CutScene/UPCutSceneEvent.h"
 #include "Curves/CurveFloat.h"
 
 // Sets default values
@@ -62,6 +63,11 @@ void AUPCutSceneTriggerActor::StartCutScene()
 		StartTransform = CameraMoveEvent.StartCameraTrans->GetTransform();
 	}
 
+	if (CameraMoveEvent.CutSceneEvent)
+	{
+		CameraMoveEvent.CutSceneEvent->StartEvent();
+	}
+
 	DestinationTransform = CameraMoveEvent.DestinationCameraTrans->GetTransform();
 	IndexCount++;
 
@@ -83,8 +89,14 @@ void AUPCutSceneTriggerActor::CameraMoveTimer()
 	if (CurTime >= CameraMoveEvent.PlayTime)
 	{
 		CurTime = 0;
+
 		GetWorld()->GetTimerManager().ClearTimer(CameraMoveTimerHandle);
 		GetWorld()->GetTimerManager().SetTimer(CameraMoveTimerHandle, FTimerDelegate::CreateLambda([&]() {
+
+			if (CameraMoveEvent.CutSceneEvent)
+			{
+				CameraMoveEvent.CutSceneEvent->FinishEvent();
+			}
 
 			if (IndexCount >= CameraMoveEventArray.Num())
 			{
