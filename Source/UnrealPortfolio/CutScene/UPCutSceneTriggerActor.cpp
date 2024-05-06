@@ -18,16 +18,9 @@ AUPCutSceneTriggerActor::AUPCutSceneTriggerActor()
 	BoxRoot->SetWorldScale3D(FVector(15.0f, 15.0f, 15.0f));
 	BoxRoot->SetCollisionProfileName(CPROFILE_UP_CUTSCENETRIGGER);
 
-	static ConstructorHelpers::FObjectFinder<UCurveFloat> CurveDataRef(TEXT("/Script/Engine.CurveFloat'/Game/Data/CutScene/MoveCamera.MoveCamera'"));
-	if (CurveDataRef.Object)
-	{
-		CurveData = CurveDataRef.Object;
-	}
-
 	bIsTriggerFirst = true;
-	MoveLimitTime = 5.0f;
-	StayLimitTime = 2.0f;
-	ReturnLimitTime = 1.0f;
+	IndexCount = 0;
+	CurTime = 0;
 }
 
 void AUPCutSceneTriggerActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult)
@@ -37,9 +30,9 @@ void AUPCutSceneTriggerActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp
 		return;
 	}
 
-	if (nullptr == TargetCameraTrans)
+	if (CameraMoveEventArray.Num() == 0)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UPCutSceneTriggerActor Doesn't Have TargetCameraTrans"));
+		UE_LOG(LogTemp, Error, TEXT("UPCutSceneTriggerActor Doesn't Have CameraMoveEventArray"));
 		return;
 	}
 	
@@ -51,32 +44,60 @@ void AUPCutSceneTriggerActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp
 
 	bIsTriggerFirst = false;
 
+	SettingTimer();
+}
+
+void AUPCutSceneTriggerActor::SettingTimer()
+{
 	MainCamera = MyCharacter->GetCameraComponent();
 	MainCamera->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-	StartTransform = MainCamera->GetComponentTransform();
-	TargetTransform = TargetCameraTrans->GetTransform();
+	CameraMoveEvent = CameraMoveEventArray[IndexCount];
+
+	if (CameraMoveEvent.StartType == EStartType::StartCamera)
+	{
+		StartTransform = MainCamera->GetComponentTransform();
+	}
+	else
+	{
+		StartTransform = CameraMoveEvent.StartCameraTrans->GetTransform();
+	}
+
+	DestinationTransform = CameraMoveEvent.DestinationCameraTrans->GetTransform();
+	IndexCount++;
 
 	GetWorld()->GetTimerManager().SetTimer(CameraMoveTimerHandle, this, &AUPCutSceneTriggerActor::CameraMoveTimer, GetWorld()->DeltaTimeSeconds, true);
 }
 
 void AUPCutSceneTriggerActor::CameraMoveTimer()
 {
-	float TargetPoint = CurveData->GetFloatValue(CurTime/ MoveLimitTime);
-
 	CurTime += GetWorld()->DeltaTimeSeconds;
-	FVector ResultLocation = FMath::Lerp(StartTransform.GetLocation(), TargetTransform.GetLocation(), TargetPoint);
+	float TargetPoint = CameraMoveEvent.CurveData->GetFloatValue(CurTime/ CameraMoveEvent.MoveLimitTime);
+
+	FVector ResultLocation = FMath::Lerp(StartTransform.GetLocation(), DestinationTransform.GetLocation(), TargetPoint);
 	MainCamera->SetWorldLocation(ResultLocation);
 
-	FQuat ResultRotation = FMath::Lerp(StartTransform.GetRotation(), TargetTransform.GetRotation(), TargetPoint);
+	FQuat ResultRotation = FMath::Lerp(StartTransform.GetRotation(), DestinationTransform.GetRotation(), TargetPoint);
 	MainCamera->SetWorldRotation(ResultRotation);
 
-	if (CurTime >= MoveLimitTime)
+	if (CurTime >= CameraMoveEvent.MoveLimitTime)
 	{
 		CurTime = 0;
 		GetWorld()->GetTimerManager().ClearTimer(CameraMoveTimerHandle);
 
-		GetWorld()->GetTimerManager().SetTimer(CameraMoveTimerHandle, FTimerDelegate::CreateLambda([&]() {
-				MyCharacter->SetCharacterControl(ECharacterControlType::TopDown);
-			}), StayLimitTime, false);
+		if (IndexCount >= CameraMoveEventArray.Num())
+		{
+			CutSceneFinish();
+		}
+		else
+		{
+			SettingTimer();
+		}
 	}
+}
+
+void AUPCutSceneTriggerActor::CutSceneFinish()
+{
+	GetWorld()->GetTimerManager().SetTimer(CameraMoveTimerHandle, FTimerDelegate::CreateLambda([&]() {
+		MyCharacter->SetCharacterControl(ECharacterControlType::TopDown);
+		}), CameraMoveEvent.StayLimitTime, false);
 }
