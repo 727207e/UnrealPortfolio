@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/TimeLineComponent.h"
 #include "UPCutSceneTriggerActor.generated.h"
 
 UCLASS()
@@ -18,6 +19,8 @@ public:
 	class UBoxComponent* BoxRoot;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<APawn> TargetCameraTrans;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<class UCurveFloat> CurveData;
 
 public :
 	UFUNCTION()

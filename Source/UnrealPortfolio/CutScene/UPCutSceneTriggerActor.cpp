@@ -7,6 +7,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "defines/UPCollision.h"
 #include "Character/UPMainCharacter.h"
+#include "Curves/CurveFloat.h"
 
 // Sets default values
 AUPCutSceneTriggerActor::AUPCutSceneTriggerActor()
@@ -16,6 +17,12 @@ AUPCutSceneTriggerActor::AUPCutSceneTriggerActor()
 	BoxRoot->OnComponentBeginOverlap.AddDynamic(this, &AUPCutSceneTriggerActor::OnOverlapBegin);
 	BoxRoot->SetWorldScale3D(FVector(15.0f, 15.0f, 15.0f));
 	BoxRoot->SetCollisionProfileName(CPROFILE_UP_CUTSCENETRIGGER);
+
+	static ConstructorHelpers::FObjectFinder<UCurveFloat> CurveDataRef(TEXT("/Script/Engine.CurveFloat'/Game/Data/CutScene/MoveCamera.MoveCamera'"));
+	if (CurveDataRef.Object)
+	{
+		CurveData = CurveDataRef.Object;
+	}
 
 	bIsTriggerFirst = true;
 	MoveLimitTime = 5.0f;
@@ -54,11 +61,13 @@ void AUPCutSceneTriggerActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp
 
 void AUPCutSceneTriggerActor::CameraMoveTimer()
 {
+	float TargetPoint = CurveData->GetFloatValue(CurTime/ MoveLimitTime);
+
 	CurTime += GetWorld()->DeltaTimeSeconds;
-	FVector ResultLocation = FMath::Lerp(StartTransform.GetLocation(), TargetTransform.GetLocation(), CurTime / MoveLimitTime);
+	FVector ResultLocation = FMath::Lerp(StartTransform.GetLocation(), TargetTransform.GetLocation(), TargetPoint);
 	MainCamera->SetWorldLocation(ResultLocation);
 
-	FQuat ResultRotation = FMath::Lerp(StartTransform.GetRotation(), TargetTransform.GetRotation(), CurTime / MoveLimitTime);
+	FQuat ResultRotation = FMath::Lerp(StartTransform.GetRotation(), TargetTransform.GetRotation(), TargetPoint);
 	MainCamera->SetWorldRotation(ResultRotation);
 
 	if (CurTime >= MoveLimitTime)
