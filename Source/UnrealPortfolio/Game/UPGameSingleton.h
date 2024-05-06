@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Data/UPSkillData.h"
 #include "Data/DataAsset/MainCharacter/UPMainCharacterClassTable.h"
 #include "Data/DataTable/Widget/SlotWidgetModelData.h"
 #include "UPGameSingleton.generated.h"
@@ -25,8 +26,8 @@ public:
 	TObjectPtr<UDataTable> ActionDataTable;
 	
 	TArray<FUPMainCharacterClassTable> MainCharacterArray;
-
-	TArray<FSlotWidgetModelData> SlotWidgetModelDataArray;	
+	TArray<FSlotWidgetModelData> SlotWidgetModelDataArray;
+	TArray<FUPSkillData> SkillDataArray;
 
 	FORCEINLINE FUPMainCharacterClassTable GetCharacterData(int32 InLevel) const
 	{

@@ -19,8 +19,12 @@ UUPGameSingleton::UUPGameSingleton(): CurrentMainCharacterId(2)
 		MainCharacterArray);
 
 	LoadDataTableToArray(
-	TEXT("/Script/Engine.DataTable'/Game/Data/ModelWidgetTableData/DT_SlotModelWidgetData.DT_SlotModelWidgetData'"),
-	SlotWidgetModelDataArray);
+		TEXT("/Script/Engine.DataTable'/Game/Data/ModelWidgetTableData/DT_SlotModelWidgetData.DT_SlotModelWidgetData'"),
+		SlotWidgetModelDataArray);
+	
+	LoadDataTableToArray(
+		TEXT("/Script/Engine.DataTable'/Game/Data/SkillData/DT_SkillDataTable.DT_SkillDataTable'"),
+		SkillDataArray);
 	
 }
 template <typename T>

@@ -15,6 +15,8 @@ UCLASS()
 class UNREALPORTFOLIO_API UGA_SkillBase : public UGameplayAbility
 {
 	GENERATED_BODY()
+public:
+	UGA_SkillBase();
 
 protected:
 	IAttackableCharacterInterface*  AttackableCharacter;
@@ -43,5 +45,16 @@ protected:
 	void OnCompleteCallback();
 	UFUNCTION()
 	void OnInterruptedCallback();
+
+	void SetData();
+
+protected:
+	UPROPERTY(BlueprintReadOnly , Category = GAS);
+	int32 Cooldown;
+	UPROPERTY(BlueprintReadOnly , Category = GAS);
+	int32 MagicPoints;
+	UPROPERTY(BlueprintReadOnly , Category = GAS);
+	int32 TargetSkillAbilityIndex;
 	
 };
+

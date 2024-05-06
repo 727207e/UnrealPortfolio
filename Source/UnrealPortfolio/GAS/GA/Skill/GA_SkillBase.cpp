@@ -2,17 +2,50 @@
 
 
 #include "GAS/GA/Skill/GA_SkillBase.h"
+
+#include "AssetSelection.h"
+#include "NetworkMessage.h"
 #include "Character/UPMainCharacter.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
+#include "Game/UPGameSingleton.h"
+#include "Player/UPPlayerController.h"
+
+UGA_SkillBase::UGA_SkillBase(): AttackableCharacter(nullptr), MovementCharacter(nullptr), TargetMontage(nullptr),
+                                MagicPoints(0)
+{
+	
+}
 
 void UGA_SkillBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
-	const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
+                                    const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
+	SetData();
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-
-	/** Attackable Setup **/
 	AttackableCharacter = CastChecked<IAttackableCharacterInterface>(ActorInfo->AvatarActor.Get());
 
+	if(const AUPMainCharacter* MainCharacter = Cast<AUPMainCharacter>(ActorInfo->AvatarActor.Get()))
+	{
+		if(AUPPlayerController* PlayerController =  Cast<AUPPlayerController>(MainCharacter->GetController()))
+		{
+			UUPMainHudWidget* PlayerHud  = Cast<UUPMainHudWidget>( PlayerController->GetHudWidget());
+
+			for(const auto& SKillSlotWidget :  PlayerHud->GetSkillSlotArray())
+			{
+				if(SKillSlotWidget != nullptr)
+				{
+					if(TargetSkillAbilityIndex == SKillSlotWidget->TargetInputActionId)
+					{
+						SKillSlotWidget->OnClickedTargetInputActionKey(Cooldown);
+					}
+				}
+			}
+		}
+	}
+
+	
+		
+	
+	
 	if(TargetMontage)
 	{
 		/** PlayAttackTask Ability **/
@@ -21,7 +54,7 @@ void UGA_SkillBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
 	
 		PlayAttackTask->OnCompleted.AddDynamic(this,&UGA_SkillBase::OnCompleteCallback);
 		PlayAttackTask->OnInterrupted.AddDynamic(this,&UGA_SkillBase::OnInterruptedCallback);
-		PlayAttackTask->ReadyForActivation();	
+		PlayAttackTask->ReadyForActivation();
 	}
 }
 
@@ -60,3 +93,30 @@ void UGA_SkillBase::OnInterruptedCallback()
 	EndAbility(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,bReplicatedEndAbility,bWasCancelled);
 	
 }
+
+void UGA_SkillBase::SetData()
+{
+	FString  ClassName = GetClass()->GetName();
+	ClassName.ReplaceInline(TEXT("_C"), TEXT(""));
+	UUPGameSingleton::Get().SkillDataArray;
+	UE_LOG(LogTemp,Log,TEXT("%s"),*GetClass()->GetName());
+
+	for (const auto& SkillData : UUPGameSingleton::Get().SkillDataArray)
+	{
+		FString TargetSkillName	= SkillData.TargetGameplayAbility->GetName();
+		TargetSkillName.ReplaceInline(TEXT("_C"), TEXT(""));
+		if(TargetSkillName == ClassName)
+		{
+			Cooldown = SkillData.CooldownTime;
+			MagicPoints = SkillData.MagicPoints;
+			TargetSkillAbilityIndex = SkillData.SKillAbilityIndex;
+			UE_LOG(LogTemp,Log,TEXT("CollDown %d"), Cooldown);
+		}
+	}
+	
+	
+	
+	//추가 코드 캔슬해야한다.
+	
+}
+

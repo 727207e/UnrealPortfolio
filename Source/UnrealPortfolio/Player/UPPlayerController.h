@@ -73,6 +73,7 @@ public:
 	UPROPERTY()
 	TObjectPtr<class UUPMainHudWidget> MainHudWidget;
 	
+	UUPMainHudWidget* GetHudWidget();
 
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
@@ -103,10 +104,11 @@ private:
 	void ChatFocusOn();
 	void ChatScroll(bool bUp);
 
-	UUPMainHudWidget* GetHud();
+
 	IUPPossessCharacterInterface* PossessCharacter;
 	
 	/** Game Ability System Input Component **/
 protected:
 	void GASInputPressed(int32 InputId);
+	
 };

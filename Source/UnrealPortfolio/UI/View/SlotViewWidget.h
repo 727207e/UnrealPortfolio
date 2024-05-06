@@ -19,10 +19,15 @@ class UNREALPORTFOLIO_API USlotViewWidget : public UUPUserWidget
 
 
 public:
-	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Slot)
 	float CollDownVariableFill;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Slot)
+	int32 TargetInputActionId;
 
+public:
+	virtual void SetData(const FSlotWidgetModelData& Model);
+	virtual void OnClickedTargetInputActionKey(int32 Cooldown);
+	
 protected:
 	virtual void NativeConstruct() override;
 	
@@ -47,15 +52,15 @@ protected:
 	TObjectPtr<class UTextBlock> TextCoolDown;
 	
 	
-	
-	
-
-public:
-	virtual void SetData(const FSlotWidgetModelData& Model);
-	virtual void StartCooldown(float CooldownEndTime);
+protected:
+	virtual void StartCooldown(float Cooldown);
 	virtual void HiddenCoolDown();
 	virtual void ShowCollDown();
 	virtual void SetIconSlot(const FSlotWidgetModelData& Model);
-	
+	virtual void CooldownEvent();
+	FTimerHandle CooldownTimer;
+	float MaxCooldown;
+	float CurrentCooldown;
+	float DelTime;
 };
 

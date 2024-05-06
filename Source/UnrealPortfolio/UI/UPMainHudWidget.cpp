@@ -18,7 +18,9 @@ void UUPMainHudWidget::NativeConstruct()
 			SkillSlotViewArray.Add(SkillSlotView);
 		}
 	}
-	
-	
-	
+}
+
+TArray<TObjectPtr<USlotViewWidget>> UUPMainHudWidget::GetSkillSlotArray()
+{
+	return SkillSlotViewArray;
 }

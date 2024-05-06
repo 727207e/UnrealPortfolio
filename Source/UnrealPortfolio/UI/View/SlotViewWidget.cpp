@@ -2,6 +2,9 @@
 
 
 #include "UI/View/SlotViewWidget.h"
+
+#include "Kismet/KismetSystemLibrary.h"
+
 void USlotViewWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -21,13 +24,18 @@ void USlotViewWidget::SetData(const FSlotWidgetModelData& Model)
 	SetIconSlot(Model);
 	ImageSlot->SetBrushResourceObject(Model.SlotTexture);
 	TextKey->SetText(FText::FromString(Model.KeyString));
-	ShowCollDown();
-	
+	TargetInputActionId = Model.InputActionId;
+	HiddenCoolDown();
 }
 
-void USlotViewWidget::StartCooldown(float CooldownEndTime)
+void USlotViewWidget::StartCooldown(float Cooldown)
 {
-	
+	DelTime = 0.0f;
+	MaxCooldown = Cooldown;
+	CollDownVariableFill = 1.0f;
+	TextCoolDown->SetText(	FText::AsNumber(MaxCooldown));
+	ShowCollDown();
+	GetWorld()->GetTimerManager().SetTimer(CooldownTimer,this,&USlotViewWidget::CooldownEvent,1,true,1);
 }
 
 void USlotViewWidget::HiddenCoolDown()
@@ -56,6 +64,30 @@ void USlotViewWidget::SetIconSlot(const FSlotWidgetModelData& Model)
 		TextCount->SetText(FText::FromString(Model.CountString));
 		ImageIcon->SetBrushResourceObject(Model.IconTexture);
 	}
+}
+
+void USlotViewWidget::CooldownEvent()
+{
+	if(!CooldownTimer.IsValid())
+	{
+		return;
+	}
+	
+	DelTime += UKismetSystemLibrary::K2_GetTimerElapsedTimeHandle(GetWorld(),CooldownTimer);
+	CurrentCooldown = MaxCooldown - DelTime;
+	CollDownVariableFill = FMath::Lerp(0.0f,1.0f,CurrentCooldown);
+	const int32 CoolDownCount = FMath::RoundToInt(CurrentCooldown);
+	TextCoolDown->SetText(	FText::AsNumber(CoolDownCount));
+	if(CurrentCooldown <= 0)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(CooldownTimer);
+		HiddenCoolDown();
+	}
+}
+
+void USlotViewWidget::OnClickedTargetInputActionKey(int32 Cooldown)
+{
+	StartCooldown(Cooldown);
 }
 
 

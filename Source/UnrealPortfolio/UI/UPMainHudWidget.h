@@ -19,10 +19,13 @@ protected:
 	const int32 SkillSlotMaxId = 8;
 	
 	virtual void NativeConstruct() override;
-public:
+	
 	UPROPERTY(EditAnywhere , Category = Widget)
 	TArray<TObjectPtr<USlotViewWidget>> SkillSlotViewArray;
 	
 	UPROPERTY(EditAnywhere , Category = Widget)
 	TArray<TObjectPtr<USlotViewWidget>> ItemSlotViewArray;
+public:
+	TArray<TObjectPtr<USlotViewWidget>> GetSkillSlotArray();
+	
 };

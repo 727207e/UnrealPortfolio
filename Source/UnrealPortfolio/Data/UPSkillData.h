@@ -4,28 +4,26 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
-#include "SlotWidgetModelData.generated.h"
+#include "UPSkillData.generated.h"
+
 USTRUCT(BlueprintType)
-struct FSlotWidgetModelData : public FTableRowBase
+struct FUPSkillData : public  FTableRowBase
 {
 	GENERATED_BODY()
 	
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
-	FString SlotName;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
-	FString KeyString;
+	int32 SKillAbilityIndex;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
-	FString CountString;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
-	TObjectPtr<UTexture2D> SlotTexture;	
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
-	TObjectPtr<UTexture2D> IconTexture;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
-	int32 InputActionId;
+	TSubclassOf<class UGameplayAbility> TargetGameplayAbility;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
+	TObjectPtr<UTexture2D> SKillIconTexture;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
+	float CooldownTime;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
+	int32 MagicPoints;
 };
