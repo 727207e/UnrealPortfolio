@@ -60,3 +60,15 @@ UUPGameSingleton& UUPGameSingleton::Get()
 	UE_LOG(LogTemp, Error, TEXT("Invalid Game Singleton"));
 	return *NewObject<UUPGameSingleton>();
 }
+
+FUPSkillData UUPGameSingleton::GetSkillDataBySKillAbilityIndex(int32 InputAction)
+{
+	for(const auto& SkillData : SkillDataArray)
+	{
+		if(SkillData.SKillAbilityIndex == InputAction)
+		{
+			return  SkillData;	
+		}
+	}
+	return {};
+}

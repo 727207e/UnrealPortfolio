@@ -3,6 +3,7 @@
 
 #include "UI/View/SlotViewWidget.h"
 
+#include "Game/UPGameSingleton.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 void USlotViewWidget::NativeConstruct()
@@ -25,6 +26,12 @@ void USlotViewWidget::SetData(const FSlotWidgetModelData& Model)
 	ImageSlot->SetBrushResourceObject(Model.SlotTexture);
 	TextKey->SetText(FText::FromString(Model.KeyString));
 	TargetInputActionId = Model.InputActionId;
+
+	const FUPSkillData SkillData = UUPGameSingleton::Get().GetSkillDataBySKillAbilityIndex(TargetInputActionId);
+	if(SkillData.SKillIconTexture)
+	{
+		ImageSlot->SetBrushResourceObject(SkillData.SKillIconTexture);
+	}
 	HiddenCoolDown();
 }
 

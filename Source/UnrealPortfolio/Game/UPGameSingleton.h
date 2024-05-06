@@ -43,6 +43,6 @@ public:
 	}
 	template<typename T>
 	void LoadDataTableToArray(const FString& DataTablePath, TArray<T>& OutArray);
-	
+	FUPSkillData GetSkillDataBySKillAbilityIndex(int32 InputAction);
 };
 
