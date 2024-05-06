@@ -36,6 +36,7 @@ void UGA_MainCharacterSkillBase::ActivateAbility(const FGameplayAbilitySpecHandl
                                                  const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
                                                  const FGameplayEventData* TriggerEventData)
 {
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	SetData();
 	if(IHUDControllerInterface* HudOwner = Cast<IHUDControllerInterface>(ActorInfo->AvatarActor.Get()))
 	{
@@ -53,7 +54,7 @@ void UGA_MainCharacterSkillBase::ActivateAbility(const FGameplayAbilitySpecHandl
 			}
 		}
 	}
-	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+	
 }
 
 void UGA_MainCharacterSkillBase::CancelAbility(const FGameplayAbilitySpecHandle Handle,
@@ -78,7 +79,7 @@ void UGA_MainCharacterSkillBase::InputPressed(const FGameplayAbilitySpecHandle H
 
 void UGA_MainCharacterSkillBase::OnCompleteCallback()
 {
-	
+	Super::OnCompleteCallback();
 }
 
 void UGA_MainCharacterSkillBase::OnInterruptedCallback()
