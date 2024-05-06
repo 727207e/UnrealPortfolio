@@ -5,39 +5,13 @@
 
 #include "Character/UPMainCharacter.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
-#include "Game/UPGameSingleton.h"
-#include "Player/UPPlayerController.h"
 
-UGA_SkillBase::UGA_SkillBase(): AttackableCharacter(nullptr), MovementCharacter(nullptr), TargetMontage(nullptr),
-                                MagicPoints(0)
-{
-	
-}
 
 void UGA_SkillBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
                                     const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	SetData();
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	AttackableCharacter = CastChecked<IAttackableCharacterInterface>(ActorInfo->AvatarActor.Get());
-	if(IHUDControllerInterface* HudOwner = Cast<IHUDControllerInterface>(ActorInfo->AvatarActor.Get()))
-	{
-		const TObjectPtr<UUPMainHudWidget> PlayerHud = HudOwner->GetHudWidget();
-		if(const auto SkillIconWidget = PlayerHud->GetSlotViewWidgetByActionId(TargetSkillAbilityIndex))
-		{
-			if(!SkillIconWidget->GetCooldownExist())
-			{
-				SkillIconWidget->OnClickedTargetInputActionKey(Cooldown);
-			}
-			else
-			{
-				CancelAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-				return;
-			}
-		}
-	
-	}
-	
 	if(TargetMontage)
 	{
 		/** PlayAttackTask Ability **/
@@ -83,28 +57,3 @@ void UGA_SkillBase::OnInterruptedCallback()
 	bool bWasCancelled = true;
 	EndAbility(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,bReplicatedEndAbility,bWasCancelled);
 }
-
-void UGA_SkillBase::SetData()
-{
-	FString  ClassName = GetClass()->GetName();
-	ClassName.ReplaceInline(TEXT("_C"), TEXT(""));
-	UUPGameSingleton::Get().SkillDataArray;
-
-	for (const auto& SkillData : UUPGameSingleton::Get().SkillDataArray)
-	{
-		FString TargetSkillName	= SkillData.TargetGameplayAbility->GetName();
-		TargetSkillName.ReplaceInline(TEXT("_C"), TEXT(""));
-		if(TargetSkillName == ClassName)
-		{
-			Cooldown = SkillData.CooldownTime;
-			MagicPoints = SkillData.MagicPoints;
-			TargetSkillAbilityIndex = SkillData.SKillAbilityIndex;
-		}
-	}
-	
-	
-	
-	//추가 코드 캔슬해야한다.
-	
-}
-

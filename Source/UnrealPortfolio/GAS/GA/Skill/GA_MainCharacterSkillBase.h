@@ -3,26 +3,20 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Abilities/GameplayAbility.h"
-#include "Interface/AttackableCharacterInterface.h"
-#include "Interface/CharacterMovementInterface.h"
-#include "GA_SkillBase.generated.h"
+#include "GAS/GA/Skill/GA_SkillBase.h"
+#include "GA_MainCharacterSkillBase.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class UNREALPORTFOLIO_API UGA_SkillBase : public UGameplayAbility
+class UNREALPORTFOLIO_API UGA_MainCharacterSkillBase : public UGA_SkillBase
 {
 	GENERATED_BODY()
+	UGA_MainCharacterSkillBase();
 protected:
-	IAttackableCharacterInterface*  AttackableCharacter;
-	ICharacterMovementInterface* MovementCharacter;
+	void SetData();
 
-public:
-	UPROPERTY(EditAnywhere)
-	UAnimMontage* TargetMontage;
-	
 protected:
 	virtual auto ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 							 const FGameplayAbilityActivationInfo ActivationInfo,
@@ -38,11 +32,16 @@ protected:
 
 	virtual void InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) override;
 	
-	UFUNCTION()
-	virtual void OnCompleteCallback();
-	UFUNCTION()
-	virtual void OnInterruptedCallback();
-	
-	
-};
 
+	virtual void OnCompleteCallback() override;
+
+	virtual void OnInterruptedCallback() override;
+
+protected:
+	UPROPERTY(BlueprintReadOnly , Category = GAS);
+	int32 Cooldown;
+	UPROPERTY(BlueprintReadOnly , Category = GAS);
+	int32 MagicPoints;
+	UPROPERTY(BlueprintReadOnly , Category = GAS);
+	int32 TargetSkillAbilityIndex;
+};
