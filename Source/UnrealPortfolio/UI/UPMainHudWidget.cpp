@@ -24,3 +24,18 @@ TArray<TObjectPtr<USlotViewWidget>> UUPMainHudWidget::GetSkillSlotArray()
 {
 	return SkillSlotViewArray;
 }
+
+TObjectPtr<USlotViewWidget> UUPMainHudWidget::GetSlotViewWidgetByActionId(int32 ActionId)
+{
+	for(const auto& SkillSlotWidget : SkillSlotViewArray)
+	{
+		if(SkillSlotWidget != nullptr)
+		{
+			if(ActionId == SkillSlotWidget->TargetInputActionId)
+			{
+				return SkillSlotWidget;
+			}
+		}
+	}
+	return nullptr;
+}

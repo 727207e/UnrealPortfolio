@@ -27,6 +27,7 @@ public:
 public:
 	virtual void SetData(const FSlotWidgetModelData& Model);
 	virtual void OnClickedTargetInputActionKey(int32 Cooldown);
+	virtual bool GetCooldownExist();
 	
 protected:
 	virtual void NativeConstruct() override;
@@ -50,6 +51,7 @@ protected:
 	TObjectPtr<class UImage> ImageCoolDownFill;
 	UPROPERTY(EditAnywhere, Category = Slot)
 	TObjectPtr<class UTextBlock> TextCoolDown;
+
 	
 	
 protected:
@@ -58,9 +60,9 @@ protected:
 	virtual void ShowCollDown();
 	virtual void SetIconSlot(const FSlotWidgetModelData& Model);
 	virtual void CooldownEvent();
-	FTimerHandle CooldownTimer;
 	float MaxCooldown;
 	float CurrentCooldown;
 	float DelTime;
+	FTimerHandle CooldownTimer;
 };
 

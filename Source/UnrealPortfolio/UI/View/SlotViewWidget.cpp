@@ -75,7 +75,7 @@ void USlotViewWidget::CooldownEvent()
 	
 	DelTime += UKismetSystemLibrary::K2_GetTimerElapsedTimeHandle(GetWorld(),CooldownTimer);
 	CurrentCooldown = MaxCooldown - DelTime;
-	CollDownVariableFill = FMath::Lerp(0.0f,1.0f,CurrentCooldown);
+	CollDownVariableFill = FMath::Lerp(0.0f,1.0f,CurrentCooldown / MaxCooldown);
 	const int32 CoolDownCount = FMath::RoundToInt(CurrentCooldown);
 	TextCoolDown->SetText(	FText::AsNumber(CoolDownCount));
 	if(CurrentCooldown <= 0)
@@ -88,6 +88,11 @@ void USlotViewWidget::CooldownEvent()
 void USlotViewWidget::OnClickedTargetInputActionKey(int32 Cooldown)
 {
 	StartCooldown(Cooldown);
+}
+
+bool USlotViewWidget::GetCooldownExist()
+{
+	return (CooldownTimer.IsValid() ? true : false);
 }
 
 

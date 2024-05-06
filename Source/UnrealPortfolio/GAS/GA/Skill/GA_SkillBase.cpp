@@ -22,29 +22,23 @@ void UGA_SkillBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
 	SetData();
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	AttackableCharacter = CastChecked<IAttackableCharacterInterface>(ActorInfo->AvatarActor.Get());
-
-	if(const AUPMainCharacter* MainCharacter = Cast<AUPMainCharacter>(ActorInfo->AvatarActor.Get()))
+	if(IHUDControllerInterface* HudOwner = Cast<IHUDControllerInterface>(ActorInfo->AvatarActor.Get()))
 	{
-		if(AUPPlayerController* PlayerController =  Cast<AUPPlayerController>(MainCharacter->GetController()))
+		const TObjectPtr<UUPMainHudWidget> PlayerHud = HudOwner->GetHudWidget();
+		if(const auto SkillIconWidget = PlayerHud->GetSlotViewWidgetByActionId(TargetSkillAbilityIndex))
 		{
-			UUPMainHudWidget* PlayerHud  = Cast<UUPMainHudWidget>( PlayerController->GetHudWidget());
-
-			for(const auto& SKillSlotWidget :  PlayerHud->GetSkillSlotArray())
+			if(!SkillIconWidget->GetCooldownExist())
 			{
-				if(SKillSlotWidget != nullptr)
-				{
-					if(TargetSkillAbilityIndex == SKillSlotWidget->TargetInputActionId)
-					{
-						SKillSlotWidget->OnClickedTargetInputActionKey(Cooldown);
-					}
-				}
+				SkillIconWidget->OnClickedTargetInputActionKey(Cooldown);
+			}
+			else
+			{
+				CancelAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+				return;
 			}
 		}
+	
 	}
-
-	
-		
-	
 	
 	if(TargetMontage)
 	{
@@ -83,7 +77,6 @@ void UGA_SkillBase::OnCompleteCallback()
 	bool bReplicatedEndAbility = true;
 	bool bWasCancelled = false;
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, bReplicatedEndAbility, bWasCancelled);
-
 }
 
 void UGA_SkillBase::OnInterruptedCallback()
@@ -91,7 +84,6 @@ void UGA_SkillBase::OnInterruptedCallback()
 	bool bReplicatedEndAbility = true;
 	bool bWasCancelled = true;
 	EndAbility(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,bReplicatedEndAbility,bWasCancelled);
-	
 }
 
 void UGA_SkillBase::SetData()
@@ -99,7 +91,6 @@ void UGA_SkillBase::SetData()
 	FString  ClassName = GetClass()->GetName();
 	ClassName.ReplaceInline(TEXT("_C"), TEXT(""));
 	UUPGameSingleton::Get().SkillDataArray;
-	UE_LOG(LogTemp,Log,TEXT("%s"),*GetClass()->GetName());
 
 	for (const auto& SkillData : UUPGameSingleton::Get().SkillDataArray)
 	{

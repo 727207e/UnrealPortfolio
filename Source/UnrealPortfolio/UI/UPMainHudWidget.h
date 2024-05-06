@@ -27,5 +27,6 @@ protected:
 	TArray<TObjectPtr<USlotViewWidget>> ItemSlotViewArray;
 public:
 	TArray<TObjectPtr<USlotViewWidget>> GetSkillSlotArray();
+	TObjectPtr<USlotViewWidget> GetSlotViewWidgetByActionId(int32 ActionId);
 	
 };
