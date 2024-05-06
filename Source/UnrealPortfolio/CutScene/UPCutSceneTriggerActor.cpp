@@ -44,10 +44,10 @@ void AUPCutSceneTriggerActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp
 
 	bIsTriggerFirst = false;
 
-	SettingTimer();
+	StartCutScene();
 }
 
-void AUPCutSceneTriggerActor::SettingTimer()
+void AUPCutSceneTriggerActor::StartCutScene()
 {
 	MainCamera = MyCharacter->GetCameraComponent();
 	MainCamera->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
@@ -65,13 +65,14 @@ void AUPCutSceneTriggerActor::SettingTimer()
 	DestinationTransform = CameraMoveEvent.DestinationCameraTrans->GetTransform();
 	IndexCount++;
 
+	GetWorld()->GetTimerManager().ClearTimer(CameraMoveTimerHandle);
 	GetWorld()->GetTimerManager().SetTimer(CameraMoveTimerHandle, this, &AUPCutSceneTriggerActor::CameraMoveTimer, GetWorld()->DeltaTimeSeconds, true);
 }
 
 void AUPCutSceneTriggerActor::CameraMoveTimer()
 {
 	CurTime += GetWorld()->DeltaTimeSeconds;
-	float TargetPoint = CameraMoveEvent.CurveData->GetFloatValue(CurTime/ CameraMoveEvent.MoveLimitTime);
+	float TargetPoint = CameraMoveEvent.CurveData->GetFloatValue(CurTime/ CameraMoveEvent.PlayTime);
 
 	FVector ResultLocation = FMath::Lerp(StartTransform.GetLocation(), DestinationTransform.GetLocation(), TargetPoint);
 	MainCamera->SetWorldLocation(ResultLocation);
@@ -79,25 +80,20 @@ void AUPCutSceneTriggerActor::CameraMoveTimer()
 	FQuat ResultRotation = FMath::Lerp(StartTransform.GetRotation(), DestinationTransform.GetRotation(), TargetPoint);
 	MainCamera->SetWorldRotation(ResultRotation);
 
-	if (CurTime >= CameraMoveEvent.MoveLimitTime)
+	if (CurTime >= CameraMoveEvent.PlayTime)
 	{
 		CurTime = 0;
 		GetWorld()->GetTimerManager().ClearTimer(CameraMoveTimerHandle);
+		GetWorld()->GetTimerManager().SetTimer(CameraMoveTimerHandle, FTimerDelegate::CreateLambda([&]() {
 
-		if (IndexCount >= CameraMoveEventArray.Num())
-		{
-			CutSceneFinish();
-		}
-		else
-		{
-			SettingTimer();
-		}
+			if (IndexCount >= CameraMoveEventArray.Num())
+			{
+				MyCharacter->SetCharacterControl(ECharacterControlType::TopDown);
+			}
+			else
+			{
+				StartCutScene();
+			}
+		}), 1.0f, false, CameraMoveEvent.StayTime);
 	}
-}
-
-void AUPCutSceneTriggerActor::CutSceneFinish()
-{
-	GetWorld()->GetTimerManager().SetTimer(CameraMoveTimerHandle, FTimerDelegate::CreateLambda([&]() {
-		MyCharacter->SetCharacterControl(ECharacterControlType::TopDown);
-		}), CameraMoveEvent.StayLimitTime, false);
 }

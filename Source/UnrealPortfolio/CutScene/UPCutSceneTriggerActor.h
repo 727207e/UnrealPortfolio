@@ -23,16 +23,16 @@ struct FCameraMoveEvent
 	EStartType StartType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<APawn> DestinationCameraTrans;
+	TObjectPtr<AActor> DestinationCameraTrans;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<APawn> StartCameraTrans;
+	TObjectPtr<AActor> StartCameraTrans;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UCurveFloat* CurveData;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 MoveLimitTime;
+	float PlayTime;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 StayLimitTime;
+	float StayTime;
 };
 
 UCLASS()
@@ -52,10 +52,10 @@ public:
 public :
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult);
+	UFUNCTION(BlueprintCallable)
+	void StartCutScene();
 
 private :
-	void SettingTimer();
-	void CutSceneFinish();
 
 	bool bIsTriggerFirst;
 	void CameraMoveTimer();
