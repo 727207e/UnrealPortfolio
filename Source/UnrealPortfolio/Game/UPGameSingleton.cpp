@@ -14,26 +14,40 @@ UUPGameSingleton::UUPGameSingleton(): CurrentMainCharacterId(2)
 			ActionDataTable = ActionDataRef.Object;
 		}
 	}
+	LoadDataTableToArray(
+		TEXT("/Script/Engine.DataTable'/Game/Data/DataAttributeSet/MainCharacterDataSet/DT_MainCharacterTable.DT_MainCharacterTable'"),
+		MainCharacterArray);
 
-	static ConstructorHelpers::FObjectFinder<UDataTable> MainCharacterTableRef(TEXT(
-		"/Script/Engine.DataTable'/Game/Data/DataAttributeSet/MainCharacterDataSet/DT_MainCharacterTable.DT_MainCharacterTable'"));
-	if (nullptr != MainCharacterTableRef.Object)
-	{
-		if (MainCharacterTableRef.Object)
-		{
-			const UDataTable* DataTable = MainCharacterTableRef.Object;
-			check(DataTable->GetRowMap().Num() > 0);
+	LoadDataTableToArray(
+		TEXT("/Script/Engine.DataTable'/Game/Data/ModelWidgetTableData/DT_SlotModelWidgetData.DT_SlotModelWidgetData'"),
+		SlotWidgetModelDataArray);
+	
+	LoadDataTableToArray(
+		TEXT("/Script/Engine.DataTable'/Game/Data/SkillData/DT_SkillDataTable.DT_SkillDataTable'"),
+		SkillDataArray);
+	
+}
+template <typename T>
+void UUPGameSingleton::LoadDataTableToArray(const FString& DataTablePath, TArray<T>& OutArray)
+{
+    static ConstructorHelpers::FObjectFinder<UDataTable> DataTableRef(*DataTablePath);
+    if (nullptr != DataTableRef.Object)
+    {
+        if (DataTableRef.Object)
+        {
+            const UDataTable* DataTable = DataTableRef.Object;
+            check(DataTable->GetRowMap().Num() > 0);
 
-			TArray<uint8*> ValueArray;
-			DataTable->GetRowMap().GenerateValueArray(ValueArray);
-			Algo::Transform(ValueArray, MainCharacterArray,
-			                [](uint8* Value)
-			                {
-				                return *reinterpret_cast<FUPMainCharacterClassTable*>(Value);
-			                }
-			);
-		}
-	}
+            TArray<uint8*> ValueArray;
+            DataTable->GetRowMap().GenerateValueArray(ValueArray);
+            Algo::Transform(ValueArray, OutArray,
+                            [](uint8* Value)
+                            {
+                                return *reinterpret_cast<T*>(Value);
+                            }
+            );
+        }
+    }
 }
 
 UUPGameSingleton& UUPGameSingleton::Get()
@@ -45,4 +59,16 @@ UUPGameSingleton& UUPGameSingleton::Get()
 	
 	UE_LOG(LogTemp, Error, TEXT("Invalid Game Singleton"));
 	return *NewObject<UUPGameSingleton>();
+}
+
+FUPSkillData UUPGameSingleton::GetSkillDataBySKillAbilityIndex(int32 InputAction)
+{
+	for(const auto& SkillData : SkillDataArray)
+	{
+		if(SkillData.SKillAbilityIndex == InputAction)
+		{
+			return  SkillData;	
+		}
+	}
+	return {};
 }
