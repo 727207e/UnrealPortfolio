@@ -48,7 +48,7 @@ void UHpProgressViewWidget::UpdateProgressBar()
 	{
 		TextStat->SetText(FText::FromString(FString::Printf(TEXT("%.0f/%0.f"), CurrentRatio, MaxRatio)));
 	}
-	StartTimmer();
+	StartTimer();
 }
 
 

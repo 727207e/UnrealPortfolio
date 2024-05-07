@@ -5,6 +5,7 @@
 
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 void UMpProgressViewWidget::SetAbilitySystemComponent(AActor* InOwner)
 {
@@ -36,16 +37,38 @@ void UMpProgressViewWidget::OnMaxMpChanged(const FOnAttributeChangeData& ChangeD
 	UpdateProgressBar();
 }
 
+void UMpProgressViewWidget::StartTimer()
+{
+	GetWorld()->GetTimerManager().SetTimer(ProgressAnimTimer, this, &UMpProgressViewWidget::DecreaseProgressBar, 0.0333f, true);
+}
+
 void UMpProgressViewWidget::UpdateProgressBar()
 {
 	Super::UpdateProgressBar();
-	if (PbBar)
-	{
-		PbBar->SetPercent(CurrentRatio / MaxRatio);
-	}
-    
 	if (TextStat)
 	{
 		TextStat->SetText(FText::FromString(FString::Printf(TEXT("%.0f/%0.f"), CurrentRatio, MaxRatio)));
+	}
+	StartTimer();
+}
+
+void UMpProgressViewWidget::DecreaseProgressBar()
+{
+	if(ProgressAnimTimer.IsValid())
+	{
+		DelTime += UKismetSystemLibrary::K2_GetTimerElapsedTimeHandle(GetWorld(),ProgressAnimTimer);
+		const float Alpha = DelTime / Duration;
+		CurrentProgress = FMath::Lerp(CurrentProgress, (CurrentRatio / MaxRatio),Alpha);
+		if (PbBar)
+		{
+			PbBar->SetPercent(CurrentProgress);
+		}
+	}
+
+	if(DelTime >= Duration)
+	{
+		DelTime = 0.0f;
+		GetWorld()->GetTimerManager().ClearTimer(ProgressAnimTimer);
+		PbBar->SetPercent(CurrentRatio / MaxRatio);
 	}
 }

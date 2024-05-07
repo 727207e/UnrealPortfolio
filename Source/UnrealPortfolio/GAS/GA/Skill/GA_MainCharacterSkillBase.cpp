@@ -6,6 +6,7 @@
 #include "Game/UPGameSingleton.h"
 #include "Interface/HUDControllerInterface.h"
 #include "UI/UPMainHudWidget.h"
+#include "Tag/GameplayTags.h"
 
 class IHUDControllerInterface;
 
@@ -46,10 +47,13 @@ void UGA_MainCharacterSkillBase::ActivateAbility(const FGameplayAbilitySpecHandl
 			if(!SkillIconWidget->GetCooldownExist())
 			{
 				SkillIconWidget->OnClickedTargetInputActionKey(Cooldown);
+				const FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(UseMpEffect,1.0f);
+				EffectSpecHandle.Data->SetSetByCallerMagnitude(TAG_DATA_USE_MP,MagicPoints * -1);
+				const FActiveGameplayEffectHandle ActiveGeHandle = ApplyGameplayEffectSpecToOwner(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,EffectSpecHandle);
 			}
 			else
 			{
-				CancelAbility(Handle, ActorInfo, ActivationInfo, false);
+				CancelAbility(Handle, ActorInfo, ActivationInfo, (false));
 				return;
 			}
 		}
