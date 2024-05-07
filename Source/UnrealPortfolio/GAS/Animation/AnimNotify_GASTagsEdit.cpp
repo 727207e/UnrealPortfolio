@@ -18,9 +18,9 @@ void UAnimNotify_GASTagsEdit::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 		}
 
 		FGameplayTagContainer TagContainer;
-		for (FName TagName : TagList)
+		for (FGameplayTag Tag : TagList)
 		{
-			TagContainer.AddTag(FGameplayTag::RequestGameplayTag(TagName));
+			TagContainer.AddTag(Tag);
 		}
 
 		if (bIsAddTag)

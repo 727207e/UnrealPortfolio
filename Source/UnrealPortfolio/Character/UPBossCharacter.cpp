@@ -35,3 +35,8 @@ void AUPBossCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 }
+
+void AUPBossCharacter::CounterAttackHit()
+{
+
+}

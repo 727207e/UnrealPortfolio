@@ -18,4 +18,5 @@ public:
 	AUPBossCharacter();
 
 	virtual void BeginPlay() override;
+	virtual void CounterAttackHit();
 };

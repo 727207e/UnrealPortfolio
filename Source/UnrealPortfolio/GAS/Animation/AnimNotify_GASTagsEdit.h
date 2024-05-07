@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
+#include "GAS/Actor/GameplayEventDataRequest.h"
 #include "AnimNotify_GASTagsEdit.generated.h"
 
 /**
@@ -16,7 +17,7 @@ class UNREALPORTFOLIO_API UAnimNotify_GASTagsEdit : public UAnimNotify
 
 public :
 	UPROPERTY(EditAnywhere)
-	TArray<FName> TagList;
+	TArray<FGameplayTag> TagList;
 
 	UPROPERTY(EditAnywhere)
 	bool bIsAddTag = true;
