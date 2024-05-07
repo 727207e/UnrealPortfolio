@@ -15,11 +15,16 @@ void AUPCutSceneBossRun::StartEvent()
 	}
 	
 	DumyBoss = GetWorld()->SpawnActor<ACharacter>(DumyBossType, GenPosition->GetActorLocation(), GenPosition->GetActorRotation());
-	DumyBoss->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	if (DumyBoss)
+	{
+		DumyBoss->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	}
 }
 
 void AUPCutSceneBossRun::FinishEvent()
 {
-	DumyBoss->ConditionalBeginDestroy();
-
+	if (DumyBoss)
+	{
+		DumyBoss->ConditionalBeginDestroy();
+	}
 }

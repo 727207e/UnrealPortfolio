@@ -24,7 +24,7 @@ public :
     int32 AnimIndex;
 
 protected:
-    virtual void NativeInitializeAnimation() override;
+    virtual void NativeBeginPlay() override;
     
 public :
     UFUNCTION(BlueprintCallable, Category = "Animation")

@@ -49,7 +49,7 @@ void UGA_MainCharacterSkillBase::ActivateAbility(const FGameplayAbilitySpecHandl
 			}
 			else
 			{
-				CancelAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+				CancelAbility(Handle, ActorInfo, ActivationInfo, (TriggerEventData != nullptr));
 				return;
 			}
 		}

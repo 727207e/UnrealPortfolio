@@ -10,10 +10,8 @@ UUPBossRunDummyAnimInstance::UUPBossRunDummyAnimInstance()
 	Velocity = 1.0f;
 }
 
-void UUPBossRunDummyAnimInstance::NativeInitializeAnimation()
+void UUPBossRunDummyAnimInstance::NativeBeginPlay()
 {
-	Super::NativeInitializeAnimation();
-
 	FTimerHandle WaitTimer;
 	GetWorld()->GetTimerManager().SetTimer(WaitTimer, this, &UUPBossRunDummyAnimInstance::MontageSetting, 1.0f, false);
 }

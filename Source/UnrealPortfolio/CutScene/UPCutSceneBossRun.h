@@ -27,7 +27,4 @@ public :
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class ABossManager> BossManager;
-
-private :
-	int32 AnimationCount;
 };
