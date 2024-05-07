@@ -22,4 +22,8 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void CounterAttackHit();
+
+public :
+	UFUNCTION()
+	void MontageEndEvent(UAnimMontage* Montage, bool bInterrupted);
 };

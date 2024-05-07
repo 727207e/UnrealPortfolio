@@ -38,6 +38,32 @@ void AUPBossCharacter::BeginPlay()
 
 void AUPBossCharacter::CounterAttackHit()
 {
+	AUPBossAIController* BossController = Cast<AUPBossAIController>(GetController());
+	if (nullptr == BossController)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UPBossCharacter Can't Find Controller"));
+		return;
+	}
+	
+	BossController->SetBossCanMove(false);
+
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	AnimInstance->Montage_Play(GroggyMontage, 0.3f);
+	AnimInstance->StopAllMontages(0.1f);
+	AnimInstance->Montage_Play(GroggyMontage);
+	AnimInstance->OnMontageEnded.AddDynamic(this, &AUPBossCharacter::MontageEndEvent);
+}
+
+void AUPBossCharacter::MontageEndEvent(UAnimMontage* Montage, bool bInterrupted)
+{
+	AUPBossAIController* BossController = Cast<AUPBossAIController>(GetController());
+	if (nullptr == BossController)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UPBossCharacter Can't Find Controller"));
+		return;
+	}
+
+	BossController->SetBossCanMove(true);
+
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	AnimInstance->OnMontageEnded.RemoveDynamic(this, &AUPBossCharacter::MontageEndEvent);
 }

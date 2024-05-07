@@ -5,6 +5,7 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardData.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "defines/UPAIDefine.h"
 
 AUPBossAIController::AUPBossAIController()
 {
@@ -19,4 +20,20 @@ AUPBossAIController::AUPBossAIController()
 	{
 		BTAsset = BTAssetRef.Object;
 	}
+}
+
+void AUPBossAIController::SetBossCanMove(bool bIsCanMove)
+{
+	GetBlackboardComponent()->SetValueAsBool(BBKEY_CANMOVE, bIsCanMove);
+}
+
+void AUPBossAIController::RunAI()
+{
+	Super::RunAI();
+
+	SetBossCanMove(true);
+	FTimerHandle SetMoveTimer;
+	GetWorld()->GetTimerManager().SetTimer(SetMoveTimer, FTimerDelegate::CreateLambda([&]
+		{
+		}), 2.0f, false);
 }

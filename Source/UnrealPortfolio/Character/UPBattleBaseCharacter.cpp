@@ -22,7 +22,6 @@ void AUPBattleBaseCharacter::SetDead()
 	SetActorEnableCollision(false);
 }
 
-
 void AUPBattleBaseCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
@@ -70,7 +69,6 @@ void AUPBattleBaseCharacter::ServerASCSyncRequest_Implementation()
 
 void AUPBattleBaseCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 {
-
 	ASC->InitAbilityActorInfo(InOwnerActor, this);
 
 	for (const auto& StartAbility : StartAbilities)
