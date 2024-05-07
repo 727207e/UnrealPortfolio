@@ -2,7 +2,6 @@
 
 
 #include "UI/UPMainHudWidget.h"
-
 #include "Game/UPGameSingleton.h"
 
 void UUPMainHudWidget::NativeConstruct()
@@ -34,6 +33,16 @@ void UUPMainHudWidget::NativeConstruct()
 			
 		}
 	}
+
+	for(int i = ProgressMinId ; i <= ProgressMaxId; i++)
+	{
+		const FName SlotItemName = *FString::Printf(TEXT("%s%d"),*PROGRESS_WIDGET_NAME ,i);
+		if(const auto PbViewWidget = Cast<UProgressViewWidget>(GetWidgetFromName(SlotItemName)))
+		{
+			PbViewWidget->SetData(UUPGameSingleton::Get().ProgressWidgetModelDataArray[i]);
+		}
+	}
+	
 	
 }
 
@@ -55,4 +64,22 @@ TObjectPtr<USlotViewWidget> UUPMainHudWidget::GetSlotViewWidgetByActionId(int32 
 		}
 	}
 	return nullptr;
+}
+
+void UUPMainHudWidget::SetProgress(AActor* Owner)
+{
+	if(Owner)
+	{
+		HpProgressView = Cast<UProgressViewWidget>(GetWidgetFromName(*HP_PROGRESS_WIDGET_NAME));
+		if(HpProgressView)
+		{
+			HpProgressView->SetAbilitySystemComponent(Owner);
+		}
+
+		MpProgressView = Cast<UProgressViewWidget>(GetWidgetFromName(*MP_PROGRESS_WIDGET_NAME));
+		if(MpProgressView)
+		{
+			MpProgressView->SetAbilitySystemComponent(Owner);
+		}
+	}
 }

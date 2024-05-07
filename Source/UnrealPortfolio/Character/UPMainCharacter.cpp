@@ -158,7 +158,18 @@ void AUPMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	SetCharacterControl(ECharacterControlType::TopDown);
+	if(GetHudWidget())
+	{
+		AUPPlayerState* PS = GetPlayerState<AUPPlayerState>();
+		GetHudWidget()->SetProgress(PS);
+		GetHudWidget()->AddToViewport();
+	}
+	else
+	{
+		UE_LOG(LogTemp,Log,TEXT("NotExist GetHudWidget"));
+	}
 
+	
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if (PlayerController != nullptr && PlayerController->IsLocalPlayerController())
 	{

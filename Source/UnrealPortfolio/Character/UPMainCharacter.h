@@ -115,5 +115,4 @@ public:
 	/** Get Hud from Interface **/
 
 	virtual TObjectPtr<UUPMainHudWidget> GetHudWidget() override;
-	
 };
