@@ -38,5 +38,6 @@ void AUPBossCharacter::BeginPlay()
 
 void AUPBossCharacter::CounterAttackHit()
 {
-
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	AnimInstance->Montage_Play(GroggyMontage, 0.3f);
 }
