@@ -200,6 +200,12 @@ void AUPBattleBaseCharacter::AddAttackEndCallBack(const FOnEndAttackDelegate& On
 	OnEndAttackDelegate = OnEndAttack;
 }
 
+void AUPBattleBaseCharacter::SkillEndCallBack()
+{
+	OnEndSkillDelegate.Broadcast();
+	OnEndSkillDelegate.Clear();
+}
+
 void AUPBattleBaseCharacter::NormalAttack()
 {
 	
@@ -208,20 +214,13 @@ void AUPBattleBaseCharacter::NormalAttack()
 void AUPBattleBaseCharacter::OnSkill(int32 SkillNumber)
 {
 	TArray<FGameplayAbilitySpecHandle> ActivatedAbilities;
-	FGameplayTagContainer tags(TAG_CHARACTER_SKILL);
 	ASC->FindAllAbilitiesWithTags(ActivatedAbilities, FGameplayTagContainer(TAG_CHARACTER_SKILL));
-
 	ASC->TryActivateAbility(ActivatedAbilities[SkillNumber]);
 }
 
 void AUPBattleBaseCharacter::AddOnHitDelegate(FOnHitDelegate& Delegate)
 {
 	OnHitDelegate = Delegate;
-}
-
-void AUPBattleBaseCharacter::AddOnEndAttackDelegate(FOnEndAttackDelegate& Delegate)
-{
-	OnEndAttackDelegate = Delegate;
 }
 
 UAbilitySystemComponent* AUPBattleBaseCharacter::GetAbilitySystemComponent() const

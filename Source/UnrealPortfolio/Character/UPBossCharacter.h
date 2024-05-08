@@ -29,6 +29,7 @@ public:
 
 	virtual void PreInitializeComponents() override;
 	virtual void PostInitializeComponents() override;
+	virtual void SkillEndCallBack() override;
 	virtual void CounterAttackHit();
 
 public :

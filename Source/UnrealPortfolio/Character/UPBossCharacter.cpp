@@ -41,14 +41,15 @@ void AUPBossCharacter::PreInitializeComponents()
 
 	if (BossSkillStateForm)
 	{
-		for (TSubclassOf<UUPBossSkillAttributeSet> SkillAttributeSet : BossSkillAttributeSetTypeArray)
+		for (int32 Index = 0; Index < BossSkillAttributeSetTypeArray.Num(); Index++)
 		{
+			TSubclassOf<UUPBossSkillAttributeSet> SkillAttributeSet = BossSkillAttributeSetTypeArray[Index];
 			UUPACSkillState* SkillState = NewObject<UUPACSkillState>(this, BossSkillStateForm);
 			if (SkillState)
 			{
 				this->AddOwnedComponent(SkillState);
 				SkillState->RegisterComponent();
-				SkillState->InitSkillState(this, SkillAttributeSet);
+				SkillState->InitSkillState(this, SkillAttributeSet, Index);
 				BossSkillStateArray.Add(SkillState);
 			}
 		}
@@ -69,6 +70,13 @@ void AUPBossCharacter::PostInitializeComponents()
 	{
 		SkillState->PostInitialize(CurPhaseNumber);
 	}
+}
+
+void AUPBossCharacter::SkillEndCallBack()
+{
+	Super::SkillEndCallBack();
+
+	SetAttackDelay(AttackDelayTime);
 }
 
 void AUPBossCharacter::CounterAttackHit()
