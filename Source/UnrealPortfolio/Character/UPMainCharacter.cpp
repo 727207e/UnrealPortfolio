@@ -169,12 +169,12 @@ void AUPMainCharacter::BeginPlay()
 	}
 	if (HasAuthority())
 	{
-		AUPPlayerController* Controller =  Cast<AUPPlayerController>(GetWorld()->GetFirstPlayerController());
-		if(Controller->PlayerState)
+		AUPPlayerController* HostController =  Cast<AUPPlayerController>(GetWorld()->GetFirstPlayerController());
+		if(HostController->PlayerState)
 		{
-			AActor* PS = Controller->PlayerState;
-			Controller->GetHudWidget()->SetProgress(PS);
-			Controller->GetHudWidget()->AddToViewport();
+			AActor* PS = HostController->PlayerState;
+			HostController->GetHudWidget()->SetProgress(PS);
+			HostController->GetHudWidget()->AddToViewport();
 		}
 	}
 	else
@@ -365,14 +365,14 @@ void AUPMainCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 	SetMainCharacterTableData();
 }
 
+// Need refactoring for the listening server
 void AUPMainCharacter::OnDead()
 {
 	Super::OnDead();
-	
-	APlayerController* PlayerController = Cast<APlayerController>(GetController());
-	if(PlayerController)
+	APlayerController* DeadPlayerController = Cast<APlayerController>(GetController());
+	if(DeadPlayerController)
 	{
-		DisableInput(PlayerController);
+		DisableInput(DeadPlayerController);
 	}
 }
 
@@ -380,11 +380,11 @@ void AUPMainCharacter::OnDead()
 
 void AUPMainCharacter::SendPlayerStateToClient()
 {
-	APlayerState* PlayerState = GetPlayerState();
-	AUPPlayerController* Controller = Cast<AUPPlayerController>(GetController());
-	if(PlayerState)
+	APlayerState* ClientPlayerState = GetPlayerState();
+	AUPPlayerController* ClientController = Cast<AUPPlayerController>(GetController());
+	if(ClientPlayerState)
 	{
-		ClientReceivePlayerState(Controller, PlayerState);
+		ClientReceivePlayerState(ClientController, ClientPlayerState);
 	}
 }
 
