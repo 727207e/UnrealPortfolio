@@ -3,6 +3,7 @@
 
 #include "Character/UPBossCharacter.h"
 #include "AI/UPBossAIController.h"
+#include "GAS/State/UPACEntityState.h"
 #include "Tag/GameplayTags.h"
 
 AUPBossCharacter::AUPBossCharacter()
@@ -53,6 +54,18 @@ void AUPBossCharacter::CounterAttackHit()
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	AnimInstance->Montage_Play(GroggyMontage);
 	AnimInstance->OnMontageEnded.AddDynamic(this, &AUPBossCharacter::MontageEndEvent);
+}
+
+void AUPBossCharacter::OnDead()
+{
+	Super::OnDead();
+	EnemyEntityState->AttributeSet->OnDead.AddDynamic(this,&ThisClass::BossDeadBroeadCast);
+}
+
+void AUPBossCharacter::BossDeadBroeadCast()
+{
+	
+	
 }
 
 void AUPBossCharacter::MontageEndEvent(UAnimMontage* Montage, bool bInterrupted)

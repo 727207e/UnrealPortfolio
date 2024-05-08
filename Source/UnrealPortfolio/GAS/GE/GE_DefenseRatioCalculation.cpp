@@ -18,12 +18,13 @@ void UGE_DefenseRatioCalculation::Execute_Implementation(
 	const FGameplayEffectCustomExecutionParameters& ExecutionParams,
 	FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
+	//추후 사용을 위해 잠시 주석
 	//Super::Execute_Implementation(ExecutionParams, OutExecutionOutput);
-	UAbilitySystemComponent* TargetABSC = ExecutionParams.GetTargetAbilitySystemComponent();
-	AActor* TargetActor = TargetABSC ? TargetABSC->GetAvatarActor() : nullptr;
-
-	UAbilitySystemComponent* SourceABSC = ExecutionParams.GetTargetAbilitySystemComponent();
-	AActor* SourceActor = SourceABSC ? SourceABSC->GetAvatarActor() : nullptr;
+	// UAbilitySystemComponent* TargetABSC = ExecutionParams.GetTargetAbilitySystemComponent();
+	// AActor* TargetActor = TargetABSC ? TargetABSC->GetAvatarActor() : nullptr;
+	//
+	// UAbilitySystemComponent* SourceABSC = ExecutionParams.GetTargetAbilitySystemComponent();
+	// AActor* SourceActor = SourceABSC ? SourceABSC->GetAvatarActor() : nullptr;
 
 	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
 	const FGameplayTagContainer* SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();

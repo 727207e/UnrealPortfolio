@@ -368,14 +368,20 @@ void AUPMainCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 void AUPMainCharacter::OnDead()
 {
 	Super::OnDead();
-	
+	if (HasAuthority())
+	{
+		MulticastOnDead();
+	}
+}
+
+void AUPMainCharacter::MulticastOnDead_Implementation()
+{
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
-	if(PlayerController)
+	if (PlayerController)
 	{
 		DisableInput(PlayerController);
 	}
 }
-
 
 
 void AUPMainCharacter::SendPlayerStateToClient()
@@ -387,6 +393,7 @@ void AUPMainCharacter::SendPlayerStateToClient()
 		ClientReceivePlayerState(Controller, PlayerState);
 	}
 }
+
 
 void AUPMainCharacter::ClientReceivePlayerState_Implementation(AUPPlayerController* ClientController, APlayerState* ClientPlayerState)
 {

@@ -22,6 +22,8 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void CounterAttackHit();
+	virtual void OnDead() override;
+	virtual void BossDeadBroeadCast();
 
 public :
 	UFUNCTION()

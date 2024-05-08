@@ -116,7 +116,9 @@ protected:
 	virtual void SetupASCClientPlayer() override;
 	virtual void SetupASCHostPlayer(AActor* InOwnerActor) override;
 	virtual void OnDead() override;
-
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastOnDead();
+	
 private:
 	/** Hud PlayerState **/
 	void SendPlayerStateToClient();
