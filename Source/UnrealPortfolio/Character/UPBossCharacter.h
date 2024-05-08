@@ -20,7 +20,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
 	TObjectPtr<class UAnimMontage> GroggyMontage;
 
-	virtual void BeginPlay() override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Entity)
+	TSubclassOf<class UUPACSkillState> BossSkillStateForm;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Entity)
+	TArray<TSubclassOf<class UUPBossSkillAttributeSet>> BossSkillAttributeSetTypeArray;
+	UPROPERTY()
+	TArray<TObjectPtr<class UUPACSkillState>> BossSkillStateArray;
+
+	virtual void PreInitializeComponents() override;
+	virtual void PostInitializeComponents() override;
 	virtual void CounterAttackHit();
 
 public :
@@ -29,4 +37,7 @@ public :
 
 	UPROPERTY(EditAnywhere)
 	float CounterResetDelayTime;
+
+	UPROPERTY(EditAnywhere)
+	int32 CurPhaseNumber;
 };

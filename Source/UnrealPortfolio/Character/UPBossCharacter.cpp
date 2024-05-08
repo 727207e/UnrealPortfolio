@@ -4,6 +4,9 @@
 #include "Character/UPBossCharacter.h"
 #include "AI/UPBossAIController.h"
 #include "Tag/GameplayTags.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "Data/DataAttributeSet/BossDataSet/UPBossSkillAttributeSet.h"
+#include "GAS/State/UPACSkillState.h"
 
 AUPBossCharacter::AUPBossCharacter()
 {
@@ -32,9 +35,40 @@ AUPBossCharacter::AUPBossCharacter()
 	CounterResetDelayTime = 1.0f;
 }
 
-void AUPBossCharacter::BeginPlay()
+void AUPBossCharacter::PreInitializeComponents()
 {
-	Super::BeginPlay();
+	Super::PreInitializeComponents();
+
+	if (BossSkillStateForm)
+	{
+		for (TSubclassOf<UUPBossSkillAttributeSet> SkillAttributeSet : BossSkillAttributeSetTypeArray)
+		{
+			UUPACSkillState* SkillState = NewObject<UUPACSkillState>(this, BossSkillStateForm);
+			if (SkillState)
+			{
+				this->AddOwnedComponent(SkillState);
+				SkillState->RegisterComponent();
+				SkillState->InitSkillState(this, SkillAttributeSet);
+				BossSkillStateArray.Add(SkillState);
+			}
+		}
+	}
+}
+
+void AUPBossCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(this);
+	if (nullptr == TargetASC)
+	{
+		return;
+	}
+
+	for (TObjectPtr<UUPACSkillState> SkillState : BossSkillStateArray)
+	{
+		SkillState->PostInitialize(CurPhaseNumber);
+	}
 }
 
 void AUPBossCharacter::CounterAttackHit()
