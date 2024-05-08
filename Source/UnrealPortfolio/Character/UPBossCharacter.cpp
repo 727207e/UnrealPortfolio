@@ -3,6 +3,7 @@
 
 #include "Character/UPBossCharacter.h"
 #include "AI/UPBossAIController.h"
+#include "Tag/GameplayTags.h"
 
 AUPBossCharacter::AUPBossCharacter()
 {
@@ -46,6 +47,8 @@ void AUPBossCharacter::CounterAttackHit()
 	}
 	
 	BossController->SetBossCanMove(false);
+
+	ASC->RemoveLooseGameplayTag(TAG_COUNTER_HIT);
 
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	AnimInstance->Montage_Play(GroggyMontage);
