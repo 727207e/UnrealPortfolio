@@ -26,4 +26,7 @@ public:
 public :
 	UFUNCTION()
 	void MontageEndEvent(UAnimMontage* Montage, bool bInterrupted);
+
+	UPROPERTY(EditAnywhere, BlurprintReadWrite)
+	float CounterResetDelayTime;
 };

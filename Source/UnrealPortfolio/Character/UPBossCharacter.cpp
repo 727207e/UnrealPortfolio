@@ -28,7 +28,7 @@ AUPBossCharacter::AUPBossCharacter()
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
 	AttackDelayTime = 5;
-
+	CounterResetDelayTime = 1.0f;
 }
 
 void AUPBossCharacter::BeginPlay()
@@ -54,15 +54,19 @@ void AUPBossCharacter::CounterAttackHit()
 
 void AUPBossCharacter::MontageEndEvent(UAnimMontage* Montage, bool bInterrupted)
 {
-	AUPBossAIController* BossController = Cast<AUPBossAIController>(GetController());
-	if (nullptr == BossController)
-	{
-		UE_LOG(LogTemp, Error, TEXT("UPBossCharacter Can't Find Controller"));
-		return;
-	}
+	FTimerHandle FollowDelay;
+	FTimerHandle DeadTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda([&] {
+		AUPBossAIController* BossController = Cast<AUPBossAIController>(GetController());
+		if (nullptr == BossController)
+		{
+			UE_LOG(LogTemp, Error, TEXT("UPBossCharacter Can't Find Controller"));
+			return;
+		}
 
-	BossController->SetBossCanMove(true);
+		BossController->SetBossCanMove(true);
 
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	AnimInstance->OnMontageEnded.RemoveDynamic(this, &AUPBossCharacter::MontageEndEvent);
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		AnimInstance->OnMontageEnded.RemoveDynamic(this, &AUPBossCharacter::MontageEndEvent);
+	}), CounterResetDelayTime, false);
 }
