@@ -22,7 +22,7 @@ void UGA_BossSkill::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
 
 void UGA_BossSkill::OnCompleteCallback()
 {
-	if (IndexNumber > SkillSectionList.Num())
+	if (IndexNumber < SkillSectionList.Num())
 	{
 		TargetMontageSectionName = SkillSectionList[IndexNumber];
 		IndexNumber++;
