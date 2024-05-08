@@ -27,21 +27,20 @@ void AUPBattleBaseCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
+	// APlayerController* PlayerController = Cast<APlayerController>(NewController);
+	// if (PlayerController)
+	// {
+	// 	AUPPlayerState* PS = GetPlayerState<AUPPlayerState>();
+	// 	if (PS)
+	// 	{
+	// 		ASC = PS->GetAbilitySystemComponent();
+	// 		//AttributeSet = PS->GetMainCharacterAttributeSet();
+	// 		SetupASCHostPlayer(PS);
+	// 		PlayerController->ConsoleCommand(TEXT("showdebug abilitysystem"));
+	// 	}
+	// }
 	APlayerController* PlayerController = Cast<APlayerController>(NewController);
-	if (PlayerController)
-	{
-		AUPPlayerState* PS = GetPlayerState<AUPPlayerState>();
-		if (PS)
-		{
-			ASC = PS->GetAbilitySystemComponent();
-			AttributeSet = PS->GetMainCharacterAttributeSet();
-			
-			SetupASCHostPlayer(PS);
-			PlayerController->ConsoleCommand(TEXT("showdebug abilitysystem"));
-		}
-	}
-
-	else // AI Controller
+	if (!PlayerController)// AI Controller
 	{
 		if(HasAuthority())
 		{
@@ -70,7 +69,6 @@ void AUPBattleBaseCharacter::ServerASCSyncRequest_Implementation()
 
 void AUPBattleBaseCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 {
-
 	ASC->InitAbilityActorInfo(InOwnerActor, this);
 
 	for (const auto& StartAbility : StartAbilities)
@@ -89,13 +87,6 @@ void AUPBattleBaseCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 
 void AUPBattleBaseCharacter::SetupASCClientPlayer()
 {
-	AUPPlayerState* PS = GetPlayerState<AUPPlayerState>();
-	if (PS)
-	{
-		ASC = PS->GetAbilitySystemComponent();
-		ASC->InitAbilityActorInfo(PS, this);
-		AttributeSet = PS->GetMainCharacterAttributeSet();
-	}
 }
 
 UAnimMontage* AUPBattleBaseCharacter::GetComboActionMontage()

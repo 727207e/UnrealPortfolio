@@ -37,7 +37,7 @@ protected:
 	virtual void OnRep_PlayerState() override;
 
 	UFUNCTION(Server, Unreliable)
-	void ServerASCSyncRequest();
+	virtual  void ServerASCSyncRequest();
 
 	/** Game Ability System **/
 	/** Game Ability System **/
@@ -106,8 +106,6 @@ public :
 	void AddOnEndAttackDelegate(FOnEndAttackDelegate& Deleagte);
 	void AddOnHitDelegate(FOnHitDelegate& Delegate);
 	
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UEntityAttributeSet> AttributeSet;
 	UFUNCTION()
 	virtual void OnDead();
 	

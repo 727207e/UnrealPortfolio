@@ -3,6 +3,8 @@
 
 #include "UI/UPMainHudWidget.h"
 #include "Game/UPGameSingleton.h"
+#include "View/HpProgressViewWidget.h"
+#include "View/MpProgressViewWidget.h"
 
 void UUPMainHudWidget::NativeConstruct()
 {
@@ -70,13 +72,13 @@ void UUPMainHudWidget::SetProgress(AActor* Owner)
 {
 	if(Owner)
 	{
-		HpProgressView = Cast<UProgressViewWidget>(GetWidgetFromName(*HP_PROGRESS_WIDGET_NAME));
+		HpProgressView = Cast<UHpProgressViewWidget>(GetWidgetFromName(*HP_PROGRESS_WIDGET_NAME));
 		if(HpProgressView)
 		{
 			HpProgressView->SetAbilitySystemComponent(Owner);
 		}
 
-		MpProgressView = Cast<UProgressViewWidget>(GetWidgetFromName(*MP_PROGRESS_WIDGET_NAME));
+		MpProgressView = Cast<UMpProgressViewWidget>(GetWidgetFromName(*MP_PROGRESS_WIDGET_NAME));
 		if(MpProgressView)
 		{
 			MpProgressView->SetAbilitySystemComponent(Owner);

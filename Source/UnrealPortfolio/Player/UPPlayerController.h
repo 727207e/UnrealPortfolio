@@ -73,7 +73,7 @@ public:
 	UPROPERTY()
 	TObjectPtr<class UUPMainHudWidget> MainHudWidget;
 	
-	UUPMainHudWidget* GetHudWidget();
+	UUPMainHudWidget* GetHudWidget() const;
 
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */

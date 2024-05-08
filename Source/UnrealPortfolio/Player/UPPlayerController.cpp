@@ -176,7 +176,7 @@ void AUPPlayerController::ChatScroll(bool bUp)
 	}
 }
 
-UUPMainHudWidget* AUPPlayerController::GetHudWidget()
+UUPMainHudWidget* AUPPlayerController::GetHudWidget() const
 {
 	return  MainHudWidget;
 }

@@ -18,7 +18,6 @@ class UNREALPORTFOLIO_API AUPPlayerState : public APlayerState, public IAbilityS
 	
 public:
 	AUPPlayerState();
-
 	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UUPMainCharacterAttributeSet* GetMainCharacterAttributeSet() const;
 

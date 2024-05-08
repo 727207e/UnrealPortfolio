@@ -13,6 +13,7 @@
 #include "Data/UPCharacterControlData.h"
 #include "Data/DataAsset/MainCharacter/UPMainCharacterClassTable.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/GameSession.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GAS/GA/GA_Attack.h"
 #include "GAS/GA/GA_NPCInteractor.h"
@@ -158,18 +159,6 @@ void AUPMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	SetCharacterControl(ECharacterControlType::TopDown);
-	if(GetHudWidget())
-	{
-		AUPPlayerState* PS = GetPlayerState<AUPPlayerState>();
-		GetHudWidget()->SetProgress(PS);
-		GetHudWidget()->AddToViewport();
-	}
-	else
-	{
-		UE_LOG(LogTemp,Log,TEXT("NotExist GetHudWidget"));
-	}
-
-	
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if (PlayerController != nullptr && PlayerController->IsLocalPlayerController())
 	{
@@ -177,8 +166,27 @@ void AUPMainCharacter::BeginPlay()
 		NPCDetectorSceneComponent->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("NPC_Checker"));
 		NPCDetectorSceneComponent->SetParent(GetRootComponent());
 		NPCDetectorSceneComponent->RegisterComponent();
+		
 	}
 }
+
+void AUPMainCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	AUPPlayerController* UPPlayerController = Cast<AUPPlayerController>( NewController);
+	if (UPPlayerController)
+	{
+		if (AUPPlayerState* PS = GetPlayerState<AUPPlayerState>())
+		{
+			ASC = PS->GetAbilitySystemComponent();
+			AttributeSet = PS->GetMainCharacterAttributeSet();
+			SetupASCHostPlayer(PS);
+			UPPlayerController->ConsoleCommand(TEXT("showdebug abilitysystem"));
+		}
+	}
+	
+}
+
 
 void AUPMainCharacter::SetDead()
 {
@@ -343,18 +351,31 @@ void AUPMainCharacter::SetControllerMovementMod(EMovementMode MovementMode, APla
 	PlayerController->GetCharacter()->GetCharacterMovement()->SetMovementMode(MovementMode);
 }
 
-void AUPMainCharacter::SetMainCharacterTableData() const
+void AUPMainCharacter::SetMainCharacterTableData()
 {
     const auto MainCharacterData = UUPGameSingleton::Get().GetCurrentMainCharacterData();
 	GetMesh()->SetSkeletalMesh(MainCharacterData.Mesh);
 	AttributeSet->InitAttributeSet();
 	AttributeSet->OnDead.AddDynamic(this,&ThisClass::OnDead);
+
+	if(GetHudWidget())
+	{
+		AUPPlayerState* PS = GetPlayerState<AUPPlayerState>();
+		GetHudWidget()->SetProgress(PS);
+		GetHudWidget()->AddToViewport();
+	}
+	
 }
 
 void AUPMainCharacter::SetupASCClientPlayer()
 {
-	Super::SetupASCClientPlayer();
-	SetMainCharacterTableData();
+	AUPPlayerState* PS = GetPlayerState<AUPPlayerState>();
+	if (PS)
+	{
+		ASC = PS->GetAbilitySystemComponent();
+		AttributeSet = PS->GetMainCharacterAttributeSet();
+		SetMainCharacterTableData();
+	}
 }
 
 void AUPMainCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
@@ -367,7 +388,7 @@ void AUPMainCharacter::OnDead()
 {
 	Super::OnDead();
 	
-	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	APlayerController* PlayerController = Cast<APlayerController>(GetWorld()->GetFirstPlayerController());
 	if(PlayerController)
 	{
 		DisableInput(PlayerController);
@@ -376,10 +397,17 @@ void AUPMainCharacter::OnDead()
 
 TObjectPtr<UUPMainHudWidget> AUPMainCharacter::GetHudWidget()
 {
-	AUPPlayerController* PlayerController =  Cast<AUPPlayerController>(GetController());
-	const TObjectPtr<UUPMainHudWidget> PlayerHud  = Cast<UUPMainHudWidget>( PlayerController->GetHudWidget());
-	return PlayerHud;
+	const AUPPlayerController* PlayerController = Cast<AUPPlayerController>(GetController());
+	if (PlayerController != nullptr && PlayerController->IsLocalPlayerController())
+	{
+		const TObjectPtr<UUPMainHudWidget> Result =PlayerController->GetHudWidget();
+		return Result;
+	}
+
+	return  nullptr;
+	
 }
+
 
 
 ECharacterControlType AUPMainCharacter::GetCharacterControl()

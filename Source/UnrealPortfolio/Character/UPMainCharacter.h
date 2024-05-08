@@ -39,6 +39,7 @@ public :
 	virtual void OnSetDestinationReleased() override;
 	virtual void OnNPCInteraction() override;
 	virtual void BeginPlay() override;
+	virtual void PossessedBy(AController* NewController) override;
 public:
 	/* Animation */
 	virtual void SetDead() override;
@@ -102,17 +103,19 @@ public:
 
 private :
 	void SetControllerMovementMod(EMovementMode MovementMode, APlayerController* PlayerController);
-
 protected:
 	/** Setup MainCharacter Table Data **/
-	void SetMainCharacterTableData() const;
+	void SetMainCharacterTableData();
 
 	virtual  void SetupASCClientPlayer() override;
 	virtual  void SetupASCHostPlayer(AActor* InOwnerActor) override;
 	virtual void OnDead() override;
-
+	TObjectPtr<UUPMainHudWidget> PlayerHud;
 public:
 	/** Get Hud from Interface **/
 
 	virtual TObjectPtr<UUPMainHudWidget> GetHudWidget() override;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UEntityAttributeSet> AttributeSet;
 };
