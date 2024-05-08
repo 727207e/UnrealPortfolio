@@ -44,4 +44,6 @@ protected:
 	int32 MagicPoints;
 	UPROPERTY(BlueprintReadOnly , Category = GAS);
 	int32 TargetSkillAbilityIndex;
+	UPROPERTY(EditAnywhere , Category = GAS);
+	TSubclassOf<UGameplayEffect> UseMpEffect;
 };

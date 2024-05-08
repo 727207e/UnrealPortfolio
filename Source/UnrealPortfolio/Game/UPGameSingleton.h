@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Data/UPSkillData.h"
 #include "Data/DataAsset/MainCharacter/UPMainCharacterClassTable.h"
+#include "Data/DataTable/Widget/ProgressWidgetModelData.h"
 #include "Data/DataTable/Widget/SlotWidgetModelData.h"
 #include "UPGameSingleton.generated.h"
 
@@ -27,6 +28,7 @@ public:
 	
 	TArray<FUPMainCharacterClassTable> MainCharacterArray;
 	TArray<FSlotWidgetModelData> SlotWidgetModelDataArray;
+	TArray<FProgressWidgetModelData> ProgressWidgetModelDataArray;
 	TArray<FUPSkillData> SkillDataArray;
 
 	FORCEINLINE FUPMainCharacterClassTable GetCharacterData(int32 InLevel) const

@@ -17,7 +17,6 @@ class UNREALPORTFOLIO_API USlotViewWidget : public UUPUserWidget
 {
 	GENERATED_BODY()
 
-
 public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Slot)
 	float CollDownVariableFill;

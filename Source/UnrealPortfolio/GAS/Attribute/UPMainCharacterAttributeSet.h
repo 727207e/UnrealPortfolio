@@ -26,7 +26,9 @@ public:
 
 	ATTRIBUTE_ACCESSORS(UUPMainCharacterAttributeSet, Mp);
 	ATTRIBUTE_ACCESSORS(UUPMainCharacterAttributeSet, MaxMp);
-	
+
+	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+
 	UPROPERTY(BlueprintReadOnly, Category = "MP", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData Mp;
 	

@@ -3,9 +3,11 @@
 
 #include "GAS/GA/Skill/GA_MainCharacterSkillBase.h"
 
+#include "Character/UPPlayerState.h"
 #include "Game/UPGameSingleton.h"
 #include "Interface/HUDControllerInterface.h"
 #include "UI/UPMainHudWidget.h"
+#include "Tag/GameplayTags.h"
 
 class IHUDControllerInterface;
 
@@ -38,21 +40,30 @@ void UGA_MainCharacterSkillBase::ActivateAbility(const FGameplayAbilitySpecHandl
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	SetData();
-	if(IHUDControllerInterface* HudOwner = Cast<IHUDControllerInterface>(ActorInfo->AvatarActor.Get()))
+	const AUPPlayerState* PlayerState = Cast<AUPPlayerState>(ActorInfo->OwnerActor);
+	if(IHUDControllerInterface* HudOwner = Cast<IHUDControllerInterface>(PlayerState->GetPlayerController()))
 	{
 		const TObjectPtr<UUPMainHudWidget> PlayerHud = HudOwner->GetHudWidget();
-		if(const auto SkillIconWidget = PlayerHud->GetSlotViewWidgetByActionId(TargetSkillAbilityIndex))
+		if(PlayerHud)
 		{
-			if(!SkillIconWidget->GetCooldownExist())
+			if(const auto SkillIconWidget = PlayerHud->GetSlotViewWidgetByActionId(TargetSkillAbilityIndex))
 			{
+				if(!SkillIconWidget->GetCooldownExist())
+				{
+					SkillIconWidget->OnClickedTargetInputActionKey(Cooldown);
+					const FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(UseMpEffect,1.0f);
+					EffectSpecHandle.Data->SetSetByCallerMagnitude(TAG_DATA_USE_MP,MagicPoints * -1);
+					const FActiveGameplayEffectHandle ActiveGeHandle = ApplyGameplayEffectSpecToOwner(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,EffectSpecHandle);
+				}
+				else
+				{
+					CancelAbility(Handle, ActorInfo, ActivationInfo, (false));
+					return;
+				}
 				SkillIconWidget->OnClickedTargetInputActionKey(Cooldown);
 			}
-			else
-			{
-				CancelAbility(Handle, ActorInfo, ActivationInfo, (TriggerEventData != nullptr));
-				return;
-			}
 		}
+		
 	}
 	
 }
