@@ -182,12 +182,6 @@ void AUPMainCharacter::BeginPlay()
 		ServerRequestPlayerState();
 	}
 }
-
-void AUPMainCharacter::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
-}
-
 void AUPMainCharacter::SetDead()
 {
 	Super::SetDead();
@@ -382,11 +376,6 @@ void AUPMainCharacter::OnDead()
 	}
 }
 
-
-bool AUPMainCharacter::ServerRequestPlayerState_Validate()
-{
-	return  true;
-}
 
 
 void AUPMainCharacter::SendPlayerStateToClient()

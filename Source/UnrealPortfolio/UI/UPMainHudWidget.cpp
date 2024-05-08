@@ -42,8 +42,6 @@ void UUPMainHudWidget::NativeConstruct()
 			PbViewWidget->SetData(UUPGameSingleton::Get().ProgressWidgetModelDataArray[i]);
 		}
 	}
-	
-	
 }
 
 TArray<TObjectPtr<USlotViewWidget>> UUPMainHudWidget::GetSkillSlotArray()

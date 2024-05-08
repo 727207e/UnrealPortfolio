@@ -38,7 +38,7 @@ public :
 	virtual void OnSetDestinationReleased() override;
 	virtual void OnNPCInteraction() override;
 	virtual void BeginPlay() override;
-	virtual void PostInitializeComponents() override;
+	
 public:
 	/* Animation */
 	virtual void SetDead() override;
@@ -120,7 +120,7 @@ protected:
 private:
 	/** Hud PlayerState **/
 	void SendPlayerStateToClient();
-	UFUNCTION(Server, Reliable, WithValidation)
+	UFUNCTION(Server, Reliable)
 	void ServerRequestPlayerState();
 	UFUNCTION(Client, Reliable)
 	void ClientReceivePlayerState(AUPPlayerController* ClientController, APlayerState* ClientPlayerState);
