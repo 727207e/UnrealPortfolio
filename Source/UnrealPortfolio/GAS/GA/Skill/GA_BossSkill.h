@@ -19,6 +19,8 @@ class UNREALPORTFOLIO_API UGA_BossSkill : public UGA_SkillBase
 public :
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FName> SkillSectionList;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 SkillNumber;
 
 protected:
 	virtual auto ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -30,4 +32,6 @@ protected:
 private :
 	void PlayNextMontage();
 	int32 IndexNumber;
+
+	const class UUPBossSkillAttributeSet* SourceAttribute;
 };

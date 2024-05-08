@@ -12,12 +12,12 @@ UUPACSkillState::UUPACSkillState()
 
 }
 
-void UUPACSkillState::InitSkillState(AActor* Owner, TSubclassOf<UUPBossSkillAttributeSet> AttributeSetType)
+void UUPACSkillState::InitSkillState(AActor* Owner, TSubclassOf<UUPBossSkillAttributeSet> AttributeSetType, int32 SkillNumber)
 {
 	AttributeSet = NewObject<UUPBossSkillAttributeSet>(Owner, AttributeSetType);
 	if (AttributeSet != nullptr && Owner)
 	{
-		AttributeSet->Rename(*AttributeSetType->GetName(), Owner);
+		AttributeSet->Rename(*FString::FromInt(SkillNumber + 1), Owner);
 	}
 }
 
@@ -25,7 +25,6 @@ void UUPACSkillState::PostInitialize(int32 CurPhaseNumber)
 {
 	if (AttributeSet)
 	{
-		UE_LOG(LogTemp,Error, TEXT("1111"));
 		AttributeSet->InitAttributeSet(CurPhaseNumber);
 	}
 }

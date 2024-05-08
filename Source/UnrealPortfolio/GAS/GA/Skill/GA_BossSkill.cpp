@@ -2,6 +2,9 @@
 
 
 #include "GAS/GA/Skill/GA_BossSkill.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
+#include "Data/DataAttributeSet/BossDataSet/UPBossSkillAttributeSet.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 
 UGA_BossSkill::UGA_BossSkill()
@@ -16,7 +19,25 @@ void UGA_BossSkill::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
 		TargetMontageSectionName = SkillSectionList[IndexNumber];
 		IndexNumber++;
 	}
+	UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(ActorInfo->AvatarActor.Get());
+	const TArray<UAttributeSet*> AllAtributes = SourceASC->GetSpawnedAttributes();
 
+	for (const UAttributeSet* Attribute : AllAtributes)
+	{
+		if (Attribute->GetName() == FString::FromInt(SkillNumber))
+		{
+			SourceAttribute = Cast<UUPBossSkillAttributeSet>(Attribute);
+			break;
+		}
+	}
+
+	if (nullptr == SourceAttribute)
+	{
+		UE_LOG(LogTemp, Error, TEXT("GA_BossSkill Can't Find AttributeSet"));
+		return;
+	}
+	
+	AttackSpeed = SourceAttribute->GetAttackSpeed();
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
@@ -41,7 +62,7 @@ void UGA_BossSkill::OnCompleteCallback()
 void UGA_BossSkill::PlayNextMontage()
 {
 	UAbilityTask_PlayMontageAndWait* PlayAttackTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
-		this, TEXT("PlayerSkill"), TargetMontage, 1.0f, TargetMontageSectionName);
+		this, TEXT("PlayerSkill"), TargetMontage, AttackSpeed, TargetMontageSectionName);
 
 	PlayAttackTask->OnCompleted.AddDynamic(this, &UGA_BossSkill::OnCompleteCallback);
 	PlayAttackTask->OnInterrupted.AddDynamic(this, &UGA_BossSkill::OnInterruptedCallback);

@@ -70,12 +70,12 @@ void UUPBossSkillAttributeSet::SettingValue(T BaseTablePtr)
 {
 	FUPBossSkillTable* table = static_cast<FUPBossSkillTable*>(&BaseTablePtr);
 
-	SetDamage(table->Damage);
-	SetAttackNumber(table->AttackNumber);
-	SetKnockBack(table->KnockBack);
-	SetAttackRange(table->AttackRange);
-	SetAttackSpeed(table->AttackSpeed);
-	SetAttackRadius(table->AttackRadius);
+	InitDamage(table->Damage);
+	InitAttackNumber(table->AttackNumber);
+	InitKnockBack(table->KnockBack);
+	InitAttackRange(table->AttackRange);
+	InitAttackSpeed(table->AttackSpeed);
+	InitAttackRadius(table->AttackRadius);
 }
 
 template <typename T>

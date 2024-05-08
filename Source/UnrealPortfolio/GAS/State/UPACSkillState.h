@@ -16,7 +16,7 @@ public:
 	UUPACSkillState();
 
 public :
-	virtual void InitSkillState(AActor* Owner, TSubclassOf<class UUPBossSkillAttributeSet> AttributeSetType);
+	virtual void InitSkillState(AActor* Owner, TSubclassOf<class UUPBossSkillAttributeSet> AttributeSetType, int32 SkillNumber);
 	virtual void PostInitialize(int32 CurPhaseNumber);
 
 
