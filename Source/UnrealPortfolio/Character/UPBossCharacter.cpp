@@ -48,7 +48,6 @@ void AUPBossCharacter::CounterAttackHit()
 	BossController->SetBossCanMove(false);
 
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	AnimInstance->StopAllMontages(0.1f);
 	AnimInstance->Montage_Play(GroggyMontage);
 	AnimInstance->OnMontageEnded.AddDynamic(this, &AUPBossCharacter::MontageEndEvent);
 }
