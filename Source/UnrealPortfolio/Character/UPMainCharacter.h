@@ -16,7 +16,6 @@ UCLASS()
 class UNREALPORTFOLIO_API AUPMainCharacter : public AUPBattleBaseCharacter
 	,public IUPPossessCharacterInterface
 	,public ICharacterMovementInterface
-	,public IHUDControllerInterface
 {
 	GENERATED_BODY()
 private:
@@ -39,6 +38,7 @@ public :
 	virtual void OnSetDestinationReleased() override;
 	virtual void OnNPCInteraction() override;
 	virtual void BeginPlay() override;
+	virtual void PostInitializeComponents() override;
 public:
 	/* Animation */
 	virtual void SetDead() override;
@@ -107,12 +107,15 @@ protected:
 	/** Setup MainCharacter Table Data **/
 	void SetMainCharacterTableData() const;
 
-	virtual  void SetupASCClientPlayer() override;
-	virtual  void SetupASCHostPlayer(AActor* InOwnerActor) override;
+	virtual void SetupASCClientPlayer() override;
+	virtual void SetupASCHostPlayer(AActor* InOwnerActor) override;
 	virtual void OnDead() override;
 
-public:
-	/** Get Hud from Interface **/
-
-	virtual TObjectPtr<UUPMainHudWidget> GetHudWidget() override;
+private:
+	/** Hud PlayerState **/
+	void SendPlayerStateToClient();
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerRequestPlayerState();
+	UFUNCTION(Client, Reliable)
+	void ClientReceivePlayerState(AUPPlayerController* ClientController, APlayerState* ClientPlayerState);
 };

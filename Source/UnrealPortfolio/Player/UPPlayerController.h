@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Templates/SubclassOf.h"
 #include "GameFramework/PlayerController.h"
+#include "Interface/HUDControllerInterface.h"
 #include "Interface/UPPossessCharacterInterface.h"
 #include "UI/UPMainHudWidget.h"
 #include "UPPlayerController.generated.h"
@@ -17,7 +18,7 @@ class UInputAction;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS()
-class AUPPlayerController : public APlayerController
+class AUPPlayerController : public APlayerController ,public  IHUDControllerInterface
 {
 	GENERATED_BODY()
 
@@ -73,7 +74,7 @@ public:
 	UPROPERTY()
 	TObjectPtr<class UUPMainHudWidget> MainHudWidget;
 	
-	UUPMainHudWidget* GetHudWidget();
+	virtual  TObjectPtr<class UUPMainHudWidget> GetHudWidget() override;
 
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */

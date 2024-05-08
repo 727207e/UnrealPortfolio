@@ -2,17 +2,14 @@
 
 #include "UPPlayerController.h"
 #include "GameFramework/Pawn.h"
-#include "NiagaraSystem.h"
-#include "Character/UPCharacter.h"
 #include "Engine/World.h"
 #include "EnhancedInputComponent.h"
-#include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
 #include "UI/UPACChatGenerator.h"
-#include "GameplayAbilitySpec.h"
 #include "Engine/LocalPlayer.h"
 #include "InputMappingContext.h"
 
+class AUPPlayerState;
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 AUPPlayerController::AUPPlayerController()
@@ -39,8 +36,7 @@ void AUPPlayerController::BeginPlay()
 	{
 		UE_LOG(LogTemplateCharacter, Log, TEXT("Failed To Get PossessCharacter"));
 	}
-
-
+	
 	if(UClass* HudWidgetClass = LoadClass<UUserWidget>(nullptr, TEXT("/Game/UI/WBP_Hud.WBP_Hud_C")))
 	{
 		MainHudWidget = CastChecked<UUPMainHudWidget>(CreateWidget(GetWorld(),HudWidgetClass,TEXT("UUPMainHudWidget")));
@@ -176,7 +172,7 @@ void AUPPlayerController::ChatScroll(bool bUp)
 	}
 }
 
-UUPMainHudWidget* AUPPlayerController::GetHudWidget()
+TObjectPtr<UUPMainHudWidget> AUPPlayerController::GetHudWidget()
 {
 	return  MainHudWidget;
 }

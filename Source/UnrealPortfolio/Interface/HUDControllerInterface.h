@@ -21,7 +21,5 @@ class UNREALPORTFOLIO_API IHUDControllerInterface
 {
 	GENERATED_BODY()
 public:
-	virtual  TObjectPtr<UUPMainHudWidget> GetHudWidget() = 0;
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
-public:
+	virtual TObjectPtr<UUPMainHudWidget> GetHudWidget() = 0;
 };
