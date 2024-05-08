@@ -17,5 +17,16 @@ class UNREALPORTFOLIO_API AUPBossCharacter : public AUPEnemyCharacter
 public:
 	AUPBossCharacter();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
+	TObjectPtr<class UAnimMontage> GroggyMontage;
+
 	virtual void BeginPlay() override;
+	virtual void CounterAttackHit();
+
+public :
+	UFUNCTION()
+	void MontageEndEvent(UAnimMontage* Montage, bool bInterrupted);
+
+	UPROPERTY(EditAnywhere)
+	float CounterResetDelayTime;
 };

@@ -22,7 +22,6 @@ void AUPBattleBaseCharacter::SetDead()
 	SetActorEnableCollision(false);
 }
 
-
 void AUPBattleBaseCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
@@ -70,7 +69,6 @@ void AUPBattleBaseCharacter::ServerASCSyncRequest_Implementation()
 
 void AUPBattleBaseCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 {
-
 	ASC->InitAbilityActorInfo(InOwnerActor, this);
 
 	for (const auto& StartAbility : StartAbilities)
@@ -145,7 +143,7 @@ TArray<FGameplayAbilitySpec> AUPBattleBaseCharacter::GetUsingGas(int32 GameplayA
 void AUPBattleBaseCharacter::Hit(FVector TargetLocation, TObjectPtr<class AGameplayEventDataRequest> ActionData)
 {
 	LookTarget(TargetLocation);
-	Knockback(ActionData);
+	//Knockback(ActionData);
 	PlayHitAnimation();
 }
 

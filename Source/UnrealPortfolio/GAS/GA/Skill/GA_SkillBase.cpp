@@ -16,7 +16,7 @@ void UGA_SkillBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
 	{
 		/** PlayAttackTask Ability **/
 		UAbilityTask_PlayMontageAndWait* PlayAttackTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
-			this,TEXT("PlayerSkill"),TargetMontage,1.0f);
+			this,TEXT("PlayerSkill"),TargetMontage,1.0f, TargetMontageSectionName);
 	
 		PlayAttackTask->OnCompleted.AddDynamic(this,&UGA_SkillBase::OnCompleteCallback);
 		PlayAttackTask->OnInterrupted.AddDynamic(this,&UGA_SkillBase::OnInterruptedCallback);

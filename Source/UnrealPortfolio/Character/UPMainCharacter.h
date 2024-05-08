@@ -91,6 +91,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual  void SetCharacterControl(ECharacterControlType NewCharacterControlType, FTransform TargetTransform = FTransform()) override;
 	
+public :
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE class UCameraComponent* GetCameraComponent() { return CameraComponent; }
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE class USpringArmComponent* GetCameraBoom() { return CameraBoom; }
+
 public:
 	/** Movement Character Interface **/
 	virtual ECharacterControlType GetCharacterControl() override;

@@ -53,4 +53,3 @@ float UGE_DefenseRatioCalculation::CalculateDoneDamageWithArmor(float AttackRate
 	const float DamageDone = (AttackRate * (MaxRatio - ArmorRatioRound));
 	return  DamageDone;
 }
-

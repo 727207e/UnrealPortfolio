@@ -8,3 +8,4 @@
 //Boss
 #define BBKEY_CHANGETIMER TEXT("ChangeTargetTimer")
 #define BBKEY_SKILLNUMBER TEXT("SkillNumber")
+#define BBKEY_CANMOVE TEXT("CanMove")

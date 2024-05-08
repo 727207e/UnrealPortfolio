@@ -18,7 +18,7 @@ class UNREALPORTFOLIO_API UGA_SkillBase : public UGameplayAbility
 protected:
 	IAttackableCharacterInterface*  AttackableCharacter;
 	ICharacterMovementInterface* MovementCharacter;
-
+	FName TargetMontageSectionName = NAME_None;
 public:
 	UPROPERTY(EditAnywhere)
 	UAnimMontage* TargetMontage;

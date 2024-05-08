@@ -60,6 +60,7 @@ void UGA_MainCharacterSkillBase::ActivateAbility(const FGameplayAbilitySpecHandl
 					CancelAbility(Handle, ActorInfo, ActivationInfo, (false));
 					return;
 				}
+				SkillIconWidget->OnClickedTargetInputActionKey(Cooldown);
 			}
 		}
 		

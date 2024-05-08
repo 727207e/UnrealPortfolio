@@ -7,3 +7,5 @@
 #define TAG_DATA_USE_MP FGameplayTag::RequestGameplayTag(FName("Data.UseMp"))
 #define TAG_CHARACTER_ISDEAD FGameplayTag::RequestGameplayTag(FName("Character.State.IsDead"))
 #define TAG_CHARACTER_SKILL FGameplayTag::RequestGameplayTag(FName("Character.Action.Skill"))
+#define TAG_COUNTER_ATTACK FGameplayTag::RequestGameplayTag(FName("Character.Action.CounterAttackPosible"))
+#define TAG_COUNTER_HIT FGameplayTag::RequestGameplayTag(FName("Character.Action.CounterHitPosible"))
