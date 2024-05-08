@@ -25,6 +25,12 @@ UUPGameSingleton::UUPGameSingleton(): CurrentMainCharacterId(2)
 	LoadDataTableToArray(
 		TEXT("/Script/Engine.DataTable'/Game/Data/SkillData/DT_SkillDataTable.DT_SkillDataTable'"),
 		SkillDataArray);
+
+	LoadDataTableToArray(
+	TEXT("/Script/Engine.DataTable'/Game/Data/ModelWidgetTableData/DT_ProgressModelWidgetData.DT_ProgressModelWidgetData'"),
+	ProgressWidgetModelDataArray);
+
+	
 	
 }
 template <typename T>

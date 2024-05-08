@@ -158,7 +158,7 @@ void AUPMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	SetCharacterControl(ECharacterControlType::TopDown);
-
+	
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if (PlayerController != nullptr && PlayerController->IsLocalPlayerController())
 	{
@@ -167,8 +167,21 @@ void AUPMainCharacter::BeginPlay()
 		NPCDetectorSceneComponent->SetParent(GetRootComponent());
 		NPCDetectorSceneComponent->RegisterComponent();
 	}
+	if (HasAuthority())
+	{
+		AUPPlayerController* Controller =  Cast<AUPPlayerController>(GetWorld()->GetFirstPlayerController());
+		if(Controller->PlayerState)
+		{
+			AActor* PS = Controller->PlayerState;
+			Controller->GetHudWidget()->SetProgress(PS);
+			Controller->GetHudWidget()->AddToViewport();
+		}
+	}
+	else
+	{
+		ServerRequestPlayerState();
+	}
 }
-
 void AUPMainCharacter::SetDead()
 {
 	Super::SetDead();
@@ -363,13 +376,32 @@ void AUPMainCharacter::OnDead()
 	}
 }
 
-TObjectPtr<UUPMainHudWidget> AUPMainCharacter::GetHudWidget()
+
+
+void AUPMainCharacter::SendPlayerStateToClient()
 {
-	AUPPlayerController* PlayerController =  Cast<AUPPlayerController>(GetController());
-	const TObjectPtr<UUPMainHudWidget> PlayerHud  = Cast<UUPMainHudWidget>( PlayerController->GetHudWidget());
-	return PlayerHud;
+	APlayerState* PlayerState = GetPlayerState();
+	AUPPlayerController* Controller = Cast<AUPPlayerController>(GetController());
+	if(PlayerState)
+	{
+		ClientReceivePlayerState(Controller, PlayerState);
+	}
 }
 
+void AUPMainCharacter::ClientReceivePlayerState_Implementation(AUPPlayerController* ClientController, APlayerState* ClientPlayerState)
+{
+	if(ClientController && ClientPlayerState)
+	{
+		ClientController->GetHudWidget()->SetProgress(ClientPlayerState);
+		ClientController->GetHudWidget()->AddToViewport();
+	}
+}
+
+
+void AUPMainCharacter::ServerRequestPlayerState_Implementation()
+{
+	SendPlayerStateToClient();
+}
 
 ECharacterControlType AUPMainCharacter::GetCharacterControl()
 {
