@@ -16,6 +16,7 @@ AGATA_SquareTrace::AGATA_SquareTrace()
 {
 	Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
 	SetRootComponent(Box);
+	Box->SetActive(false);
 
 	bReplicates = true;
 }
@@ -35,6 +36,12 @@ void AGATA_SquareTrace::Destroyed()
 	TargetDataReadyDelegate.Broadcast(DataHandle);
 }
 
+void AGATA_SquareTrace::BeginPlay()
+{
+	Super::BeginPlay();
+	Box->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
 void AGATA_SquareTrace::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult)
 {
 	AUPMainCharacter* MainCharacter = Cast<AUPMainCharacter>(OtherActor);
@@ -45,7 +52,10 @@ void AGATA_SquareTrace::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 
 	FGameplayAbilityTargetDataHandle DataHandle;
 
-	FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit(SweepHitResult);
+	FHitResult Hit = FHitResult(SweepHitResult);
+	Hit.HitObjectHandle = FActorInstanceHandle(OtherActor);
+
+	FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit(Hit);
 	DataHandle.Add(TargetData);
 	OnTargetDetect.Broadcast(DataHandle);
 
@@ -79,6 +89,7 @@ void AGATA_SquareTrace::InitSquareTrace()
 
 	Box->OnComponentBeginOverlap.AddDynamic(this, &AGATA_SquareTrace::OnOverlapBegin);
 
+	Box->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	FTimerHandle DeadTimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda([&]
 		{

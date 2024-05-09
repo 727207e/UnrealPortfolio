@@ -31,4 +31,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "GAS")
 	TObjectPtr<class AGameplaySkillEventDataRequest> CurrentData;
 	UClass* CurrentTA;
+
+private :
+	void AttackTarget(const FGameplayAbilityTargetDataHandle& TargetDataHandle, int32 IndexNumber);
 };

@@ -31,6 +31,8 @@ public :
 public :
 	virtual void ConfirmTargetingAndContinue() override;
 	virtual void Destroyed() override;
+
+	virtual void BeginPlay() override;
 	
 	UFUNCTION()
 	virtual void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult);

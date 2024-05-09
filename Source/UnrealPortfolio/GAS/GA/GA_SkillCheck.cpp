@@ -8,7 +8,7 @@
 #include "GAS/GATA/GATA_Trace.h"
 #include "Interface/AttackableCharacterInterface.h"
 #include "Data/DataAttributeSet/EntityAttributeSet.h"
-#include "Data/DataAttributeSet/EnemyDataSet/NormalEnemy/UPEnemyAttributeSet.h"
+#include "Data/DataAttributeSet/BossDataSet/UPBossSkillAttributeSet.h"
 #include "Tag/GameplayTags.h"
 
 UGA_SkillCheck::UGA_SkillCheck()
@@ -30,57 +30,57 @@ void UGA_SkillCheck::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 
 void UGA_SkillCheck::OnTargetDetect(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
-	//히트 판정 (종료 아님)
-	UE_LOG(LogTemp, Error, TEXT("Not OVer Target Detect"));
+	if (UAbilitySystemBlueprintLibrary::TargetDataHasHitResult(TargetDataHandle, 0))
+	{
+		int TargetNumber = UAbilitySystemBlueprintLibrary::GetDataCountFromTargetData(TargetDataHandle);
+
+		for (int Index = 0; Index < TargetNumber; Index++)
+		{
+			AttackTarget(TargetDataHandle, Index);
+		}
+	}
+}
+
+void UGA_SkillCheck::AttackTarget(const FGameplayAbilityTargetDataHandle& TargetDataHandle, int32 IndexNumber)
+{
+	const FHitResult HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, IndexNumber);
+
+	if (IAttackableCharacterInterface* HitCharacter = Cast<IAttackableCharacterInterface>(HitResult.GetActor()))
+	{
+		HitCharacter->Hit(GetAvatarActorFromActorInfo()->GetActorLocation(), nullptr);
+		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(HitResult.GetActor());
+		if (!TargetASC)
+		{
+			return;
+		}
+
+		UEntityAttributeSet* TargetAttribute = const_cast<UEntityAttributeSet*>(TargetASC->GetSet<UEntityAttributeSet>());
+
+		if (!TargetAttribute)
+		{
+			return;
+		}
+
+		FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(AttackDamageEffect);
+		if (EffectSpecHandle.IsValid())
+		{
+			EffectSpecHandle.Data->SetSetByCallerMagnitude(TAG_DATA_DAMAGE, -CurrentData->TargetAttributeSet->GetDamage());
+			ApplyGameplayEffectSpecToTarget(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, EffectSpecHandle, TargetDataHandle);
+		}
+
+		if (CurrentData->ActionGC.IsValid())
+		{
+			FGameplayCueParameters CueParam;
+			CueParam.Location = HitResult.Location;
+
+			TargetASC->ExecuteGameplayCue(CurrentData->ActionGC, CueParam);
+		}
+	}
 }
 
 void UGA_SkillCheck::OnTraceResultCallback(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
-	//히트 판정 (종료)
-	UE_LOG(LogTemp, Error, TEXT("OVer Target Detect"));
-
-	//if (UAbilitySystemBlueprintLibrary::TargetDataHasHitResult(TargetDataHandle, 0))
-	//{
-	//	const FHitResult HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, 0);
-
-	//	if (IAttackableCharacterInterface* HitCharacter = Cast<IAttackableCharacterInterface>(HitResult.GetActor()))
-	//	{
-	//		HitCharacter->Hit(GetAvatarActorFromActorInfo()->GetActorLocation(), nullptr);
-	//		UAbilitySystemComponent* SourceASC = GetAbilitySystemComponentFromActorInfo_Checked();
-	//		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(HitResult.GetActor());
-	//		if (!SourceASC || !TargetASC)
-	//		{
-	//			return;
-	//		}
-
-	//		const UEntityAttributeSet* SourceAttribute = SourceASC->GetSet<UEntityAttributeSet>();
-	//		UEntityAttributeSet* TargetAttribute = const_cast<UEntityAttributeSet*>(TargetASC->GetSet<UEntityAttributeSet>());
-
-	//		if (!SourceAttribute || !TargetAttribute)
-	//		{
-	//			return;
-	//		}
-
-	//		FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(AttackDamageEffect);
-	//		if (EffectSpecHandle.IsValid())
-	//		{
-	//			EffectSpecHandle.Data->SetSetByCallerMagnitude(TAG_DATA_DAMAGE, -SourceAttribute->GetAttackRate());
-	//			ApplyGameplayEffectSpecToTarget(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, EffectSpecHandle, TargetDataHandle);
-	//		}
-
-	//		if (CurrentAction->ActionGC.IsValid())
-	//		{
-	//			FGameplayCueParameters CueParam;
-	//			CueParam.Location = HitResult.Location;
-
-	//			TargetASC->ExecuteGameplayCue(CurrentAction->ActionGC, CueParam);
-	//		}
-	//	}
-	//}
-
 	constexpr bool bReplicatedEndAbility = true;
 	constexpr bool bWasCancelled = false;
-
-	UE_LOG(LogTemp, Error, TEXT("GA Skill TA Trigger Enter"));
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, bReplicatedEndAbility, bWasCancelled);
 }
