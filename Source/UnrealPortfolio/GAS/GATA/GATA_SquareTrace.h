@@ -3,16 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GAS/GATA/GATA_Trace.h"
+#include "GAS/GATA/GATA_SkillTrace.h"
 #include "GATA_SquareTrace.generated.h"
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSquareOverlapDelegate, const FGameplayAbilityTargetDataHandle&, TargetDataHandle);
 
 /**
  * 
  */
 UCLASS()
-class UNREALPORTFOLIO_API AGATA_SquareTrace : public AGATA_Trace
+class UNREALPORTFOLIO_API AGATA_SquareTrace : public AGATA_SkillTrace
 {
 	GENERATED_BODY()
 	
@@ -23,11 +21,6 @@ public :
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UBoxComponent> Box;
 
-	UPROPERTY()
-	TObjectPtr<class AGameplaySkillEventDataRequest> CurrentData;
-
-	UPROPERTY(BlueprintAssignable)
-	FSquareOverlapDelegate OnTargetDetect;
 public :
 	virtual void ConfirmTargetingAndContinue() override;
 	virtual void Destroyed() override;

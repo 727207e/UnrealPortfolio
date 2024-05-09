@@ -5,7 +5,7 @@
 #include "GAS/Actor/GameplaySkillEventDataRequest.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
-#include "GAS/GATA/GATA_SquareTrace.h"
+#include "GAS/GATA/GATA_SkillTrace.h"
 
 UAbilityTask_SkillGen::UAbilityTask_SkillGen()
 {
@@ -15,7 +15,7 @@ void UAbilityTask_SkillGen::SpawnAndInitializeTargetActor()
 {
 	Super::SpawnAndInitializeTargetActor();
 
-	AGATA_SquareTrace* TASquare = Cast<AGATA_SquareTrace>(SpawnedTargetActor);
+	AGATA_SkillTrace* TASquare = Cast<AGATA_SkillTrace>(SpawnedTargetActor);
 	if (nullptr == TASquare)
 	{
 		UE_LOG(LogTemp, Error, TEXT("AbilityTask_SkillGen Failed Cast SpawnedTargetActor To GATA_SaureTrace"));

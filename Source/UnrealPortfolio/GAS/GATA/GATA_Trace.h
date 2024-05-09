@@ -21,7 +21,7 @@ public:
     
 	virtual void ConfirmTargetingAndContinue() override;
 	void SetShowDebug(bool InShowDebug) { bShowDebug = InShowDebug; }
-    
+
 protected:
 
 	virtual FGameplayAbilityTargetDataHandle MakeTargetData() const;
