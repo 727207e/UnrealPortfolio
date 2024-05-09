@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include "Character/UPPlayerState.h"
 #include "UPPossessCharacterInterface.generated.h"
 
 // This class does not need to be modified.
@@ -34,4 +35,5 @@ public:
 	virtual void OnSetDestinationTriggered() = 0;
 	virtual void OnSetDestinationReleased() = 0;
 	virtual void OnNPCInteraction() = 0;
+	virtual AUPPlayerState* GetUPPlayerState() = 0;
 };

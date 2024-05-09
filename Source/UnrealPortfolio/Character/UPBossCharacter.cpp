@@ -72,4 +72,16 @@ void AUPBossCharacter::MontageEndEvent(UAnimMontage* Montage, bool bInterrupted)
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		AnimInstance->OnMontageEnded.RemoveDynamic(this, &AUPBossCharacter::MontageEndEvent);
 	}), CounterResetDelayTime, false);
+	
+}
+
+void AUPBossCharacter::OnDead()
+{
+	Super::OnDead();
+	ASC->AddLooseGameplayTag(TAG_CHARACTER_BOSS_IS_DEAD);
+}
+
+UAbilitySystemComponent* AUPBossCharacter::GetBossAbilitySystemComponent()
+{
+	return  ASC;
 }
