@@ -36,12 +36,29 @@ void UGA_SkillCheck::OnTargetDetect(const FGameplayAbilityTargetDataHandle& Targ
 
 		for (int Index = 0; Index < TargetNumber; Index++)
 		{
-			AttackTarget(TargetDataHandle, Index);
+			AttackTargetWithHitResult(TargetDataHandle, Index);
+		}
+	}
+
+	else if (UAbilitySystemBlueprintLibrary::TargetDataHasActor(TargetDataHandle, 0))
+	{
+		for (AActor* Target : UAbilitySystemBlueprintLibrary::GetActorsFromTargetData(TargetDataHandle, 0))
+		{
+			AttackTargetWithActorInfo(TargetDataHandle, Target);
 		}
 	}
 }
 
-void UGA_SkillCheck::AttackTarget(const FGameplayAbilityTargetDataHandle& TargetDataHandle, int32 IndexNumber)
+void UGA_SkillCheck::OnTraceResultCallback(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
+{
+	OnTargetDetect(TargetDataHandle);
+
+	constexpr bool bReplicatedEndAbility = true;
+	constexpr bool bWasCancelled = false;
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, bReplicatedEndAbility, bWasCancelled);
+}
+
+void UGA_SkillCheck::AttackTargetWithHitResult(const FGameplayAbilityTargetDataHandle& TargetDataHandle, int32 IndexNumber)
 {
 	const FHitResult HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, IndexNumber);
 
@@ -78,9 +95,39 @@ void UGA_SkillCheck::AttackTarget(const FGameplayAbilityTargetDataHandle& Target
 	}
 }
 
-void UGA_SkillCheck::OnTraceResultCallback(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
+void UGA_SkillCheck::AttackTargetWithActorInfo(const FGameplayAbilityTargetDataHandle& TargetDataHandle, AActor* Target)
 {
-	constexpr bool bReplicatedEndAbility = true;
-	constexpr bool bWasCancelled = false;
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, bReplicatedEndAbility, bWasCancelled);
+	if (IAttackableCharacterInterface* HitCharacter = Cast<IAttackableCharacterInterface>(Target))
+	{
+		HitCharacter->Hit(GetAvatarActorFromActorInfo()->GetActorLocation(), nullptr);
+		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Target);
+		if (!TargetASC)
+		{
+			return;
+		}
+
+		UEntityAttributeSet* TargetAttribute = const_cast<UEntityAttributeSet*>(TargetASC->GetSet<UEntityAttributeSet>());
+
+		if (!TargetAttribute)
+		{
+			return;
+		}
+
+		FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(AttackDamageEffect);
+		if (EffectSpecHandle.IsValid())
+		{
+			EffectSpecHandle.Data->SetSetByCallerMagnitude(TAG_DATA_DAMAGE, -CurrentData->TargetAttributeSet->GetDamage());
+			ApplyGameplayEffectSpecToTarget(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, EffectSpecHandle, TargetDataHandle);
+		}
+
+		if (CurrentData->ActionGC.IsValid())
+		{
+			FGameplayCueParameters CueParam;
+			CueParam.Location = Target->GetActorLocation();
+
+			TargetASC->ExecuteGameplayCue(CurrentData->ActionGC, CueParam);
+		}
+	}
 }
+
+

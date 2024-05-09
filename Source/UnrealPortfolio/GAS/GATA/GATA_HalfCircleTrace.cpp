@@ -32,7 +32,7 @@ FGameplayAbilityTargetDataHandle AGATA_HalfCircleTrace::MakeTargetData() const
 
 	bool bHasCollision = GetWorld()->OverlapMultiByObjectType(OverlapResults, Character->GetActorLocation(), FQuat::Identity, ObjectParams, SphereShape);
 
-	TArray<TWeakObjectPtr<AActor>> LeftObjects;
+	TSet<TWeakObjectPtr<AActor>> LeftObjects;
 	if (bHasCollision)
 	{
 		for (const FOverlapResult& OverlapResult : OverlapResults)
@@ -41,8 +41,7 @@ FGameplayAbilityTargetDataHandle AGATA_HalfCircleTrace::MakeTargetData() const
 
 			if (OverlapCharacter != Character) 
 			{
-				UE_LOG(LogTemp, Error, TEXT("%s"), *OverlapCharacter->GetName());
-				FVector ToHitObject = OverlapResult.GetActor()->GetActorLocation() - OverlapCharacter->GetActorLocation();
+				FVector ToHitObject = OverlapCharacter->GetActorLocation() - Character->GetActorLocation();
 				float DotProduct = FVector::DotProduct(ToHitObject, LeftDirection);
 				if (DotProduct > 0)
 				{
@@ -53,7 +52,7 @@ FGameplayAbilityTargetDataHandle AGATA_HalfCircleTrace::MakeTargetData() const
 	}
 
 	FGameplayAbilityTargetData_ActorArray* TargetData = new FGameplayAbilityTargetData_ActorArray();
-	TargetData->TargetActorArray = LeftObjects;
+	TargetData->TargetActorArray = LeftObjects.Array();
 	DataHandle.Add(TargetData);
 
 #if ENABLE_DRAW_DEBUG

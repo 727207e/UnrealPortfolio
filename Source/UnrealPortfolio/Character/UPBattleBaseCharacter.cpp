@@ -149,9 +149,9 @@ void AUPBattleBaseCharacter::Hit(FVector TargetLocation, TObjectPtr<class AGamep
 
 void AUPBattleBaseCharacter::PlayHitAnimation()
 {
-	if(HitMontage)
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if(HitMontage && AnimInstance)
 	{
-		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		AnimInstance->Montage_Play(HitMontage);
 	}
 

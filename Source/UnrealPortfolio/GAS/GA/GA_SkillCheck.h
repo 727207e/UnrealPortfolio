@@ -33,5 +33,6 @@ protected:
 	UClass* CurrentTA;
 
 private :
-	void AttackTarget(const FGameplayAbilityTargetDataHandle& TargetDataHandle, int32 IndexNumber);
+	void AttackTargetWithHitResult(const FGameplayAbilityTargetDataHandle& TargetDataHandle, int32 IndexNumber);
+	void AttackTargetWithActorInfo(const FGameplayAbilityTargetDataHandle& TargetDataHandle, AActor* Target);
 };
