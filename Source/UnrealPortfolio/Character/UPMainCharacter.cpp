@@ -185,7 +185,8 @@ void AUPMainCharacter::BeginPlay()
 void AUPMainCharacter::SetDead()
 {
 	Super::SetDead();
-	SetCharacterMovementMod(MOVE_None);
+	//버그 임시 주석
+	//SetCharacterMovementMod(MOVE_None);
 	PlayDeadAnimation();
 }
 
@@ -365,6 +366,8 @@ void AUPMainCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 	SetMainCharacterTableData();
 }
 
+
+
 // Need refactoring for the listening server
 void AUPMainCharacter::OnDead()
 {
@@ -376,6 +379,23 @@ void AUPMainCharacter::OnDead()
 	}
 }
 
+void AUPMainCharacter::ActiveAbilityGameOverCheck()
+{
+	if(HasAuthority() && GetController()) 
+	{
+		const bool IsLocal = GetController()->IsLocalController();
+		const bool IsPlayer = GetController()->IsPlayerController();
+		
+		if(IsLocal && IsPlayer)
+		{
+			FGameplayAbilitySpec* Spec = ASC->FindAbilitySpecFromClass(StartAbilities[GAS_START_ABILITY_ID_GAME_RESULT]);
+			if(Spec)
+			{
+				ASC->TryActivateAbility(Spec->Handle);
+			}		
+		}
+	}
+}
 
 
 void AUPMainCharacter::SendPlayerStateToClient()
@@ -386,6 +406,11 @@ void AUPMainCharacter::SendPlayerStateToClient()
 	{
 		ClientReceivePlayerState(ClientController, ClientPlayerState);
 	}
+}
+
+AUPPlayerState* AUPMainCharacter::GetUPPlayerState()
+{
+	return Cast<AUPPlayerState>(GetPlayerState());  
 }
 
 void AUPMainCharacter::ClientReceivePlayerState_Implementation(AUPPlayerController* ClientController, APlayerState* ClientPlayerState)
@@ -407,3 +432,4 @@ ECharacterControlType AUPMainCharacter::GetCharacterControl()
 {
 	return CurrentCharacterControlType;
 }
+

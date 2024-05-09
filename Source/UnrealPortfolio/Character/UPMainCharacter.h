@@ -19,6 +19,8 @@ class UNREALPORTFOLIO_API AUPMainCharacter : public AUPBattleBaseCharacter
 {
 	GENERATED_BODY()
 private:
+	const int32 GAS_START_ABILITY_ID_GAME_RESULT = 3;
+	
 	const int32 GAS_INPUT_ID_ATTACK_START = 0;
 	const int32 GAS_INPUT_ID_AVOID_START = 10;
 	
@@ -117,6 +119,9 @@ protected:
 	virtual void SetupASCHostPlayer(AActor* InOwnerActor) override;
 	virtual void OnDead() override;
 
+	UFUNCTION(BlueprintCallable , Category = GAS)
+	void ActiveAbilityGameOverCheck();
+
 private:
 	/** Hud PlayerState **/
 	void SendPlayerStateToClient();
@@ -124,4 +129,5 @@ private:
 	void ServerRequestPlayerState();
 	UFUNCTION(Client, Reliable)
 	void ClientReceivePlayerState(AUPPlayerController* ClientController, APlayerState* ClientPlayerState);
+	virtual AUPPlayerState* GetUPPlayerState() override;
 };

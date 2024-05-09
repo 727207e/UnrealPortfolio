@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Character/UPEnemyCharacter.h"
+#include "Interface/BossInterface.h"
 #include "UPBossCharacter.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class UNREALPORTFOLIO_API AUPBossCharacter : public AUPEnemyCharacter
+class UNREALPORTFOLIO_API AUPBossCharacter : public AUPEnemyCharacter ,public IBossInterface
 {
 	GENERATED_BODY()
 	
@@ -29,4 +30,7 @@ public :
 
 	UPROPERTY(EditAnywhere)
 	float CounterResetDelayTime;
+
+	virtual void OnDead() override;
+	virtual  UAbilitySystemComponent* GetBossAbilitySystemComponent() override; 
 };
