@@ -1,8 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "GAS/GA/GA_CheckGameOver.h"
-
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "EngineUtils.h"
@@ -10,17 +7,17 @@
 #include "Character/UPPlayerState.h"
 #include "Interface/BossInterface.h"
 
-UGA_CheckGameOver::UGA_CheckGameOver()
+UGA_CheckGameOver::UGA_CheckGameOver(): PlayerMaxCount(0), PlayerCurrentDeadCount(0)
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 }
 
 void UGA_CheckGameOver::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
-	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
-	const FGameplayEventData* TriggerEventData)
+                                        const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
+                                        const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-	PlayerMaxCount = 0;
+	CheckDeadTargetCharacter();
 }
 
 void UGA_CheckGameOver::CheckDeadTargetCharacter()
@@ -38,7 +35,6 @@ void UGA_CheckGameOver::CheckDeadTargetCharacter()
 		}
 		else
 		{
-		
 			IUPPossessCharacterInterface* IPlayer = Cast<IUPPossessCharacterInterface>(*It);
 			if(IPlayer)
 			{
@@ -68,6 +64,7 @@ void UGA_CheckGameOver::OnPlayerIsDead(const FGameplayTag TargetTag, int32 NewCo
 	{
 		/** Test Code **/
 		UE_LOG(LogTemp,Log,TEXT("Player Team Loss"));
+		CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, (false));
 	}
 }
 
@@ -75,4 +72,5 @@ void UGA_CheckGameOver::BossIsDead(const FGameplayTag TargetTag, int32 NewCount)
 {
 	/** Test Code **/
 	UE_LOG(LogTemp,Log,TEXT("Player Team Win"));
+	CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, (false));
 }

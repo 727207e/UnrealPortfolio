@@ -7,9 +7,6 @@
 #include "Character/UPBattleBaseCharacter.h"
 #include "GA_CheckGameOver.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class UNREALPORTFOLIO_API UGA_CheckGameOver : public UGameplayAbility
 {
@@ -21,14 +18,14 @@ public:
 	FGameplayTag DeadTag;
 	UPROPERTY(EditAnywhere, Category= GAS)
 	FGameplayTag BossDeadTag;
-	
+
 private:
 	UPROPERTY();
 	int PlayerMaxCount;
 	int PlayerCurrentDeadCount;
 	
 	UFUNCTION()
-	void CheckDeadTargetCharacter(TSubclassOf<AUPBattleBaseCharacter> CharacterClassType);
+	void CheckDeadTargetCharacter();
 	UFUNCTION()
 	void OnPlayerIsDead(const FGameplayTag TargetTag, int32 NewCount);
 	UFUNCTION()
