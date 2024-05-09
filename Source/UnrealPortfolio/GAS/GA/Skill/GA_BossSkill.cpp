@@ -38,6 +38,13 @@ void UGA_BossSkill::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
 	}
 	
 	AttackSpeed = SourceAttribute->GetAttackSpeed();
+
+	if (AttackSpeed == 0)
+	{
+		UE_LOG(LogTemp, Error, TEXT("GA_BossSkill AttackSpeed Can't Be 0"));
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+	}
+
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
