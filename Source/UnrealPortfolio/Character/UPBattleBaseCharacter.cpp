@@ -215,6 +215,12 @@ void AUPBattleBaseCharacter::OnSkill(int32 SkillNumber)
 {
 	TArray<FGameplayAbilitySpecHandle> ActivatedAbilities;
 	ASC->FindAllAbilitiesWithTags(ActivatedAbilities, FGameplayTagContainer(TAG_CHARACTER_SKILL));
+	if (ActivatedAbilities.Num() < SkillNumber)
+	{
+		UE_LOG(LogTemp, Error, TEXT("BattleBaseCharacter OnSkill Has No Skill"));
+		return;
+	}
+
 	ASC->TryActivateAbility(ActivatedAbilities[SkillNumber]);
 }
 

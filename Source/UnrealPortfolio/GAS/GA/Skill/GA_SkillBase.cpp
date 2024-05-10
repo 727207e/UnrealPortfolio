@@ -35,6 +35,11 @@ void UGA_SkillBase::EndAbility(const FGameplayAbilitySpecHandle Handle, const FG
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
+	if (nullptr == AttackableCharacter)
+	{
+		UE_LOG(LogTemp, Error, TEXT("GA_SkillBase Can't Find AttackableCharacter"));
+		return;
+	}
 	AttackableCharacter->AttackEndCallBack();
 	AttackableCharacter->SkillEndCallBack();
 }
