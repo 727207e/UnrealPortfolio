@@ -149,9 +149,9 @@ void AUPBattleBaseCharacter::Hit(FVector TargetLocation, TObjectPtr<class AGamep
 
 void AUPBattleBaseCharacter::PlayHitAnimation()
 {
-	if(HitMontage)
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if(HitMontage && AnimInstance)
 	{
-		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		AnimInstance->Montage_Play(HitMontage);
 	}
 
@@ -200,6 +200,12 @@ void AUPBattleBaseCharacter::AddAttackEndCallBack(const FOnEndAttackDelegate& On
 	OnEndAttackDelegate = OnEndAttack;
 }
 
+void AUPBattleBaseCharacter::SkillEndCallBack()
+{
+	OnEndSkillDelegate.Broadcast();
+	OnEndSkillDelegate.Clear();
+}
+
 void AUPBattleBaseCharacter::NormalAttack()
 {
 	
@@ -208,8 +214,12 @@ void AUPBattleBaseCharacter::NormalAttack()
 void AUPBattleBaseCharacter::OnSkill(int32 SkillNumber)
 {
 	TArray<FGameplayAbilitySpecHandle> ActivatedAbilities;
-	FGameplayTagContainer tags(TAG_CHARACTER_SKILL);
 	ASC->FindAllAbilitiesWithTags(ActivatedAbilities, FGameplayTagContainer(TAG_CHARACTER_SKILL));
+	if (ActivatedAbilities.Num() < SkillNumber)
+	{
+		UE_LOG(LogTemp, Error, TEXT("BattleBaseCharacter OnSkill Has No Skill"));
+		return;
+	}
 
 	ASC->TryActivateAbility(ActivatedAbilities[SkillNumber]);
 }
@@ -217,11 +227,6 @@ void AUPBattleBaseCharacter::OnSkill(int32 SkillNumber)
 void AUPBattleBaseCharacter::AddOnHitDelegate(FOnHitDelegate& Delegate)
 {
 	OnHitDelegate = Delegate;
-}
-
-void AUPBattleBaseCharacter::AddOnEndAttackDelegate(FOnEndAttackDelegate& Delegate)
-{
-	OnEndAttackDelegate = Delegate;
 }
 
 UAbilitySystemComponent* AUPBattleBaseCharacter::GetAbilitySystemComponent() const

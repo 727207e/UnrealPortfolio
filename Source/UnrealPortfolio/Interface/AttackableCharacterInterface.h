@@ -27,4 +27,5 @@ public:
 	virtual void Hit(FVector TargetLocation, TObjectPtr<class AGameplayEventDataRequest> ActionData) = 0;
 	virtual void PlayHitAnimation() = 0;
 	virtual void AttackEndCallBack() = 0;
+	virtual void SkillEndCallBack() = 0;
 };

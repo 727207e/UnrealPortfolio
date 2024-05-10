@@ -15,6 +15,7 @@
  */
 
 DECLARE_MULTICAST_DELEGATE(FOnEndAttackDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnEndSkillDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnHitDelegate);
 
 UCLASS()
@@ -97,13 +98,14 @@ public :
 	bool bCanAttack;
 	virtual void AttackEndCallBack() override;
 	void AddAttackEndCallBack(const FOnEndAttackDelegate& OnEndAttack);	//���� �Ǵ��� Ȯ���غ���.
+	virtual void SkillEndCallBack() override;
 	virtual void NormalAttack();
 	virtual void OnSkill(int32 SkillNumber);
 
 public :
 	FOnEndAttackDelegate OnEndAttackDelegate;
+	FOnEndSkillDelegate OnEndSkillDelegate;
 	FOnHitDelegate OnHitDelegate;
-	void AddOnEndAttackDelegate(FOnEndAttackDelegate& Deleagte);
 	void AddOnHitDelegate(FOnHitDelegate& Delegate);
 	
 	UPROPERTY(EditAnywhere)
