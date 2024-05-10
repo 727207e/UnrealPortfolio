@@ -17,6 +17,10 @@ class UNREALPORTFOLIO_API AGATA_HalfCircleTrace : public AGATA_SkillTrace
 public :
 	AGATA_HalfCircleTrace();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<class UBoxComponent> Cube;
+
+	virtual void DrawDecal() override;
 protected :
 	virtual FGameplayAbilityTargetDataHandle MakeTargetData() const override;
 };

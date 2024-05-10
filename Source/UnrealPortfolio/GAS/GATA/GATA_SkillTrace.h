@@ -23,4 +23,17 @@ public :
 
 	UPROPERTY(BlueprintAssignable)
 	FSquareOverlapDelegate OnTargetDetect;
+
+	UPROPERTY(EditAnywhere)
+	bool bIsDrawDecal;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<class USceneComponent> RootSceneComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<class UDecalComponent> LeftHalfDecal;
+
+public :
+	virtual void ConfirmTargetingAndContinue() override;
+	UFUNCTION()
+	virtual void DrawDecal();
 };
