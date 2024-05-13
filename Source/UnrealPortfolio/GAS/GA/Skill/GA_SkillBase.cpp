@@ -16,7 +16,7 @@ void UGA_SkillBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
 	{
 		/** PlayAttackTask Ability **/
 		UAbilityTask_PlayMontageAndWait* PlayAttackTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
-			this,TEXT("PlayerSkill"),TargetMontage,1.0f, TargetMontageSectionName);
+			this,TEXT("PlayerSkill"),TargetMontage, AttackSpeed, TargetMontageSectionName);
 	
 		PlayAttackTask->OnCompleted.AddDynamic(this,&UGA_SkillBase::OnCompleteCallback);
 		PlayAttackTask->OnInterrupted.AddDynamic(this,&UGA_SkillBase::OnInterruptedCallback);
@@ -35,7 +35,13 @@ void UGA_SkillBase::EndAbility(const FGameplayAbilitySpecHandle Handle, const FG
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
+	if (nullptr == AttackableCharacter)
+	{
+		UE_LOG(LogTemp, Error, TEXT("GA_SkillBase Can't Find AttackableCharacter"));
+		return;
+	}
 	AttackableCharacter->AttackEndCallBack();
+	AttackableCharacter->SkillEndCallBack();
 }
 
 void UGA_SkillBase::InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,

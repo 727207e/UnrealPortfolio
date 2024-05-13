@@ -8,6 +8,8 @@
 #include "Interface/CharacterMovementInterface.h"
 #include "GA_SkillBase.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnSkillEndDelegate);
+
 /**
  * 
  */
@@ -22,7 +24,9 @@ protected:
 public:
 	UPROPERTY(EditAnywhere)
 	UAnimMontage* TargetMontage;
-	
+
+	FOnSkillEndDelegate OnEndSkillDelegate;
+
 protected:
 	virtual auto ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 							 const FGameplayAbilityActivationInfo ActivationInfo,
@@ -43,6 +47,6 @@ protected:
 	UFUNCTION()
 	virtual void OnInterruptedCallback();
 	
-	
+	float AttackSpeed = 1.0f;
 };
 

@@ -25,7 +25,7 @@ public:
 	virtual void Activate() override;
 	virtual void OnDestroy(bool AbilityEnded) override;
     
-	void SpawnAndInitializeTargetActor();
+	virtual void SpawnAndInitializeTargetActor();
 	void FinalizeTargetActor();
     
 protected:

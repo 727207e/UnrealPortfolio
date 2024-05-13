@@ -10,6 +10,7 @@
 #include "AI/UPEnemyAIController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Data/DataAttributeSet/EntityAttributeSet.h"
+#include "GAS/GA/Skill/GA_SkillBase.h"
 
 
 AUPEnemyCharacter::AUPEnemyCharacter()
@@ -120,7 +121,6 @@ void AUPEnemyCharacter::OnSkill(int32 SkillNumber)
 	Super::OnSkill(SkillNumber);
 
 	bCanAttack = false;
-	SetAttackDelay(AttackDelayTime);
 }
 
 FGameplayAbilitySpec AUPEnemyCharacter::FindTarget()

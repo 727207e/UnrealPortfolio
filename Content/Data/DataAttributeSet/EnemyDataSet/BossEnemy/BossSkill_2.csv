@@ -1,0 +1,4 @@
+,Damage,AttackNumber,KnockBack,AttackRange,AttackSpeed,AttackRadius
+Phase1,10,2,1,5,0.5,0.5
+Phase2,10,2,3,5,0.5,0.5
+Phase3,10,2,3,5,1,1
