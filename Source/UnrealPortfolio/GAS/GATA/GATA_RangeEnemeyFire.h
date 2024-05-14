@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GAS/GATA/GATA_Trace.h"
+#include "GAS/GATA/GATA_SkillTrace.h"
 #include "GATA_RangeEnemeyFire.generated.h"
 
 class UNiagaraSystem;
@@ -11,7 +11,7 @@ class UNiagaraSystem;
  * 
  */
 UCLASS()
-class UNREALPORTFOLIO_API AGATA_RangeEnemeyFire : public AGATA_Trace
+class UNREALPORTFOLIO_API AGATA_RangeEnemeyFire : public AGATA_SkillTrace
 {
 	GENERATED_BODY()
 	

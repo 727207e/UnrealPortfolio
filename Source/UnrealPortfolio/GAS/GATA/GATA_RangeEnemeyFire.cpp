@@ -49,6 +49,7 @@ AGATA_RangeEnemeyFire::AGATA_RangeEnemeyFire()
 	MuzzleComponent->SetupAttachment(RootComponent);
 
 	bReplicates = true;
+	bIsDrawDecal = false;
 }
 
 void AGATA_RangeEnemeyFire::ConfirmTargetingAndContinue()
