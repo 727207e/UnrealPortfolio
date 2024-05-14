@@ -3,29 +3,75 @@
 
 #include "GAS/GATA/GATA_AOERandomAttack.h"
 #include "NavigationSystem.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 #include "Engine/World.h"
 #include "Math/RandomStream.h"
 #include "Data/DataAttributeSet/BossDataSet/UPBossSkillAttributeSet.h"
 #include "GAS/Actor/GameplaySkillEventDataRequest.h"
+#include "GameFramework/Character.h"
+#include "Character/UPBattleBaseCharacter.h"
+#include "Tag/GameplayTags.h"
 
 AGATA_AOERandomAttack::AGATA_AOERandomAttack()
 {
     SearchingRadius = 500.f;
+    NiagaraSize = 3.0f;
+    AttackTimeDelay = 6.0f;
+    bIsConfirmTargetingAndEnd = false;
+    TargetTraceAreaOffset = 80.0f;
+    ThisTargetTag = TAG_CHARACTER_SKILL;
+
+    static ConstructorHelpers::FObjectFinder<UNiagaraSystem> AOEVisualRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/DownloadAssets/Pack_VFX/VFX_Niagara/Magic_Circle/NS_VFX_Magic_Circle_10_Long.NS_VFX_Magic_Circle_10_Long'"));
+    if (AOEVisualRef.Object)
+    {
+        AOEVisual = AOEVisualRef.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UNiagaraSystem> ExploreVisualRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/DownloadAssets/Pack_VFX/VFX_Niagara/VFX_Shockwave/NS_VFX_Shockwave_24.NS_VFX_Shockwave_24'"));
+    if (ExploreVisualRef.Object)
+    {
+        ExploreVisual = ExploreVisualRef.Object;
+    }
+}
+
+void AGATA_AOERandomAttack::ConfirmTargetingAndContinue()
+{
+    Super::ConfirmTargetingAndContinue();
+
+    bDestroyOnConfirmation = false;
+
+    RandomTargetLocations = GetRandomRadiusPosition();
+
+    for (int index = 0; index < RandomTargetLocations.Num(); index++)
+    {
+        UNiagaraComponent* SpawnTarget = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), AOEVisual, RandomTargetLocations[index]);
+        SpawnTarget->SetWorldScale3D(FVector(NiagaraSize, NiagaraSize, NiagaraSize));
+
+        FTimerHandle AttackDelayTime;
+        FVector TargetPos = RandomTargetLocations[index];
+        bool bIsLastAttack = (index == RandomTargetLocations.Num() - 1) ? true : false;
+
+        GetWorld()->GetTimerManager().SetTimer(AttackDelayTime, FTimerDelegate::CreateLambda([this, TargetPos, bIsLastAttack] {
+            DeactiveTA();
+            }), AttackTimeDelay, false);
+    }
+
+    AddAttackEvent();
+}
+
+void AGATA_AOERandomAttack::OnAOEAttackArea(FGameplayTag TargetTag)
+{
+    if (TargetTag != this->ThisTargetTag)
+    {
+        return;
+    }
+
+    AttackArea();
 }
 
 FGameplayAbilityTargetDataHandle AGATA_AOERandomAttack::MakeTargetData() const
 {
-    TArray<FVector> RandomLocations = GetRandomRadiusPosition();
-
-#if ENABLE_DRAW_DEBUG
-
-    for (int index = 0; index < RandomLocations.Num(); index++)
-    {
-        DrawDebugBox(SourceActor->GetWorld(), RandomLocations[index], FVector(20.f, 20.f, 20.f), FColor::Red, true);
-    }
-
-#endif
-
 	return FGameplayAbilityTargetDataHandle();
 }
 
@@ -53,4 +99,79 @@ TArray<FVector> AGATA_AOERandomAttack::GetRandomRadiusPosition() const
     }
 
     return RandomLocations;
+}
+
+void AGATA_AOERandomAttack::AttackArea() const
+{
+    for (int index = 0; index < RandomTargetLocations.Num(); index++)
+    {
+        UNiagaraComponent* SpawnTarget = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ExploreVisual, RandomTargetLocations[index]);
+        SpawnTarget->SetWorldScale3D(FVector(NiagaraSize, NiagaraSize, NiagaraSize));
+
+        ACharacter* ThisCharacter = CastChecked<ACharacter>(SourceActor);
+        FCollisionShape SphereShape = FCollisionShape::MakeSphere(TargetTraceAreaOffset * NiagaraSize);
+        FCollisionObjectQueryParams ObjectParams(ECC_Pawn);
+
+        TArray<FOverlapResult> OverlapResults;
+
+        bool bHasCollision = GetWorld()->OverlapMultiByObjectType(OverlapResults, RandomTargetLocations[index], FQuat::Identity, ObjectParams, SphereShape);
+
+        TSet<TWeakObjectPtr<AActor>> LeftObjects;
+        if (bHasCollision)
+        {
+            for (const FOverlapResult& OverlapResult : OverlapResults)
+            {
+                ACharacter* OverlapCharacter = Cast<ACharacter>(OverlapResult.GetActor());
+
+                if (OverlapCharacter != ThisCharacter)
+                {
+                    LeftObjects.Add(OverlapResult.GetActor());
+                }
+            }
+        }
+
+    #if ENABLE_DRAW_DEBUG
+
+        DrawDebugSphere(GetWorld(), RandomTargetLocations[index], TargetTraceAreaOffset * NiagaraSize, 12, FColor::Red, false, 1.0f);
+
+    #endif
+
+
+        FGameplayAbilityTargetDataHandle DataHandle;
+        FGameplayAbilityTargetData_ActorArray* TargetData = new FGameplayAbilityTargetData_ActorArray();
+
+        TargetData->TargetActorArray = LeftObjects.Array();
+        DataHandle.Add(TargetData);
+
+        OnTargetDetect.Broadcast(DataHandle);
+    }
+}
+
+void AGATA_AOERandomAttack::DeactiveTA() const
+{
+    AUPBattleBaseCharacter* BattleCharacter = Cast<AUPBattleBaseCharacter>(SourceActor);
+    if (BattleCharacter)
+    {
+        BattleCharacter->OnAttackEffect.Remove(AttackEffectHandle);
+    }
+
+    FTimerHandle EndAbilityDelay;
+    GetWorld()->GetTimerManager().SetTimer(EndAbilityDelay, FTimerDelegate::CreateLambda([&] {
+
+        FGameplayAbilityTargetDataHandle EndDataHandle;
+        TargetDataReadyDelegate.Broadcast(EndDataHandle);
+        }), 0.3f, false);
+}
+
+void AGATA_AOERandomAttack::AddAttackEvent()
+{
+    AUPBattleBaseCharacter* BattleCharacter = Cast<AUPBattleBaseCharacter>(SourceActor);
+    if (BattleCharacter)
+    {
+        if (!BattleCharacter->OnAttackEffect.IsBoundToObject(this))
+        {
+            AttackEffectHandle = BattleCharacter->OnAttackEffect.AddUObject(this, &AGATA_AOERandomAttack::OnAOEAttackArea);
+        }
+    }
+
 }
