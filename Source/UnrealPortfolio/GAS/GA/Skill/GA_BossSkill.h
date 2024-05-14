@@ -14,6 +14,7 @@ class UNREALPORTFOLIO_API UGA_BossSkill : public UGA_SkillBase
 {
 	GENERATED_BODY()
 
+public :
 	UGA_BossSkill();
 	
 public :
@@ -28,10 +29,10 @@ protected:
 		const FGameplayEventData* TriggerEventData) -> void override;
 	
 	virtual void OnCompleteCallback() override;
+	class UAbilitySystemComponent* SourceASC;
+	const class UUPBossSkillAttributeSet* SourceAttribute;
 
 private :
 	void PlayNextMontage();
 	int32 IndexNumber;
-
-	const class UUPBossSkillAttributeSet* SourceAttribute;
 };

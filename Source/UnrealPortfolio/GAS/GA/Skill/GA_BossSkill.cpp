@@ -19,7 +19,7 @@ void UGA_BossSkill::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
 		TargetMontageSectionName = SkillSectionList[IndexNumber];
 		IndexNumber++;
 	}
-	UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(ActorInfo->AvatarActor.Get());
+	SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(ActorInfo->AvatarActor.Get());
 	const TArray<UAttributeSet*> AllAtributes = SourceASC->GetSpawnedAttributes();
 
 	for (const UAttributeSet* Attribute : AllAtributes)
