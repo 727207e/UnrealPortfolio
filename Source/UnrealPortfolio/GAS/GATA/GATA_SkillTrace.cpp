@@ -11,9 +11,13 @@ void AGATA_SkillTrace::ConfirmTargetingAndContinue()
 	{
 		DrawDecal();
 	}
-	else
+	else if(bIsConfirmTargetingAndEnd)
 	{
 		Super::ConfirmTargetingAndContinue();
+	}
+	else
+	{
+		MakeTargetData();
 	}
 }
 
