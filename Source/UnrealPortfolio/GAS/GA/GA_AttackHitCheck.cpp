@@ -11,7 +11,7 @@
 #include "Data/DataAttributeSet/EnemyDataSet/NormalEnemy/UPEnemyAttributeSet.h"
 #include "Tag/GameplayTags.h"
 
-UGA_AttackHitCheck::UGA_AttackHitCheck(): CurrentLevel(0)
+UGA_AttackHitCheck::UGA_AttackHitCheck()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerExecution;
 
@@ -21,7 +21,7 @@ UGA_AttackHitCheck::UGA_AttackHitCheck(): CurrentLevel(0)
 void UGA_AttackHitCheck::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-	CurrentLevel = TriggerEventData->EventMagnitude;
+	
 	CurrentAction = Cast<AGameplayEventDataRequest>(TriggerEventData->Instigator);
 
 	if (TriggerEventData->OptionalObject)
@@ -29,9 +29,7 @@ void UGA_AttackHitCheck::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 		CurrentTA = Cast<UClass>(TriggerEventData->OptionalObject);
 	}
 
-	UAbilityTask_Trace * AttackTraceTask = UAbilityTask_Trace::CreateTask(this, CurrentTA);
-	AttackTraceTask->OnComplete.AddDynamic(this, &UGA_AttackHitCheck::OnTraceResultCallback);
-	AttackTraceTask->ReadyForActivation();
+	CurrentAbilityTaskSetup();
 }
 
 void UGA_AttackHitCheck::OnTraceResultCallback(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
@@ -65,6 +63,7 @@ void UGA_AttackHitCheck::OnTraceResultCallback(const FGameplayAbilityTargetDataH
 				EffectSpecHandle.Data->SetSetByCallerMagnitude(TAG_DATA_DAMAGE,-SourceAttribute->GetAttackRate());
 				ApplyGameplayEffectSpecToTarget(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,EffectSpecHandle,TargetDataHandle);
 			}
+			
 
 			if (CurrentAction->ActionGC.IsValid())
 			{
@@ -79,4 +78,11 @@ void UGA_AttackHitCheck::OnTraceResultCallback(const FGameplayAbilityTargetDataH
 	constexpr bool bReplicatedEndAbility = true;
 	constexpr bool bWasCancelled = false;
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, bReplicatedEndAbility, bWasCancelled);
+}
+
+void UGA_AttackHitCheck::CurrentAbilityTaskSetup()
+{
+	UAbilityTask_Trace * AttackTraceTask = UAbilityTask_Trace::CreateTask(this, CurrentTA);
+	AttackTraceTask->OnComplete.AddDynamic(this, &UGA_AttackHitCheck::OnTraceResultCallback);
+	AttackTraceTask->ReadyForActivation();
 }

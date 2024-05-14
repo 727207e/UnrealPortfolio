@@ -30,7 +30,7 @@ void UAnimNotify_GASAttackHitCheck::Notify(USkeletalMeshComponent* MeshComp, UAn
 			FGameplayEventData PayloadData;
 			
 			/** Set Event Data **/
-			PayloadData.EventMagnitude = ComboAttackLevel;
+			PayloadData.EventMagnitude = AttackLevel;
 			AGameplayEventDataRequest* ActionData = NewObject<AGameplayEventDataRequest>();
 			ActionData->ActionId = ActionId;
 			ActionData->ActionRowName = ActionRowName;

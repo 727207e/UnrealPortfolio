@@ -25,7 +25,7 @@ protected:
 	UPROPERTY(EditAnywhere)
 	FGameplayTag TriggerTag;
 	UPROPERTY(EditAnywhere, Category = Anim)
-	float ComboAttackLevel;
+	float AttackLevel;
 	UPROPERTY(EditAnywhere, Category = Data)
 	int32 ActionId;
 	UPROPERTY(EditAnywhere,Category = Data)
