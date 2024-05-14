@@ -32,10 +32,12 @@ public :
 	TObjectPtr<class UProjectileMovementComponent> ProjectTileMovement;
 
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<class USphereComponent> Sphere;
+	TObjectPtr<class UCapsuleComponent> Capsule;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UNiagaraComponent> MuzzleComponent;
+
+	FName SocketName;
 
 public :
 	virtual void ConfirmTargetingAndContinue() override;
@@ -43,9 +45,9 @@ public :
 	
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult);
+	void SetProjectileSpeed(float speed);
 
 private :
-	FName SocketName;
 	void SettingProjectile();
 	void AutoDestroy();
 };
