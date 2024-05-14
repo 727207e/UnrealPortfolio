@@ -4,27 +4,24 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
+#include "GAS/GA/GA_AttackHitCheck.h"
 #include "Data/DataAttributeSet/EntityAttributeSet.h"
-#include "GA_AttackHitCheck.generated.h"
+#include "GA_MainCharacterSkillHitCheck.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class UNREALPORTFOLIO_API UGA_AttackHitCheck : public UGameplayAbility
+class UNREALPORTFOLIO_API UGA_MainCharacterSkillHitCheck : public UGA_AttackHitCheck
 {
 	GENERATED_BODY()
 public:
-	UGA_AttackHitCheck();
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 protected:
+	UPROPERTY(EditAnywhere, Category = "GAS")
+	float CurrentLevel;
+	UPROPERTY(EditAnywhere, Category = "GAS")
+	TSubclassOf<class UGameplayEffect> AttackBuffEffect;
 	UFUNCTION()
-	virtual  void OnTraceResultCallback(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
-	UPROPERTY(EditAnywhere, Category = "GAS")
-	TSubclassOf<class UGameplayEffect> AttackDamageEffect;
-	UClass* CurrentTA;
-	UPROPERTY(EditAnywhere, Category = "GAS")
-	TObjectPtr<class AGameplayEventDataRequest> CurrentAction;
-	
-	virtual void CurrentAbilityTaskSetup();
+	virtual void OnPrevTraceResultCallback();
 };
