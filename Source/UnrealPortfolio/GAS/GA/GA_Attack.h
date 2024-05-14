@@ -17,6 +17,7 @@ UCLASS()
 class UNREALPORTFOLIO_API UGA_Attack : public UGameplayAbility
 {
 	GENERATED_BODY()
+protected:
 	virtual auto ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 							 const FGameplayAbilityActivationInfo ActivationInfo,
 							 const FGameplayEventData* TriggerEventData) -> void override;
@@ -30,7 +31,7 @@ class UNREALPORTFOLIO_API UGA_Attack : public UGameplayAbility
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
 	virtual void InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) override;
-
+protected:
 	IAttackableCharacterInterface*  AttackableCharacter;
 	ICharacterMovementInterface* MovementCharacter;
 	FName GetNextSection();
@@ -43,7 +44,7 @@ protected:
 	UFUNCTION()
 	void StartComboTimer();
 	UFUNCTION()
-	void CheckComboInput();
+	virtual  void CheckComboInput();
 	
 protected:
     UPROPERTY()

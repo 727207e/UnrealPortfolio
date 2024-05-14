@@ -2,9 +2,10 @@
 
 
 #include "GAS/GA/Skill/GA_MainCharacterSkillBase.h"
-
 #include "Character/UPPlayerState.h"
 #include "Game/UPGameSingleton.h"
+#include "GAS/AbilityTask/AbilityTask_LookAtMouse.h"
+#include "GAS/AbilityTask/AbilityTask_Trace.h"
 #include "Interface/HUDControllerInterface.h"
 #include "UI/UPMainHudWidget.h"
 #include "Tag/GameplayTags.h"
@@ -63,9 +64,10 @@ void UGA_MainCharacterSkillBase::ActivateAbility(const FGameplayAbilitySpecHandl
 				SkillIconWidget->OnClickedTargetInputActionKey(Cooldown);
 			}
 		}
-		
 	}
 	
+	UAbilityTask_LookAtMouse * AttackTraceTask = UAbilityTask_LookAtMouse::CreateTask(this);
+	AttackTraceTask->ReadyForActivation();
 }
 
 void UGA_MainCharacterSkillBase::CancelAbility(const FGameplayAbilitySpecHandle Handle,
