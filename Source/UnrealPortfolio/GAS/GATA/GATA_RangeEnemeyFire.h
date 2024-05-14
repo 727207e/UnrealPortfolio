@@ -38,7 +38,7 @@ public :
 	TObjectPtr<class UNiagaraComponent> MuzzleComponent;
 
 	FName SocketName;
-
+	bool bIsSettingInSocket = true;
 public :
 	virtual void ConfirmTargetingAndContinue() override;
 	virtual void Destroyed() override;

@@ -6,6 +6,7 @@
 #include "GAS/Actor/GameplaySkillEventDataRequest.h"
 #include "Components/SphereComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "GameFramework/Character.h"
 #include "NiagaraComponent.h"
 
 AGATA_BossRangeMultiFire::AGATA_BossRangeMultiFire()
@@ -29,6 +30,8 @@ AGATA_BossRangeMultiFire::AGATA_BossRangeMultiFire()
 	}
 
 	ProjectTileMovement->Velocity = FVector(0, 0, 0);
+	AttackNumber = 4;
+	PerProjectileDistance = 300;
 }
 
 void AGATA_BossRangeMultiFire::ConfirmTargetingAndContinue()
@@ -39,7 +42,7 @@ void AGATA_BossRangeMultiFire::ConfirmTargetingAndContinue()
 
 void AGATA_BossRangeMultiFire::InitializeSphere()
 {
-	for (int32 i = 0; i < 4; ++i)
+	for (int32 index = 0; index < AttackNumber; ++index)
 	{
 		AGATA_RangeEnemeyFire* SpawnedTargetActor = GetWorld()->SpawnActorDeferred<AGATA_RangeEnemeyFire>(AGATA_RangeEnemeyFire::StaticClass(), FTransform::Identity, nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		if (SpawnedTargetActor)
@@ -51,13 +54,46 @@ void AGATA_BossRangeMultiFire::InitializeSphere()
 
 			SpawnedTargetActor->SetShowDebug(true);
 			SpawnedTargetActor->TargetDataReadyDelegate.AddUObject(this, &AGATA_BossRangeMultiFire::OnProjectileFindTarget);
+			SpawnedTargetActor->bIsSettingInSocket = false;
 			SpawnedTargetActor->FinishSpawning(SourceActor->GetActorTransform());
 			SpawnedTargetActor->StartTargeting(OwningAbility);
-			SpawnedTargetActor->ConfirmTargeting();
+			SpawnedTargetActor->SetActorTransform(GetProjecttilePos(index));
 			SpawnedTargetActor->SetProjectileSpeed(3);
+			SpawnedTargetActor->ConfirmTargeting();
 		}
 	}
 }
+//0, 1, 2, 3
+FTransform AGATA_BossRangeMultiFire::GetProjecttilePos(int index)
+{
+	ACharacter* SourceCharacter = CastChecked<ACharacter>(SourceActor);
+	USkeletalMeshComponent* SkeletalMeshComponent = SourceCharacter->GetMesh();
+	if (!SkeletalMeshComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AGATA_BossRangeMultiFire : Skeletal mesh component not found."));
+		return FTransform();
+	}
+
+	if (!SkeletalMeshComponent->DoesSocketExist(CurrentData->TargetGenName))
+	{
+		UE_LOG(LogTemp, Error, TEXT("AGATA_BossRangeMultiFire : Skeletal mesh component not found."));
+		return FTransform();
+	}
+
+	FVector OriginPos = SkeletalMeshComponent->GetSocketLocation(CurrentData->TargetGenName);
+
+	FVector RightVector = FVector::CrossProduct(FVector(0, 0, 1), SourceCharacter->GetActorForwardVector());
+	RightVector.Normalize();
+
+	int PositioningNumber = AttackNumber/2 > index ? index - 2 : index - 1;
+
+	FTransform CurrentTransform = GetActorTransform();
+	CurrentTransform.SetLocation(OriginPos + RightVector * PositioningNumber * PerProjectileDistance);
+	CurrentTransform.SetRotation(CastChecked<ACharacter>(SourceActor)->GetActorQuat());
+
+	return CurrentTransform;
+}
+
 
 void AGATA_BossRangeMultiFire::OnProjectileFindTarget(const FGameplayAbilityTargetDataHandle& DataHandle)
 {

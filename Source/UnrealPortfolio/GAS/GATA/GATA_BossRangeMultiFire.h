@@ -25,4 +25,8 @@ public:
 
 private :
 	void InitializeSphere();
+	FTransform GetProjecttilePos(int index);
+
+	float AttackNumber = 0;
+	float PerProjectileDistance = 0;
 };

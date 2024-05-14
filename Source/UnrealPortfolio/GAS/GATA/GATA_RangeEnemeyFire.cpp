@@ -52,6 +52,7 @@ AGATA_RangeEnemeyFire::AGATA_RangeEnemeyFire()
 
 	bReplicates = true;
 	bIsDrawDecal = false;
+	bIsSettingInSocket = true;
 }
 
 void AGATA_RangeEnemeyFire::ConfirmTargetingAndContinue()
@@ -113,9 +114,15 @@ void AGATA_RangeEnemeyFire::SetProjectileSpeed(float speed)
 	ProjectTileMovement->Velocity *= speed;
 }
 
+
 void AGATA_RangeEnemeyFire::SettingProjectile()
 {
 	Capsule->SetCollisionProfileName(CPROFILE_UP_ENEMYATTACKRANGE);
+
+	if (!bIsSettingInSocket)
+	{
+		return;
+	}
 
 	ACharacter* SourceCharacter = CastChecked<ACharacter>(SourceActor);
 	USkeletalMeshComponent* SkeletalMeshComponent = SourceCharacter->GetMesh();
@@ -132,9 +139,9 @@ void AGATA_RangeEnemeyFire::SettingProjectile()
 	}
 
 	FTransform CurrentTransform = GetActorTransform();
+
 	CurrentTransform.SetLocation(SkeletalMeshComponent->GetSocketLocation(SocketName));
 	CurrentTransform.SetRotation(SourceCharacter->GetActorQuat());
-
 	SetActorTransform(CurrentTransform);
 }
 
