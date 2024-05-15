@@ -17,10 +17,20 @@ public:
 
 	void GenBoss();
 
+	virtual void BeginPlay() override;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<AActor> GenPosition;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<ACharacter> BossBody;
 	ACharacter* Boss;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class AUPCutSceneTriggerActor> CutSceneTrigger; 
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<ACharacter> StruggleBossDummy;
+
+	void StartStruggling();
 };

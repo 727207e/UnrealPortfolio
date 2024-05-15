@@ -7,6 +7,8 @@
 #include "Components/TimeLineComponent.h"
 #include "UPCutSceneTriggerActor.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnCutSceneEnd);
+
 UENUM()
 enum class EStartType : uint8
 {
@@ -56,6 +58,8 @@ public :
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult);
 	UFUNCTION(BlueprintCallable)
 	void StartCutScene();
+
+	FOnCutSceneEnd OnCutSceneEnd;
 
 private :
 
