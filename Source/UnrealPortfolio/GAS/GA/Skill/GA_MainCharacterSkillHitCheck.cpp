@@ -6,6 +6,7 @@
 #include "Data/DataAttributeSet/EntityAttributeSet.h"
 #include "GAS/Actor/GameplayEventDataRequest.h"
 #include "Interface/AttackableCharacterInterface.h"
+#include "Misc/RuntimeErrors.h"
 #include "Tag/GameplayTags.h"
 
 
@@ -24,15 +25,37 @@ void UGA_MainCharacterSkillHitCheck::ActivateAbility(const FGameplayAbilitySpecH
 	{
 		CurrentLevel = TriggerEventData->EventMagnitude;
 	}
-	OnPrevTraceResultCallback();
+	ApplyBuffEffect();
 	CurrentAbilityTaskSetup();
 }
 
-void UGA_MainCharacterSkillHitCheck::OnPrevTraceResultCallback()
+void UGA_MainCharacterSkillHitCheck::ApplyBuffEffect()
 {
 	const FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(AttackBuffEffect,CurrentLevel);
 	if (EffectSpecHandle.IsValid())
 	{
-		const FActiveGameplayEffectHandle ActiveGeHandle = ApplyGameplayEffectSpecToOwner(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,EffectSpecHandle);
+		ActiveEffectHandle = ApplyGameplayEffectSpecToOwner(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,EffectSpecHandle);
 	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("GA Main Skill Hit Check : Buff GA not found."));
+	}
+}
+
+void UGA_MainCharacterSkillHitCheck::EndAbility(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
+	bool bReplicateEndAbility, bool bWasCancelled)
+{
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+	UAbilitySystemComponent* SourceASC = GetAbilitySystemComponentFromActorInfo_Checked();
+	SourceASC->RemoveActiveGameplayEffect(ActiveEffectHandle);
+}
+
+void UGA_MainCharacterSkillHitCheck::ApplyDamageEffect(const UEntityAttributeSet* SourceAttribute,
+	const FGameplayAbilityTargetDataHandle& TargetDataHandle)
+{
+	
+	Super::ApplyDamageEffect(SourceAttribute, TargetDataHandle);
+	UAbilitySystemComponent* SourceASC = GetAbilitySystemComponentFromActorInfo_Checked();
+	SourceASC->RemoveActiveGameplayEffect(ActiveEffectHandle);
 }

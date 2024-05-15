@@ -6,6 +6,8 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Character/UPBossCharacter.h"
+#include "Character/UPEnemyCharacter.h"
 #include "Components/SphereComponent.h"
 #include "Data/DataAttributeSet/EntityAttributeSet.h"
 #include "GameFramework/Character.h"
@@ -85,6 +87,19 @@ void AGATA_BaseRangeAttackTrace::Destroyed()
 void AGATA_BaseRangeAttackTrace::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                                 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult)
 {
+	const AUPEnemyCharacter* HitEnemyCharacter = Cast<AUPEnemyCharacter>(OtherActor);
+	const AUPBossCharacter* HitBossCharacter = Cast<AUPBossCharacter>(OtherActor);
+	if (HitEnemyCharacter == nullptr && HitBossCharacter == nullptr)
+	{
+		return;
+	}
+
+	FGameplayAbilityTargetDataHandle DataHandle;
+
+	FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit(SweepHitResult);
+	DataHandle.Add(TargetData);
+	TargetDataReadyDelegate.Broadcast(DataHandle);
+	return;
 }
 
 void AGATA_BaseRangeAttackTrace::SettingProjectile()
