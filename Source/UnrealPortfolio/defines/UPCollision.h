@@ -7,4 +7,5 @@
 #define CPROFILE_UP_TRACE TEXT("PlayerMeetNPC")
 #define CPROFILE_UP_NPC TEXT("NPCMeetPlayer")
 #define CPROFILE_UP_CUTSCENETRIGGER TEXT("CutSceneTrigger")
+#define CPROFILE_UP_ENEMYATTACKRANGE TEXT("EnemyAttackRange")
 #define CHANNEL_UPTRACE ECC_GameTraceChannel1 

@@ -17,6 +17,7 @@
 DECLARE_MULTICAST_DELEGATE(FOnEndAttackDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnEndSkillDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnHitDelegate);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnAttackEffectEvent, FGameplayTag);
 
 UCLASS()
 class UNREALPORTFOLIO_API AUPBattleBaseCharacter : public AUPCharacter
@@ -106,6 +107,8 @@ public :
 	FOnEndAttackDelegate OnEndAttackDelegate;
 	FOnEndSkillDelegate OnEndSkillDelegate;
 	FOnHitDelegate OnHitDelegate;
+	FOnAttackEffectEvent OnAttackEffect;
+
 	void AddOnHitDelegate(FOnHitDelegate& Delegate);
 	
 	UPROPERTY(EditAnywhere)

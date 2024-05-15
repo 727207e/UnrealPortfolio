@@ -5,20 +5,22 @@
 #include "NiagaraFunctionLibrary.h"
 #include "Abilities/GameplayAbility.h"
 #include "NiagaraComponent.h"
-#include "Components/SphereComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Character/UPMainCharacter.h"
+#include "defines/UPCollision.h"
 #include "Data/DataAttributeSet/EntityAttributeSet.h"
 
 AGATA_RangeEnemeyFire::AGATA_RangeEnemeyFire()
 {
 	SocketName = "FirePos";
 
-	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
-	SetRootComponent(Sphere);
+	Capsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule"));
+	Capsule->InitCapsuleSize(50.0f, 800.0f);
+	SetRootComponent(Capsule);
 
 	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> MuzzleFXRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/DownloadAssets/Pack_VFX/VFX_Niagara/Stylized_Projectiles/Muzzle/NS_Stylized_Projectiles_Muzzle17.NS_Stylized_Projectiles_Muzzle17'"));
 	if (MuzzleFXRef.Object)
@@ -49,6 +51,8 @@ AGATA_RangeEnemeyFire::AGATA_RangeEnemeyFire()
 	MuzzleComponent->SetupAttachment(RootComponent);
 
 	bReplicates = true;
+	bIsDrawDecal = false;
+	bIsSettingInSocket = true;
 }
 
 void AGATA_RangeEnemeyFire::ConfirmTargetingAndContinue()
@@ -58,7 +62,7 @@ void AGATA_RangeEnemeyFire::ConfirmTargetingAndContinue()
 	SettingProjectile();
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), MuzzleFX, GetActorLocation());
 	MuzzleComponent->SetAsset(ProjectileFX);
-	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AGATA_RangeEnemeyFire::OnOverlapBegin);
+	Capsule->OnComponentBeginOverlap.AddDynamic(this, &AGATA_RangeEnemeyFire::OnOverlapBegin);
 
 	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(SourceActor);
 	if (nullptr == TargetASC)
@@ -99,11 +103,27 @@ void AGATA_RangeEnemeyFire::OnOverlapBegin(UPrimitiveComponent* OverlappedCompon
 	FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit(SweepHitResult);
 	DataHandle.Add(TargetData);
 	TargetDataReadyDelegate.Broadcast(DataHandle);
+	Destroy();
+
 	return;
 }
 
+void AGATA_RangeEnemeyFire::SetProjectileSpeed(float speed)
+{
+	ProjectTileMovement->MaxSpeed *= speed;
+	ProjectTileMovement->Velocity *= speed;
+}
+
+
 void AGATA_RangeEnemeyFire::SettingProjectile()
 {
+	Capsule->SetCollisionProfileName(CPROFILE_UP_ENEMYATTACKRANGE);
+
+	if (!bIsSettingInSocket)
+	{
+		return;
+	}
+
 	ACharacter* SourceCharacter = CastChecked<ACharacter>(SourceActor);
 	USkeletalMeshComponent* SkeletalMeshComponent = SourceCharacter->GetMesh();
 	if (!SkeletalMeshComponent)
@@ -119,9 +139,9 @@ void AGATA_RangeEnemeyFire::SettingProjectile()
 	}
 
 	FTransform CurrentTransform = GetActorTransform();
+
 	CurrentTransform.SetLocation(SkeletalMeshComponent->GetSocketLocation(SocketName));
 	CurrentTransform.SetRotation(SourceCharacter->GetActorQuat());
-
 	SetActorTransform(CurrentTransform);
 }
 
@@ -129,6 +149,7 @@ void AGATA_RangeEnemeyFire::AutoDestroy()
 {
 	FGameplayAbilityTargetDataHandle DataHandle;
 	TargetDataReadyDelegate.Broadcast(DataHandle);
+	Destroy();
 
 	return;
 }
