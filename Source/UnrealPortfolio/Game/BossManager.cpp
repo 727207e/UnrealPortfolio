@@ -5,6 +5,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "CutScene/UPCutSceneTriggerActor.h"
+#include "Game/UPGameInstance.h"
 
 // Sets default values
 ABossManager::ABossManager()
@@ -20,6 +21,13 @@ void ABossManager::GenBoss()
 
 void ABossManager::BeginPlay()
 {
+	UUPGameInstance* UPGameInstance = Cast<UUPGameInstance>(GetGameInstance());
+
+	if (UPGameInstance)
+	{
+		UPGameInstance->SetBossManager(this);
+	}
+
 	if (CutSceneTrigger)
 	{
 		CutSceneTrigger->OnCutSceneEnd.AddUObject(this, &ABossManager::StartStruggling);
