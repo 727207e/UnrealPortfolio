@@ -36,4 +36,7 @@ public :
 	virtual void ConfirmTargetingAndContinue() override;
 	UFUNCTION()
 	virtual void DrawDecal();
+
+protected :
+	bool bIsConfirmTargetingAndEnd = true;
 };

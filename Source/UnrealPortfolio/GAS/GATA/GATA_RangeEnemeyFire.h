@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GAS/GATA/GATA_Trace.h"
+#include "GAS/GATA/GATA_SkillTrace.h"
 #include "GATA_RangeEnemeyFire.generated.h"
 
 class UNiagaraSystem;
@@ -11,7 +11,7 @@ class UNiagaraSystem;
  * 
  */
 UCLASS()
-class UNREALPORTFOLIO_API AGATA_RangeEnemeyFire : public AGATA_Trace
+class UNREALPORTFOLIO_API AGATA_RangeEnemeyFire : public AGATA_SkillTrace
 {
 	GENERATED_BODY()
 	
@@ -32,20 +32,22 @@ public :
 	TObjectPtr<class UProjectileMovementComponent> ProjectTileMovement;
 
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<class USphereComponent> Sphere;
+	TObjectPtr<class UCapsuleComponent> Capsule;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UNiagaraComponent> MuzzleComponent;
 
+	FName SocketName;
+	bool bIsSettingInSocket = true;
 public :
 	virtual void ConfirmTargetingAndContinue() override;
 	virtual void Destroyed() override;
 	
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult);
+	void SetProjectileSpeed(float speed);
 
 private :
-	FName SocketName;
 	void SettingProjectile();
 	void AutoDestroy();
 };

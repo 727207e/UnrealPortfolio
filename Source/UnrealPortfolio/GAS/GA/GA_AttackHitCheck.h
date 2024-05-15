@@ -27,4 +27,5 @@ protected:
 	TObjectPtr<class AGameplayEventDataRequest> CurrentAction;
 	
 	virtual void CurrentAbilityTaskSetup();
+	virtual void ApplyDamageEffect(const UEntityAttributeSet* SourceAttribute ,const FGameplayAbilityTargetDataHandle& TargetDataHandle);
 };
