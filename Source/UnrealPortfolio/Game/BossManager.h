@@ -15,10 +15,6 @@ public:
 	// Sets default values for this actor's properties
 	ABossManager();
 
-	void GenBoss();
-
-	virtual void BeginPlay() override;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<AActor> GenPosition;
 
@@ -32,5 +28,22 @@ public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ACharacter> StruggleBossDummy;
 
+	UPROPERTY(EditAnywhere)
+	float Radius = 4000.f;
+
+	UPROPERTY(EditAnywhere)
+	float ZOffset = 1000.f;
+
+public :
+	void GenBoss();
+	virtual void BeginPlay() override;
+
 	void StartStruggling();
+	FTransform GetRandomAroundTransform();
+
+private :
+	void SpawnActorsAroundCenter(const FVector& Center);
+	TArray<FVector> CalculatePositionsAroundCenter(const FVector& Center);
+
+	TArray<AActor*> AroundActors;
 };
