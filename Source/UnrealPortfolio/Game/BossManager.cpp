@@ -3,6 +3,7 @@
 
 #include "Game/BossManager.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "CutScene/UPCutSceneTriggerActor.h"
 
 // Sets default values
@@ -29,7 +30,11 @@ void ABossManager::StartStruggling()
 {	
 	if (StruggleBossDummy)
 	{
-		GetWorld()->SpawnActor(StruggleBossDummy);
+		ACharacter* struggle = Cast<ACharacter>(GetWorld()->SpawnActor(StruggleBossDummy));
+		if (struggle)
+		{
+			struggle->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+		}
 	}
 }
 

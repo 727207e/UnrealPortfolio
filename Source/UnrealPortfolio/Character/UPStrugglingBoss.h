@@ -14,8 +14,11 @@ class UNREALPORTFOLIO_API AUPStrugglingBoss : public AUPBattleBaseCharacter
 
 public:
 	AUPStrugglingBoss();
-	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	virtual void BeginPlay() override;
 
 protected :
 	virtual void Hit(FVector TargetLocation, TObjectPtr<class AGameplayEventDataRequest> ActionData) override;
+
+private :
+	float StartDelay = 0;
 };

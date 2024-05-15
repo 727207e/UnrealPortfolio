@@ -5,7 +5,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "AbilitySystemComponent.h"
 
-// Sets default values
+
 AUPStrugglingBoss::AUPStrugglingBoss()
 {
 	ASC = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("ASC"));
@@ -21,13 +21,21 @@ AUPStrugglingBoss::AUPStrugglingBoss()
 	{
 		GetMesh()->SetAnimInstanceClass(CharacterAnimRef.Class);
 	}
+
+	StartDelay = 2.0f;
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	GetCharacterMovement()->GravityScale = 0.0f;
 }
 
-UAbilitySystemComponent* AUPStrugglingBoss::GetAbilitySystemComponent() const
+void AUPStrugglingBoss::BeginPlay()
 {
-	return ASC;
+	Super::BeginPlay();
 
-	GetCharacterMovement()->GravityScale = 0.0f;
+	FTimerHandle StartDelayHandle;
+	GetWorld()->GetTimerManager().SetTimer(StartDelayHandle, FTimerDelegate::CreateLambda([&]
+		{
+			OnSkill(0);
+		}), StartDelay, false);
 }
 
 void AUPStrugglingBoss::Hit(FVector TargetLocation, TObjectPtr<class AGameplayEventDataRequest> ActionData)
