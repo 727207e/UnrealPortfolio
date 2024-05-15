@@ -15,6 +15,8 @@ UCLASS()
 class UNREALPORTFOLIO_API UGA_MainCharacterSkillHitCheck : public UGA_AttackHitCheck
 {
 	GENERATED_BODY()
+	UPROPERTY()
+	FActiveGameplayEffectHandle ActiveEffectHandle;
 public:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 protected:
@@ -23,5 +25,13 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "GAS")
 	TSubclassOf<class UGameplayEffect> AttackBuffEffect;
 	UFUNCTION()
-	virtual void OnPrevTraceResultCallback();
+	virtual void ApplyBuffEffect();
+	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle,
+						const FGameplayAbilityActorInfo* ActorInfo,
+						const FGameplayAbilityActivationInfo ActivationInfo,
+						bool bReplicateEndAbility,
+						bool bWasCancelled) override;
+	
+	virtual void ApplyDamageEffect(const UEntityAttributeSet* SourceAttribute, const FGameplayAbilityTargetDataHandle& TargetDataHandle) override;
+	
 };

@@ -57,13 +57,7 @@ void UGA_AttackHitCheck::OnTraceResultCallback(const FGameplayAbilityTargetDataH
 				return;
 			}
 			
-			FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(AttackDamageEffect);
-			if(EffectSpecHandle.IsValid())
-			{
-				EffectSpecHandle.Data->SetSetByCallerMagnitude(TAG_DATA_DAMAGE,-SourceAttribute->GetAttackRate());
-				ApplyGameplayEffectSpecToTarget(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,EffectSpecHandle,TargetDataHandle);
-			}
-			
+			ApplyDamageEffect(SourceAttribute ,TargetDataHandle);
 
 			if (CurrentAction->ActionGC.IsValid())
 			{
@@ -85,4 +79,14 @@ void UGA_AttackHitCheck::CurrentAbilityTaskSetup()
 	UAbilityTask_Trace * AttackTraceTask = UAbilityTask_Trace::CreateTask(this, CurrentTA);
 	AttackTraceTask->OnComplete.AddDynamic(this, &UGA_AttackHitCheck::OnTraceResultCallback);
 	AttackTraceTask->ReadyForActivation();
+}
+
+void UGA_AttackHitCheck::ApplyDamageEffect(const UEntityAttributeSet* SourceAttribute , const FGameplayAbilityTargetDataHandle& TargetDataHandle)
+{
+	FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(AttackDamageEffect);
+	if(EffectSpecHandle.IsValid())
+	{
+		EffectSpecHandle.Data->SetSetByCallerMagnitude(TAG_DATA_DAMAGE,-SourceAttribute->GetAttackRate());
+		ApplyGameplayEffectSpecToTarget(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,EffectSpecHandle,TargetDataHandle);
+	}
 }
