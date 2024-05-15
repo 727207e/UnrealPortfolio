@@ -29,10 +29,13 @@ public:
 	TSubclassOf<ACharacter> StruggleBossDummy;
 
 	UPROPERTY(EditAnywhere)
+	TArray<int32> StrugglePatern;
+
+	UPROPERTY(EditAnywhere)
 	float Radius = 4000.f;
 
 	UPROPERTY(EditAnywhere)
-	float ZOffset = 1000.f;
+	float ZOffset = 500.f;
 
 public :
 	void GenBoss();

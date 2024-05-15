@@ -7,7 +7,7 @@
 
 UGA_BossStruggleSkillCross::UGA_BossStruggleSkillCross()
 {
-	Speed = 2000.0f;
+	Speed = 5000.0f;
 }
 
 void UGA_BossStruggleSkillCross::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,

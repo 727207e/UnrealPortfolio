@@ -17,14 +17,15 @@
 
 AGATA_HalfCircleTrace::AGATA_HalfCircleTrace()
 {
-	bReplicates = true;
-
 	RootSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	SetRootComponent(RootSceneComponent);
 
 	LeftHalfDecal = CreateDefaultSubobject<UDecalComponent>(TEXT("LeftHalfDecal"));
 	LeftHalfDecal->SetupAttachment(RootSceneComponent);
 	LeftHalfDecal->SetRelativeRotation(FRotator(0, -90.0f, 0.f));
+
+	bReplicates = true;
+	bIsDrawDecal = true;
 }
 
 void AGATA_HalfCircleTrace::DrawDecal()

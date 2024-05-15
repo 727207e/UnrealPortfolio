@@ -11,7 +11,7 @@
 // Sets default values
 ABossManager::ABossManager()
 {
-
+	StrugglePatern = {1, 2, 3, 2, 4, 5, 6, 7};
 }
 
 void ABossManager::GenBoss()

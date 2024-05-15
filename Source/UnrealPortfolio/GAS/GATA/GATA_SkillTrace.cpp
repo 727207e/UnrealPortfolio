@@ -5,6 +5,11 @@
 #include "Components/DecalComponent.h"
 #include "GAS/GATA/GATA_Trace.h"
 
+AGATA_SkillTrace::AGATA_SkillTrace()
+{
+	bIsDrawDecal = false;
+}
+
 void AGATA_SkillTrace::ConfirmTargetingAndContinue()
 {
 	if (bIsDrawDecal)

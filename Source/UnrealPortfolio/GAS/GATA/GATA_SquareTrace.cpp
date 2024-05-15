@@ -11,6 +11,7 @@
 #include "Data/DataAttributeSet/BossDataSet/UPBossSkillAttributeSet.h"
 #include "Character/UPMainCharacter.h"
 #include "GameFramework/Character.h"
+#include "Components/DecalComponent.h"
 
 AGATA_SquareTrace::AGATA_SquareTrace()
 {
@@ -18,14 +19,36 @@ AGATA_SquareTrace::AGATA_SquareTrace()
 	SetRootComponent(Box);
 	Box->SetActive(false);
 
+	SquareDecal = CreateDefaultSubobject<UDecalComponent>(TEXT("SquareDecal"));
+	SquareDecal->SetupAttachment(RootComponent);
+	SquareDecal->SetRelativeRotation(FRotator(0, -90.0f, 0.f));
+
 	bReplicates = true;
+	bIsDrawDecal = false;
+
+	BoxSizeX = 0;
+	BoxSizeY = 0;
+	BoxSizeZ = 10000;
+
+	DecalDelayTime = 1.3f;
+	DestroyTATime = 0.3;
 }
 
 void AGATA_SquareTrace::ConfirmTargetingAndContinue()
 {
 	bDestroyOnConfirmation = false;
 
+	GetAttributeSetting();
 	InitSquareTrace();
+
+	if (bIsDrawDecal)
+	{
+		DrawDecal();
+	}
+	else
+	{
+		StartTargeting();
+	}
 }
 
 void AGATA_SquareTrace::Destroyed()
@@ -62,23 +85,41 @@ void AGATA_SquareTrace::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 	return;
 }
 
+void AGATA_SquareTrace::DrawDecal()
+{
+	SquareDecal->DecalSize = Box->GetScaledBoxExtent();
+
+	FTimerHandle StartTarget;
+	GetWorld()->GetTimerManager().SetTimer(StartTarget, FTimerDelegate::CreateLambda([&]
+		{
+			SquareDecal->SetActive(false);
+			StartTargeting();
+		}), DecalDelayTime, false);
+}
+
+void AGATA_SquareTrace::GetAttributeSetting()
+{
+	BoxSizeX = CurrentData->TargetAttributeSet->GetAttackRadius();
+	BoxSizeY = CurrentData->TargetAttributeSet->GetAttackRange();
+}
+
 void AGATA_SquareTrace::InitSquareTrace()
 {
 	ACharacter* SourceCharacter = CastChecked<ACharacter>(SourceActor);
 	USkeletalMeshComponent* SkeletalMeshComponent = SourceCharacter->GetMesh();
 	if (!SkeletalMeshComponent)
 	{
-		UE_LOG(LogTemp, Error, TEXT("GATA_RangeEnemyFire : Skeletal mesh component not found."));
+		UE_LOG(LogTemp, Error, TEXT("AGATA_SquareTrace : Skeletal mesh component not found."));
 		return;
 	}
 
 	if (!SkeletalMeshComponent->DoesSocketExist(CurrentData->TargetGenName))
 	{
-		UE_LOG(LogTemp, Error, TEXT("GATA_RangeEnemyFire : Skeletal mesh component not found."));
+		UE_LOG(LogTemp, Error, TEXT("AGATA_SquareTrace : Skeletal mesh component not found."));
 		return;
 	}
 	FTransform CurrentBoxTransform = Box->GetComponentTransform();
-	CurrentBoxTransform.SetScale3D(FVector(CurrentData->TargetAttributeSet->GetAttackRadius(), CurrentData->TargetAttributeSet->GetAttackRange(), 10000.0f));
+	CurrentBoxTransform.SetScale3D(FVector(BoxSizeX, BoxSizeY, BoxSizeZ));
 	Box->SetRelativeTransform(CurrentBoxTransform);
 
 	FTransform CurrentTransform = GetActorTransform();
@@ -86,7 +127,10 @@ void AGATA_SquareTrace::InitSquareTrace()
 	CurrentTransform.SetRotation(SourceCharacter->GetActorQuat());
 
 	SetActorTransform(CurrentTransform);
+}
 
+void AGATA_SquareTrace::StartTargeting()
+{
 	Box->OnComponentBeginOverlap.AddDynamic(this, &AGATA_SquareTrace::OnOverlapBegin);
 
 	Box->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
@@ -94,5 +138,5 @@ void AGATA_SquareTrace::InitSquareTrace()
 	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda([&]
 		{
 			Destroy();
-		}), 0.3f, false);
+		}), DestroyTATime, false);
 }

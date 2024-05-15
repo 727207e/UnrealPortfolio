@@ -30,21 +30,27 @@ void UAnimNotify_GASSkillHitCheck::Notify(USkeletalMeshComponent* MeshComp, UAni
 
 			const UUPBossSkillAttributeSet* TargetAttributeSet = nullptr;
 
-			const TArray<UAttributeSet*> AllAtributes = AbilitySystemComponent->GetSpawnedAttributes();
-			for (const UAttributeSet* Attribute : AllAtributes)
+			if (TargetAttributeSetName.IsNone())
 			{
-				if (Attribute->GetName() == TargetAttributeSetName)
+				UE_LOG(LogTemp, Log, TEXT("CurNotify Not Set AttributeSet"));
+			}
+			else
+			{
+				const TArray<UAttributeSet*> AllAtributes = AbilitySystemComponent->GetSpawnedAttributes();
+				for (const UAttributeSet* Attribute : AllAtributes)
 				{
-					TargetAttributeSet = Cast<UUPBossSkillAttributeSet>(Attribute);
-					break;
+					if (Attribute->GetName() == TargetAttributeSetName)
+					{
+						TargetAttributeSet = Cast<UUPBossSkillAttributeSet>(Attribute);
+						break;
+					}
+				}
+				if (nullptr == TargetAttributeSet)
+				{
+					UE_LOG(LogTemp, Error, TEXT("AnimNotirfy_GasSkillHitCheck can't Find Target AttributeSet"));
+					return;
 				}
 			}
-			if (nullptr == TargetAttributeSet)
-			{
-				UE_LOG(LogTemp, Error, TEXT("AnimNotirfy_GasSkillHitCheck can't Find Target AttributeSet"));
-				return;
-			}
-
 
 			FGameplayEventData PayloadData;
 			
