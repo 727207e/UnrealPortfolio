@@ -57,12 +57,6 @@ void UGA_AttackHitCheck::OnTraceResultCallback(const FGameplayAbilityTargetDataH
 				return;
 			}
 			
-			// FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(AttackDamageEffect);
-			// if(EffectSpecHandle.IsValid())
-			// {
-			// 	EffectSpecHandle.Data->SetSetByCallerMagnitude(TAG_DATA_DAMAGE,-SourceAttribute->GetAttackRate());
-			// 	ApplyGameplayEffectSpecToTarget(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,EffectSpecHandle,TargetDataHandle);
-			// }
 			ApplyDamageEffect(SourceAttribute ,TargetDataHandle);
 
 			if (CurrentAction->ActionGC.IsValid())
