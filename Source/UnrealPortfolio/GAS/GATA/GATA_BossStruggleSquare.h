@@ -23,7 +23,13 @@ public :
 	UPROPERTY(EditAnywhere)
 	float BoxSizeYValue;
 
+	virtual void BeginPlay() override;
+	virtual void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult);
+	
 protected :
 	virtual void GetAttributeSetting() override;
-	virtual void DrawDecal() override;
+	virtual void StartTargeting() override;
+
+	UFUNCTION()
+	void SearchAllTarget();
 };

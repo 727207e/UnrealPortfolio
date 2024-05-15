@@ -78,6 +78,11 @@ void UGA_SkillCheck::AttackTargetWithHitResult(const FGameplayAbilityTargetDataH
 			return;
 		}
 
+		if (nullptr == CurrentData->TargetAttributeSet)
+		{
+			return;
+		}
+
 		FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(AttackDamageEffect);
 		if (EffectSpecHandle.IsValid())
 		{
@@ -109,6 +114,11 @@ void UGA_SkillCheck::AttackTargetWithActorInfo(const FGameplayAbilityTargetDataH
 		UEntityAttributeSet* TargetAttribute = const_cast<UEntityAttributeSet*>(TargetASC->GetSet<UEntityAttributeSet>());
 
 		if (!TargetAttribute)
+		{
+			return;
+		}
+
+		if (nullptr == CurrentData->TargetAttributeSet)
 		{
 			return;
 		}

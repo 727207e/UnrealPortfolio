@@ -12,17 +12,22 @@
 #include "Character/UPMainCharacter.h"
 #include "GameFramework/Character.h"
 #include "Components/DecalComponent.h"
+#include "Components/SceneComponent.h"
 #include "defines/UPCollision.h"
 
 AGATA_SquareTrace::AGATA_SquareTrace()
 {
+	USceneComponent* RootComp = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	SetRootComponent(RootComp);
+
 	Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
-	SetRootComponent(Box);
+	Box->SetupAttachment(RootComp);
 	Box->SetActive(false);
+	Box->SetCollisionProfileName(CPROFILE_UP_ENEMYATTACKRANGE);
 
 	SquareDecal = CreateDefaultSubobject<UDecalComponent>(TEXT("SquareDecal"));
-	SquareDecal->SetupAttachment(RootComponent);
-	SquareDecal->SetRelativeRotation(FRotator(0, -90.0f, 0.f));
+	Box->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
+	SquareDecal->SetupAttachment(Box);
 
 	bReplicates = true;
 	bIsDrawDecal = false;
@@ -63,27 +68,24 @@ void AGATA_SquareTrace::Destroyed()
 void AGATA_SquareTrace::BeginPlay()
 {
 	Super::BeginPlay();
-	//Box->SetCollisionProfileName(CPRO)
 	Box->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Box->OnComponentBeginOverlap.AddDynamic(this, &AGATA_SquareTrace::OnOverlapBegin);
+
 }
 
 void AGATA_SquareTrace::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult)
 {
-	UE_LOG(LogTemp, Error, TEXT("1"));
-
 	AUPMainCharacter* MainCharacter = Cast<AUPMainCharacter>(OtherActor);
 	if (MainCharacter == nullptr)
 	{
 		return;
 	}
 
-	UE_LOG(LogTemp, Error, TEXT("2"));
 	FGameplayAbilityTargetDataHandle DataHandle;
 
 	FHitResult Hit = FHitResult(SweepHitResult);
 	Hit.HitObjectHandle = FActorInstanceHandle(OtherActor);
 
-	UE_LOG(LogTemp, Error, TEXT("3"));
 	FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit(Hit);
 	DataHandle.Add(TargetData);
 	OnTargetDetect.Broadcast(DataHandle);
@@ -93,7 +95,7 @@ void AGATA_SquareTrace::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 
 void AGATA_SquareTrace::DrawDecal()
 {
-	SquareDecal->DecalSize = Box->GetScaledBoxExtent();
+	SquareDecal->DecalSize = Box->GetScaledBoxExtent() / 10.0f;
 
 	FTimerHandle StartTarget;
 	GetWorld()->GetTimerManager().SetTimer(StartTarget, FTimerDelegate::CreateLambda([&]
@@ -124,25 +126,22 @@ void AGATA_SquareTrace::InitSquareTrace()
 		UE_LOG(LogTemp, Error, TEXT("AGATA_SquareTrace : Skeletal mesh component not found."));
 		return;
 	}
-	FTransform CurrentBoxTransform = Box->GetComponentTransform();
+	FTransform CurrentBoxTransform = Box->GetRelativeTransform();
 	CurrentBoxTransform.SetScale3D(FVector(BoxSizeX, BoxSizeY, BoxSizeZ));
 	Box->SetRelativeTransform(CurrentBoxTransform);
 
-	FTransform CurrentTransform = GetActorTransform();
-	CurrentTransform.SetLocation(SkeletalMeshComponent->GetSocketLocation(CurrentData->TargetGenName));
-	CurrentTransform.SetRotation(SourceCharacter->GetActorQuat());
+	FVector NewLocation = SkeletalMeshComponent->GetSocketLocation(CurrentData->TargetGenName);
+	FRotator NewRotation = SourceCharacter->GetActorRotation();
 
-	SetActorTransform(CurrentTransform);
+	RootComponent->SetRelativeLocationAndRotation(NewLocation, NewRotation);
 }
 
 void AGATA_SquareTrace::StartTargeting()
 {
-	Box->OnComponentBeginOverlap.AddDynamic(this, &AGATA_SquareTrace::OnOverlapBegin);
-
 	Box->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	FTimerHandle DeadTimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda([&]
 		{
-			//Destroy();
+			Destroy();
 		}), DestroyTATime, false);
 }

@@ -36,6 +36,7 @@ public :
 
 protected :
 	virtual void GetAttributeSetting();
+	virtual void StartTargeting();
 
 	float BoxSizeX;
 	float BoxSizeY;
@@ -46,6 +47,5 @@ protected :
 
 private :
 	void InitSquareTrace();
-	void StartTargeting();
 
 };
