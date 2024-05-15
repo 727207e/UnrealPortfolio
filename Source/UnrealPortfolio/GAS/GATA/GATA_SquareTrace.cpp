@@ -12,6 +12,7 @@
 #include "Character/UPMainCharacter.h"
 #include "GameFramework/Character.h"
 #include "Components/DecalComponent.h"
+#include "defines/UPCollision.h"
 
 AGATA_SquareTrace::AGATA_SquareTrace()
 {
@@ -26,12 +27,12 @@ AGATA_SquareTrace::AGATA_SquareTrace()
 	bReplicates = true;
 	bIsDrawDecal = false;
 
-	BoxSizeX = 0;
-	BoxSizeY = 0;
-	BoxSizeZ = 10000;
+	BoxSizeX = 0.f;
+	BoxSizeY = 0.f;
+	BoxSizeZ = 1000.f;
 
 	DecalDelayTime = 1.3f;
-	DestroyTATime = 0.3;
+	DestroyTATime = 0.3f;
 }
 
 void AGATA_SquareTrace::ConfirmTargetingAndContinue()
@@ -62,22 +63,27 @@ void AGATA_SquareTrace::Destroyed()
 void AGATA_SquareTrace::BeginPlay()
 {
 	Super::BeginPlay();
+	//Box->SetCollisionProfileName(CPRO)
 	Box->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void AGATA_SquareTrace::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult)
 {
+	UE_LOG(LogTemp, Error, TEXT("1"));
+
 	AUPMainCharacter* MainCharacter = Cast<AUPMainCharacter>(OtherActor);
 	if (MainCharacter == nullptr)
 	{
 		return;
 	}
 
+	UE_LOG(LogTemp, Error, TEXT("2"));
 	FGameplayAbilityTargetDataHandle DataHandle;
 
 	FHitResult Hit = FHitResult(SweepHitResult);
 	Hit.HitObjectHandle = FActorInstanceHandle(OtherActor);
 
+	UE_LOG(LogTemp, Error, TEXT("3"));
 	FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit(Hit);
 	DataHandle.Add(TargetData);
 	OnTargetDetect.Broadcast(DataHandle);
@@ -92,7 +98,7 @@ void AGATA_SquareTrace::DrawDecal()
 	FTimerHandle StartTarget;
 	GetWorld()->GetTimerManager().SetTimer(StartTarget, FTimerDelegate::CreateLambda([&]
 		{
-			SquareDecal->SetActive(false);
+			SquareDecal->SetVisibility(false);
 			StartTargeting();
 		}), DecalDelayTime, false);
 }
@@ -137,6 +143,6 @@ void AGATA_SquareTrace::StartTargeting()
 	FTimerHandle DeadTimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda([&]
 		{
-			Destroy();
+			//Destroy();
 		}), DestroyTATime, false);
 }

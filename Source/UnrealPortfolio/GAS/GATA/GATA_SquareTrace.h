@@ -37,12 +37,12 @@ public :
 protected :
 	virtual void GetAttributeSetting();
 
-	int32 BoxSizeX;
-	int32 BoxSizeY;
-	int32 BoxSizeZ;
+	float BoxSizeX;
+	float BoxSizeY;
+	float BoxSizeZ;
 
-	int32 DecalDelayTime = 0;
-	int32 DestroyTATime = 0;
+	float DecalDelayTime = 0;
+	float DestroyTATime = 0;
 
 private :
 	void InitSquareTrace();

@@ -35,7 +35,7 @@ public:
 	float Radius = 4000.f;
 
 	UPROPERTY(EditAnywhere)
-	float ZOffset = 500.f;
+	float ZOffset = 100.f;
 
 public :
 	void GenBoss();

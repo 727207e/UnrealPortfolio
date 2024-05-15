@@ -20,5 +20,5 @@ void AGATA_BossStruggleSquare::DrawDecal()
 {
 	Super::DrawDecal();
 
-	this->AttachToActor(SourceActor, FAttachmentTransformRules::KeepWorldTransform);
+	//this->AttachToActor(SourceActor, FAttachmentTransformRules::KeepWorldTransform);
 }

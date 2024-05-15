@@ -18,10 +18,10 @@ public :
 	AGATA_BossStruggleSquare();
 
 	UPROPERTY(EditAnywhere)
-	int32 BoxSizeXValue;
+	float BoxSizeXValue;
 
 	UPROPERTY(EditAnywhere)
-	int32 BoxSizeYValue;
+	float BoxSizeYValue;
 
 protected :
 	virtual void GetAttributeSetting() override;
