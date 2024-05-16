@@ -17,7 +17,6 @@ class UNREALPORTFOLIO_API AUPCutSceneBossRun : public AUPCutSceneEvent
 public :
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<ACharacter> DumyBossType;
-	ACharacter* DumyBoss;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<AActor> GenPosition;
@@ -27,4 +26,10 @@ public :
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class ABossManager> BossManager;
+
+
+protected:
+	UPROPERTY()
+	TObjectPtr<ACharacter> DumyBoss;
+
 };

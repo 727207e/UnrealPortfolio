@@ -17,10 +17,14 @@ UCLASS()
 class UNREALPORTFOLIO_API UGA_SkillBase : public UGameplayAbility
 {
 	GENERATED_BODY()
+
 protected:
 	IAttackableCharacterInterface*  AttackableCharacter;
 	ICharacterMovementInterface* MovementCharacter;
+
+	UPROPERTY(EditAnywhere)
 	FName TargetMontageSectionName = NAME_None;
+
 public:
 	UPROPERTY(EditAnywhere)
 	UAnimMontage* TargetMontage;

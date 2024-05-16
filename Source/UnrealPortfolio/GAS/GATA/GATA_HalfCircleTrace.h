@@ -21,6 +21,9 @@ public :
 	TObjectPtr<class UBoxComponent> Cube;
 
 	virtual void DrawDecal() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<class UDecalComponent> LeftHalfDecal;
 protected :
 	virtual FGameplayAbilityTargetDataHandle MakeTargetData() const override;
 };

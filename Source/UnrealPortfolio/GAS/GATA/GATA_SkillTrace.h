@@ -18,6 +18,8 @@ class UNREALPORTFOLIO_API AGATA_SkillTrace : public AGATA_Trace
 	GENERATED_BODY()
 
 public :
+	AGATA_SkillTrace();
+
 	UPROPERTY()
 	TObjectPtr<class AGameplaySkillEventDataRequest> CurrentData;
 
@@ -29,8 +31,6 @@ public :
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<class USceneComponent> RootSceneComponent;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<class UDecalComponent> LeftHalfDecal;
 
 public :
 	virtual void ConfirmTargetingAndContinue() override;

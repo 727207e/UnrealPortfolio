@@ -30,9 +30,9 @@ protected:
 	TSubclassOf<class UGameplayEffect> AttackBuffEffect;
 	UPROPERTY(EditAnywhere, Category = "GAS")
 	TObjectPtr<class AGameplaySkillEventDataRequest> CurrentData;
-	UClass* CurrentTA;
 
-private :
-	void AttackTargetWithHitResult(const FGameplayAbilityTargetDataHandle& TargetDataHandle, int32 IndexNumber);
-	void AttackTargetWithActorInfo(const FGameplayAbilityTargetDataHandle& TargetDataHandle, AActor* Target);
+	UPROPERTY()
+	TObjectPtr<class UAbilityTask_SkillGen> AttackTraceTask;
+
+	virtual void AttackSequence(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FVector TargetLocation, AActor* TargetActor);
 };
