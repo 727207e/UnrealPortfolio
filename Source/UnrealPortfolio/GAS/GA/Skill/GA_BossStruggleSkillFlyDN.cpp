@@ -7,7 +7,7 @@
 UGA_BossStruggleSkillFlyDN::UGA_BossStruggleSkillFlyDN()
 {
 	ZOffset = 3000;
-	LerpDuration = 2.3;
+	LerpDuration = 1.3;
 }
 
 void UGA_BossStruggleSkillFlyDN::SettingBossDummy()
