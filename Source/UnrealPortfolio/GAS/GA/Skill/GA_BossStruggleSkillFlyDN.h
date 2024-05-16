@@ -4,24 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "GAS/GA/Skill/GA_BossStruggleSkill.h"
-#include "GA_BossStruggleSkillCross.generated.h"
+#include "GA_BossStruggleSkillFlyDN.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class UNREALPORTFOLIO_API UGA_BossStruggleSkillCross : public UGA_BossStruggleSkill
+class UNREALPORTFOLIO_API UGA_BossStruggleSkillFlyDN : public UGA_BossStruggleSkill
 {
 	GENERATED_BODY()
 	
-public : 
-	UGA_BossStruggleSkillCross();
+public :
+	UGA_BossStruggleSkillFlyDN();
 
 protected :
 	virtual void SettingBossDummy() override;
-
-private :
-	UFUNCTION()
-	void BossFlyForward();
-
 };
