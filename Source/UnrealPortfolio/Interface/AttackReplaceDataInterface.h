@@ -22,5 +22,4 @@ class UNREALPORTFOLIO_API IAttackReplaceDataInterface
 
 public:
 	virtual float GetAttackValue() = 0;
-	virtual int32 GetAttackCount() = 0;
 };

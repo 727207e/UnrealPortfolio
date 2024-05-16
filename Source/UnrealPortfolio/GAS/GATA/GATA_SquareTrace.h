@@ -37,6 +37,7 @@ public :
 protected :
 	virtual void GetAttributeSetting();
 	virtual void StartTargeting();
+	virtual	void InitSquareTrace();
 
 	float BoxSizeX;
 	float BoxSizeY;
@@ -44,8 +45,4 @@ protected :
 
 	float DecalDelayTime = 0;
 	float DestroyTATime = 0;
-
-private :
-	void InitSquareTrace();
-
 };
