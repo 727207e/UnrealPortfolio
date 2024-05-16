@@ -24,9 +24,9 @@ AGATA_SquareTrace::AGATA_SquareTrace()
 	Box->SetupAttachment(RootComp);
 	Box->SetActive(false);
 	Box->SetCollisionProfileName(CPROFILE_UP_ENEMYATTACKRANGE);
+	Box->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
 
 	SquareDecal = CreateDefaultSubobject<UDecalComponent>(TEXT("SquareDecal"));
-	Box->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
 	SquareDecal->SetupAttachment(Box);
 
 	bReplicates = true;
@@ -95,8 +95,6 @@ void AGATA_SquareTrace::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 
 void AGATA_SquareTrace::DrawDecal()
 {
-	SquareDecal->DecalSize = Box->GetScaledBoxExtent() / 10.0f;
-
 	FTimerHandle StartTarget;
 	GetWorld()->GetTimerManager().SetTimer(StartTarget, FTimerDelegate::CreateLambda([&]
 		{

@@ -19,14 +19,18 @@ public :
 	AGATA_BossStruggleSquare();
 
 	UPROPERTY(EditAnywhere)
-	float BoxSizeXValue;
+	FVector BoxSizeValue;
 
 	UPROPERTY(EditAnywhere)
-	float BoxSizeYValue;
+	FVector BoxOffsetValue;
+
+	UPROPERTY(EditAnywhere)
+	float GCPoisionOffset;
 
 	virtual void BeginPlay() override;
 	virtual void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult);
-	
+	virtual void DrawDecal() override;
+
 	virtual FORCEINLINE float GetAttackValue() override { return AttackValue; }
 	virtual FORCEINLINE int32 GetAttackCount() override { return AttackCount; }
 protected :
@@ -40,4 +44,7 @@ protected :
 	float AttackValue;
 	UPROPERTY(EditAnywhere)
 	int32 AttackCount;
+
+	UFUNCTION()
+	void SpawnGC(FTransform TargetTransform);
 };
