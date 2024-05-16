@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GAS/GATA/GATA_SquareTrace.h"
+#include "Interface/AttackReplaceDataInterface.h"
 #include "GATA_BossStruggleSquare.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class UNREALPORTFOLIO_API AGATA_BossStruggleSquare : public AGATA_SquareTrace
+class UNREALPORTFOLIO_API AGATA_BossStruggleSquare : public AGATA_SquareTrace, public IAttackReplaceDataInterface
 {
 	GENERATED_BODY()
 	
@@ -26,10 +27,17 @@ public :
 	virtual void BeginPlay() override;
 	virtual void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult);
 	
+	virtual FORCEINLINE float GetAttackValue() override { return AttackValue; }
+	virtual FORCEINLINE int32 GetAttackCount() override { return AttackCount; }
 protected :
 	virtual void GetAttributeSetting() override;
 	virtual void StartTargeting() override;
 
 	UFUNCTION()
 	void SearchAllTarget();
+
+	UPROPERTY(EditAnywhere)
+	float AttackValue;
+	UPROPERTY(EditAnywhere)
+	int32 AttackCount;
 };

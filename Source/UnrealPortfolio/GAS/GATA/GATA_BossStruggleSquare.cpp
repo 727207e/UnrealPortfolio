@@ -19,10 +19,8 @@ void AGATA_BossStruggleSquare::BeginPlay()
 
 void AGATA_BossStruggleSquare::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult)
 {
-	UE_LOG(LogTemp, Error, TEXT("good"));
 	return;
 }
-
 
 void AGATA_BossStruggleSquare::GetAttributeSetting()
 {
@@ -72,8 +70,8 @@ void AGATA_BossStruggleSquare::SearchAllTarget()
 
 #if ENABLE_DRAW_DEBUG
 
-	//DrawDebugSphere(GetWorld(), Character->GetActorLocation(), AttackRadius, 12, FColor::Red, false, 2.0f);
 	DrawDebugBox(GetWorld(), GetActorLocation(), Box->GetScaledBoxExtent(),FColor::Red, false, 2.0f);
+
 #endif
 
 	TargetDataReadyDelegate.Broadcast(DataHandle);

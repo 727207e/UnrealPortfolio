@@ -35,11 +35,11 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FTraceResultDelegate OnComplete;
     
+	FORCEINLINE class AGATA_Trace* GetSpawnedTA() { return SpawnedTargetActor; }
 protected:
 	UPROPERTY()
 	TSubclassOf<class AGATA_Trace> TargetActorClass;
 
 	UPROPERTY()
 	TObjectPtr<class AGATA_Trace> SpawnedTargetActor;
-
 };
