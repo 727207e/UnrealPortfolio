@@ -6,12 +6,35 @@
 
 UGA_BossStruggleSkillFlyDN::UGA_BossStruggleSkillFlyDN()
 {
+	ZOffset = 3000;
+	LerpDuration = 2.3;
 }
 
 void UGA_BossStruggleSkillFlyDN::SettingBossDummy()
 {
-	//BossDummy->SetActorTransform(BossManager->GetRandomAroundTransform());
+	AActor* DestinationActor = BossManager->GenPosition;
 
-	//FTimerHandle FlyForwardTimer;
-	//GetWorld()->GetTimerManager().SetTimer(FlyForwardTimer, this, &UGA_BossStruggleSkillCross::BossFlyForward, GetWorld()->DeltaTimeSeconds, true);
+	FTransform TargetTransform = DestinationActor->GetActorTransform();
+	TargetTransform.SetLocation(TargetTransform.GetLocation() + FVector(0.0f, 0.0f, ZOffset));
+	BossDummy->SetActorTransform(TargetTransform);
+
+	StartPosition = BossDummy->GetActorLocation();
+	EndPosition = DestinationActor->GetActorLocation();
+
+	GetWorld()->GetTimerManager().SetTimer(FlyDownTimerHandle, this, &UGA_BossStruggleSkillFlyDN::FlyingSetDown, GetWorld()->DeltaTimeSeconds, true);
+}
+
+void UGA_BossStruggleSkillFlyDN::FlyingSetDown()
+{
+	ElapsedTime += GetWorld()->DeltaTimeSeconds;
+
+	float LerpAlpha = FMath::Clamp(ElapsedTime / LerpDuration, 0.0f, 1.0f);
+	FVector NewLocation = FMath::Lerp(StartPosition, EndPosition, LerpAlpha);
+
+	BossDummy->SetActorLocation(NewLocation);
+
+	if (LerpAlpha >= 1.0f)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(FlyDownTimerHandle);
+	}
 }

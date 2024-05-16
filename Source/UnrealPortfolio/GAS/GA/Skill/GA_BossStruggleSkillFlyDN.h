@@ -19,4 +19,16 @@ public :
 
 protected :
 	virtual void SettingBossDummy() override;
+
+private :
+	UFUNCTION()
+	void FlyingSetDown();
+
+	float ZOffset = 0;
+	float ElapsedTime = 0;
+	float LerpDuration = 0;
+	FVector StartPosition;
+	FVector EndPosition;
+
+	FTimerHandle FlyDownTimerHandle;
 };
