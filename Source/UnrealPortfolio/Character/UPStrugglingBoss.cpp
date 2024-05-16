@@ -25,17 +25,23 @@ AUPStrugglingBoss::AUPStrugglingBoss()
 	StartDelay = 2.0f;
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 	GetCharacterMovement()->GravityScale = 0.0f;
+	StrugglePatern = { 1, 2, 3, 2, 4, 5, 6, 7 };
+	PaternIndex = -1;
 }
 
-void AUPStrugglingBoss::BeginPlay()
+void AUPStrugglingBoss::StartPatern()
 {
-	Super::BeginPlay();
-
 	FTimerHandle StartDelayHandle;
 	GetWorld()->GetTimerManager().SetTimer(StartDelayHandle, FTimerDelegate::CreateLambda([&]
 		{
-			OnSkill(0);
-		}), StartDelay, false);
+			PaternIndex++;
+			if (PaternIndex >= StrugglePatern.Num())
+			{
+				PaternIndex = StrugglePatern.Num() - 1;
+			}
+
+			OnSkill(StrugglePatern[PaternIndex] - 1);
+		}), StartDelay, true, StartDelay);
 }
 
 void AUPStrugglingBoss::Hit(FVector TargetLocation, TObjectPtr<class AGameplayEventDataRequest> ActionData)

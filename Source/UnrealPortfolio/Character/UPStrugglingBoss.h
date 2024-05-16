@@ -14,11 +14,16 @@ class UNREALPORTFOLIO_API AUPStrugglingBoss : public AUPBattleBaseCharacter
 
 public:
 	AUPStrugglingBoss();
-	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere)
+	TArray<int32> StrugglePatern;
+
+	void StartPatern();
 
 protected :
 	virtual void Hit(FVector TargetLocation, TObjectPtr<class AGameplayEventDataRequest> ActionData) override;
 
 private :
 	float StartDelay = 0;
+	int PaternIndex = 0;
 };
