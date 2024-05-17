@@ -47,8 +47,9 @@ protected :
 	int32 AttackOffset;
 
 	UFUNCTION()
-	void SpawnGC(FTransform TargetTransform);
+	void SpawnGC();
 
 private :
 	TArray<TObjectPtr<class UBoxComponent>> Boxs;
+	class AGameplayMultiCueEventData* GameplayMultiCueEventData;
 };

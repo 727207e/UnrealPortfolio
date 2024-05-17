@@ -4,6 +4,7 @@
 #include "GAS/GATA/GATA_BossStruggleSquare.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GAS/Actor/GameplaySkillEventDataRequest.h"
+#include "GAS/Actor/GameplayMultiCueEventData.h"
 #include "Components/DecalComponent.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Character.h"
@@ -21,69 +22,77 @@ void AGATA_BossStruggleSquare::OnOverlapBegin(UPrimitiveComponent* OverlappedCom
 
 void AGATA_BossStruggleSquare::InitSquareTrace()
 {
-	Super::InitSquareTrace();
-
-	Box->SetRelativeLocation(BoxOffsetValue);
-	Boxs.Add(Box);
-
-	if (AttackCount <= 1)
+	ACharacter* SourceCharacter = CastChecked<ACharacter>(SourceActor);
+	USkeletalMeshComponent* SkeletalMeshComponent = SourceCharacter->GetMesh();
+	if (!SkeletalMeshComponent)
 	{
-		AttackCount = 1;
+		UE_LOG(LogTemp, Error, TEXT("AGATA_BossStruggleSquare : Skeletal mesh component not found."));
 		return;
 	}
 
-	for (int32 Index = 1; Index < AttackCount; Index++)
+	if (!SkeletalMeshComponent->DoesSocketExist(CurrentData->TargetGenName))
 	{
-		UBoxComponent* NewBox = DuplicateObject<UBoxComponent>(Box, this);
-		if (NewBox)
+		UE_LOG(LogTemp, Error, TEXT("AGATA_BossStruggleSquare : Skeletal mesh component not found."));
+		return;
+	}
+
+	FVector NewLocation = SkeletalMeshComponent->GetSocketLocation(CurrentData->TargetGenName);
+	FRotator NewRotation = SourceCharacter->GetActorRightVector().ToOrientationRotator();
+
+	SetActorLocationAndRotation(NewLocation, NewRotation);
+	
+	TArray<TObjectPtr<USceneComponent>> ChildComps;
+	RootComponent->GetChildrenComponents(true, ChildComps);
+
+	for (TObjectPtr<USceneComponent> ChildComp : ChildComps)
+	{
+		if (TObjectPtr<UBoxComponent> BoxComp = Cast<UBoxComponent>(ChildComp))
 		{
-			NewBox->SetupAttachment(RootComponent);
-			NewBox->RegisterComponent();
-			AddInstanceComponent(NewBox);
-
-			const TArray<USceneComponent*>& ChildComps = Box->GetAttachChildren();
-			for (int32 ChildCompsIndex = 0; ChildCompsIndex < ChildComps.Num(); ChildCompsIndex++)
-			{
-				USceneComponent* NewChildComp = DuplicateObject(ChildComps[ChildCompsIndex], this);
-				if (NewChildComp)
-				{
-					NewChildComp->SetupAttachment(NewBox);
-					NewChildComp->RegisterComponent();
-					AddInstanceComponent(NewChildComp);
-				}
-			}
-
-			Boxs.Add(NewBox);
+			Boxs.Add(BoxComp);
 		}
 	}
 
-	int32 OffsetResultValue = 0;
-	if (AttackCount % 2 == 0)
-	{
-		for (int32 Index = 0; Index < Boxs.Num(); Index++)
-		{
-			if (Index < AttackCount / 2)
-			{
-				OffsetResultValue = -AttackOffset * (Boxs.Num() / 2 - Index - 1) - (AttackOffset / 2);
-			}
-			else
-			{
-				OffsetResultValue = AttackOffset * (Index - Boxs.Num() / 2) + (AttackOffset / 2);
-			}
+	TArray<FTransform> SpawnTransformArray;
+	
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = this;
+	SpawnParams.Instigator = GetInstigator();
+	GameplayMultiCueEventData = GetWorld()->SpawnActor<AGameplayMultiCueEventData>(AGameplayMultiCueEventData::StaticClass(), SpawnParams);
 
-			FVector BoxRelativeLocation = Boxs[Index]->GetRelativeLocation() + FVector(0.0f, OffsetResultValue, 0.0f);
-			Boxs[Index]->SetRelativeLocation(BoxRelativeLocation);
-		}
-	}
-	else
+	for (TObjectPtr<UBoxComponent> TheBox : Boxs)
 	{
-		for (int32 Index = 0; Index < Boxs.Num(); Index++)
+		FTransform CurrentBoxTransform = TheBox->GetRelativeTransform();
+		CurrentBoxTransform.SetScale3D(FVector(BoxSizeX, BoxSizeY, BoxSizeZ));
+		CurrentBoxTransform.SetLocation(CurrentBoxTransform.GetLocation() + BoxOffsetValue);
+		TheBox->SetRelativeTransform(CurrentBoxTransform);
+
+
+		FVector TargetPosition = TheBox->GetComponentTransform().GetLocation();
+		FQuat TargetQuat = TheBox->GetForwardVector().ToOrientationQuat();
+
+		FTransform TargetTransform(TargetQuat, TargetPosition);
+		SpawnTransformArray.Add(TargetTransform);
+	}
+
+	TArray<FVector> AllLocation;
+	for (FTransform TargetTransform : SpawnTransformArray)
+	{
+		float HalfExtentY = Box->GetScaledBoxExtent().Y;
+		for (float y = -HalfExtentY; y <= HalfExtentY; y += GCPoisionOffset)
 		{
-			OffsetResultValue = -AttackOffset * (Boxs.Num() / 2) + (AttackOffset * Index);
-			FVector BoxRelativeLocation = Boxs[Index]->GetRelativeLocation() + FVector(0.0f, OffsetResultValue, 0.0f);
-			Boxs[Index]->SetRelativeLocation(BoxRelativeLocation);
+			FVector LocalPoint(0.0f, y, 0.0f);
+			FVector WorldPoint = TargetTransform.TransformPosition(LocalPoint);
+			AllLocation.Add(WorldPoint);
+#if ENABLE_DRAW_DEBUG
+
+			DrawDebugPoint(GetWorld(), WorldPoint, 5.0f, FColor::Red, false, 1.0f);
+
+#endif
 		}
 	}
+	GameplayMultiCueEventData->SpawnLocations = AllLocation;
+
+
 }
 
 void AGATA_BossStruggleSquare::GetAttributeSetting()
@@ -141,15 +150,14 @@ void AGATA_BossStruggleSquare::SearchAllTarget()
 			}
 		}
 
-		FTransform TargetTransform(TargetQuat, TargetPosition);
-		SpawnGC(TargetTransform);
-
 #if ENABLE_DRAW_DEBUG
 
 		DrawDebugBox(GetWorld(), TargetPosition, TheBox->GetScaledBoxExtent(), TargetQuat, FColor::Red, false, 2.0f);
 
 #endif
 	}
+
+	SpawnGC();
 
 	FGameplayAbilityTargetData_ActorArray* TargetData = new FGameplayAbilityTargetData_ActorArray();
 	TargetData->TargetActorArray = InTargetObjects.Array();
@@ -158,7 +166,7 @@ void AGATA_BossStruggleSquare::SearchAllTarget()
 	TargetDataReadyDelegate.Broadcast(DataHandle);
 }
 
-void AGATA_BossStruggleSquare::SpawnGC(FTransform TargetTransform)
+void AGATA_BossStruggleSquare::SpawnGC()
 {
 	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(SourceActor);
 	if (!TargetASC)
@@ -166,22 +174,10 @@ void AGATA_BossStruggleSquare::SpawnGC(FTransform TargetTransform)
 		return;
 	}
 
-	float HalfExtentY = Box->GetScaledBoxExtent().Y;
-	for (float y = -HalfExtentY; y <= HalfExtentY; y += GCPoisionOffset)
-	{
-		FVector LocalPoint(0.0f, y, 0.0f);
-		FVector WorldPoint = TargetTransform.TransformPosition(LocalPoint);
+	FGameplayCueParameters CueParam;
+	CueParam.Instigator = GameplayMultiCueEventData;
+	CueParam.RawMagnitude = 5.0f;
 
-		FGameplayCueParameters CueParam;
-		CueParam.Location = WorldPoint;
-		CueParam.RawMagnitude = 5.0f;
+	TargetASC->ExecuteGameplayCue(CurrentData->ActionGC, CueParam);
 
-		TargetASC->ExecuteGameplayCue(CurrentData->ActionGC, CueParam);
-
-#if ENABLE_DRAW_DEBUG
-
-		DrawDebugPoint(GetWorld(), WorldPoint, 5.0f, FColor::Red, false, 1.0f);
-
-#endif
-	}
 }
