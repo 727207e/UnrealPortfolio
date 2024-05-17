@@ -1,8 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "UI/View/SlotViewWidget.h"
-
 #include "Game/UPGameSingleton.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -89,6 +86,7 @@ void USlotViewWidget::CooldownEvent()
 	{
 		GetWorld()->GetTimerManager().ClearTimer(CooldownTimer);
 		HiddenCoolDown();
+		CooldownFinishDelegate.Broadcast();
 	}
 }
 

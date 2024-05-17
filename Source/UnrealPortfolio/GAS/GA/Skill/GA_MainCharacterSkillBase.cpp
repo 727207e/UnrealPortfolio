@@ -2,12 +2,13 @@
 
 
 #include "GAS/GA/Skill/GA_MainCharacterSkillBase.h"
+
+#include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Character/UPPlayerState.h"
 #include "Game/UPGameSingleton.h"
 #include "GAS/AbilityTask/AbilityTask_LookAtMouse.h"
 #include "GAS/AbilityTask/AbilityTask_Trace.h"
 #include "Interface/HUDControllerInterface.h"
-#include "Interface/WeaponControlInterface.h"
 #include "UI/UPMainHudWidget.h"
 #include "Tag/GameplayTags.h"
 
@@ -43,9 +44,6 @@ void UGA_MainCharacterSkillBase::ActivateAbility(const FGameplayAbilitySpecHandl
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	SetData();
 	CooldownProcess();
-	
-	UAbilityTask_LookAtMouse * AttackTraceTask = UAbilityTask_LookAtMouse::CreateTask(this);
-	AttackTraceTask->ReadyForActivation();
 }
 
 void UGA_MainCharacterSkillBase::CancelAbility(const FGameplayAbilitySpecHandle Handle,
@@ -86,24 +84,47 @@ void UGA_MainCharacterSkillBase::CooldownProcess()
 		const TObjectPtr<UUPMainHudWidget> PlayerHud = HudOwner->GetHudWidget();
 		if(PlayerHud)
 		{
-			if(const auto SkillIconWidget = PlayerHud->GetSlotViewWidgetByActionId(TargetSkillAbilityIndex))
+			const auto SkillIconWidget = PlayerHud->GetSlotViewWidgetByActionId(TargetSkillAbilityIndex);
+			if(SkillIconWidget)
 			{
-				if(!SkillIconWidget->GetCooldownExist())
+				SetSlotWidget(SkillIconWidget);
+				if(!SkillSlotWidget->GetCooldownExist())
 				{
-					SkillIconWidget->OnClickedTargetInputActionKey(Cooldown);
-					
-					const FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(UseMpEffect,1.0f);
-					EffectSpecHandle.Data->SetSetByCallerMagnitude(TAG_DATA_USE_MP,MagicPoints * -1);
-					const FActiveGameplayEffectHandle ActiveGeHandle = ApplyGameplayEffectSpecToOwner(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,EffectSpecHandle);
-					
+					SkillSlotWidget->OnClickedTargetInputActionKey(Cooldown);
+					UseMp();
+					if(!bCantLookAtMouseAbility)
+					{
+						UAbilityTask_LookAtMouse * AttackTraceTask = UAbilityTask_LookAtMouse::CreateTask(this);
+						AttackTraceTask->ReadyForActivation();
+					}
 				}
 				else
 				{
 					CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, (false));
 					return;
 				}
-				SkillIconWidget->OnClickedTargetInputActionKey(Cooldown);
 			}
 		}
 	}
 }
+
+void UGA_MainCharacterSkillBase::SetSlotWidget(USlotViewWidget* TargetSlotViewWidget)
+{
+	SkillSlotWidget = TargetSlotViewWidget;
+}
+
+void UGA_MainCharacterSkillBase::UseMp()
+{
+	const FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(UseMpEffect,1.0f);
+	EffectSpecHandle.Data->SetSetByCallerMagnitude(TAG_DATA_USE_MP,MagicPoints * -1);
+	const FActiveGameplayEffectHandle ActiveGeHandle = ApplyGameplayEffectSpecToOwner(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,EffectSpecHandle);
+					
+}
+
+void UGA_MainCharacterSkillBase::MontageAbility()
+{
+	UAbilityTask_PlayMontageAndWait* PlayAttackTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
+		this,TEXT("PlayerSkill"),TargetMontage, AttackSpeed, TargetMontageSectionName);
+	PlayAttackTask->ReadyForActivation();
+}
+

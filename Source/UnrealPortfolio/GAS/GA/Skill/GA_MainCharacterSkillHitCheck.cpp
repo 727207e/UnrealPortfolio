@@ -3,6 +3,7 @@
 
 #include "GAS/GA/Skill/GA_MainCharacterSkillHitCheck.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Data/DataAttributeSet/EntityAttributeSet.h"
 #include "GAS/Actor/GameplayEventDataRequest.h"
 #include "Interface/WeaponControlInterface.h"
@@ -62,15 +63,18 @@ void UGA_MainCharacterSkillHitCheck::LegendWeaponProcess()
 {
 	if(IWeaponControlInterface* WeaponControl = Cast<IWeaponControlInterface>(GetActorInfo().AvatarActor))
 	{
-		const int32 Grade =  WeaponControl->GetEquipWeapon()->Grade;
-		const int32 LegendSkillIndex = WeaponControl->GetEquipWeapon()->LegendSkillIndex;
-		if(Grade >= WEAPON_GRADE_TYPE_LEGEND && LegendSkillIndex == AtiveSkillIndex)
+		if(WeaponControl->GetEquipWeapon())
 		{
-			UE_LOG(LogTemp,Log,TEXT("LegendSkillIndex %d"),LegendSkillIndex);
-			const FGameplayEffectSpecHandle LegendEffectSpecHandle =MakeOutgoingGameplayEffectSpec(LegendGradBuffEffect,LegendSkillIndex);
-			if (LegendEffectSpecHandle.IsValid())
+			const int32 Grade =  WeaponControl->GetEquipWeapon()->Grade;
+			const int32 LegendSkillIndex = WeaponControl->GetEquipWeapon()->LegendSkillIndex;
+			if(Grade >= WEAPON_GRADE_TYPE_LEGEND && LegendSkillIndex == AtiveSkillIndex)
 			{
-				LegendBuffActiveEffectHandle = ApplyGameplayEffectSpecToOwner(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,LegendEffectSpecHandle);
+				UE_LOG(LogTemp,Log,TEXT("LegendSkillIndex %d"),LegendSkillIndex);
+				const FGameplayEffectSpecHandle LegendEffectSpecHandle =MakeOutgoingGameplayEffectSpec(LegendGradBuffEffect,LegendSkillIndex);
+				if (LegendEffectSpecHandle.IsValid())
+				{
+					LegendBuffActiveEffectHandle = ApplyGameplayEffectSpecToOwner(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,LegendEffectSpecHandle);
+				}
 			}
 		}
 	}

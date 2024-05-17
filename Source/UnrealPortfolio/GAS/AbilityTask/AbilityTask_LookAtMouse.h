@@ -6,9 +6,6 @@
 #include "Abilities/Tasks/AbilityTask.h"
 #include "AbilityTask_LookAtMouse.generated.h"
 
-DECLARE_DYNAMIC_DELEGATE_OneParam(FMouseDirectionDelegate,const FVector, TargetLocation);
-
-
 UCLASS()
 class UNREALPORTFOLIO_API UAbilityTask_LookAtMouse : public UAbilityTask
 {
