@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GAS/GATA/AGATA_BossStruggleSphere.h"
+#include "GAS/GATA/GATA_BossStruggleSphere.h"
 #include "GATA_BossStruggleDoubleSphere.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class UNREALPORTFOLIO_API AGATA_BossStruggleDoubleSphere : public AAGATA_BossStruggleSphere
+class UNREALPORTFOLIO_API AGATA_BossStruggleDoubleSphere : public AGATA_BossStruggleSphere
 {
 	GENERATED_BODY()
 	
