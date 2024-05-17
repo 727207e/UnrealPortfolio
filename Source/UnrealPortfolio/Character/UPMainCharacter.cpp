@@ -189,7 +189,7 @@ void AUPMainCharacter::BeginPlay()
 			HostController->GetHudWidget()->AddToViewport();
 		}
 	}
-	else
+	else if(IsLocallyControlled())
 	{
 		ServerRequestPlayerState();
 	}

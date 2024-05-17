@@ -9,6 +9,7 @@
 #include "Character/UPMainCharacter.h"
 #include "CutScene/UPCutSceneEvent.h"
 #include "Curves/CurveFloat.h"
+#include "defines/UPServerLogDefine.h"
 
 // Sets default values
 AUPCutSceneTriggerActor::AUPCutSceneTriggerActor()
@@ -19,6 +20,8 @@ AUPCutSceneTriggerActor::AUPCutSceneTriggerActor()
 	BoxRoot->SetWorldScale3D(FVector(15.0f, 15.0f, 15.0f));
 	BoxRoot->SetCollisionProfileName(CPROFILE_UP_CUTSCENETRIGGER);
 
+	bIsShareView = true;
+	bReplicates = true;
 	bIsTriggerFirst = true;
 	IndexCount = 0;
 	CurTime = 0;
@@ -31,25 +34,33 @@ void AUPCutSceneTriggerActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp
 		return;
 	}
 
+	MyCharacter = Cast<AUPMainCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+
 	if (CameraMoveEventArray.Num() == 0)
 	{
 		UE_LOG(LogTemp, Error, TEXT("UPCutSceneTriggerActor Doesn't Have CameraMoveEventArray"));
 		return;
 	}
-	
-	MyCharacter = Cast<AUPMainCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
-	if (MyCharacter != OtherActor)
+
+	if (!bIsShareView)
 	{
+		if (MyCharacter == OtherActor)
+		{
+			PlayNextCutScene();
+			return;
+		}
+	}
+	else if (bIsShareView && HasAuthority())
+	{
+		Multi_StartCutScene();
 		return;
 	}
-
-	bIsTriggerFirst = false;
-
-	StartCutScene();
 }
 
-void AUPCutSceneTriggerActor::StartCutScene()
+void AUPCutSceneTriggerActor::PlayNextCutScene()
 {
+	bIsTriggerFirst = false;
+
 	MainCamera = MyCharacter->GetCameraComponent();
 	MainCamera->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 	CameraMoveEvent = CameraMoveEventArray[IndexCount];
@@ -109,8 +120,13 @@ void AUPCutSceneTriggerActor::CameraMoveTimer()
 			}
 			else
 			{
-				StartCutScene();
+				PlayNextCutScene();
 			}
 		}), 1.0f, false, CameraMoveEvent.StayTime);
 	}
+}
+
+void AUPCutSceneTriggerActor::Multi_StartCutScene_Implementation()
+{
+	PlayNextCutScene();
 }

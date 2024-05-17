@@ -56,10 +56,15 @@ public:
 public :
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult);
-	UFUNCTION(BlueprintCallable)
-	void StartCutScene();
+	UFUNCTION(NetMulticast, Unreliable)
+	void Multi_StartCutScene();
+	UFUNCTION()
+	void PlayNextCutScene();
 
 	FOnCutSceneEnd OnCutSceneEnd;
+
+	UPROPERTY(EditAnywhere)
+	bool bIsShareView;
 
 private :
 
