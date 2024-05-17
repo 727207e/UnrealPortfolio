@@ -55,12 +55,8 @@ AUPMainCharacter::AUPMainCharacter()
 	{
 		ComboActionData = ComboActionDataRef.Object;
 	}
-	
-	WeaponComponent = CreateDefaultSubobject<UStaticMeshWeaponComponent>(TEXT("WeaponComponent"));
-	const FVector Location(0, 0, 0);
-	const FRotator Rotation(0, 0, 0);
-	WeaponComponent->K2_AttachToComponent(GetMesh(),SocketWeapon,EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,EAttachmentRule::KeepRelative,true);
 
+	CreateWeaponComponent();
 	SetupPlayerCamera();
 }
 
@@ -406,13 +402,19 @@ void AUPMainCharacter::ActiveAbilityGameOverCheck()
 
 void AUPMainCharacter::ActiveAbilityEquipWeapon(int32 TryEquipWeaponId)
 {
-	WeaponComponent->SetWeaponId(TryEquipWeaponId);
-	const FUPWeaponTable WeaponModelData = UUPGameSingleton::Get().WeaponTablesArray[WeaponComponent->GetWeaponId()];
-	WeaponComponent->SetWeaponData(WeaponModelData);
-	const FGameplayAbilitySpec* Spec = ASC->FindAbilitySpecFromClass(StartAbilities[GAS_START_ABILITY_ID_EQUIP_WEAPON]);
-	if(Spec)
+	if(!IsValid(ASC) || WeaponComponent == nullptr)	{	return; }
+	
+	const FGameplayTagContainer TargetTag(TAG_WEAPON);
+	if(!ASC->HasMatchingGameplayTag(TAG_CHARACTER_STATE_EQUIP_WEAPON))
 	{
-		ASC->TryActivateAbility(Spec->Handle);
+		WeaponComponent->SetWeaponId(TryEquipWeaponId);
+		const FUPWeaponTable WeaponModelData = UUPGameSingleton::Get().WeaponTablesArray[WeaponComponent->GetWeaponId()];
+		WeaponComponent->SetWeaponData(WeaponModelData);
+		ASC->TryActivateAbilitiesByTag(TargetTag);
+	}
+	else
+	{
+		ASC->CancelAbilities(&TargetTag);
 	}
 }
 
@@ -435,6 +437,15 @@ AUPPlayerState* AUPMainCharacter::GetUPPlayerState()
 UStaticMeshWeaponComponent* AUPMainCharacter::GetEquipWeapon()
 {
 	return WeaponComponent;
+}
+
+void AUPMainCharacter::CreateWeaponComponent()
+{
+	WeaponComponent = CreateDefaultSubobject<UStaticMeshWeaponComponent>(TEXT("WeaponComponent"));
+	WeaponComponent->SetupAttachment(GetMesh());
+	WeaponComponent->SetActive(false);
+	WeaponComponent->K2_AttachToComponent(GetMesh(),SocketWeapon,EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,EAttachmentRule::KeepRelative,true);
+	
 }
 
 void AUPMainCharacter::ClientReceivePlayerState_Implementation(AUPPlayerController* ClientController, APlayerState* ClientPlayerState)

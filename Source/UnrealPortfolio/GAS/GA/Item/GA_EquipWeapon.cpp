@@ -54,6 +54,7 @@ void UGA_EquipWeapon::EndAbility(const FGameplayAbilitySpecHandle Handle, const 
 void UGA_EquipWeapon::UnequipWeapon()
 {
 	UStaticMeshWeaponComponent* EquipTargetWeapon = WeaponControl->GetEquipWeapon();
+	EquipTargetWeapon->Hidden();
 	GetAbilitySystemComponentFromActorInfo()->RemoveActiveGameplayEffect(WeaponBuffActiveEffectHandle);
 
 }

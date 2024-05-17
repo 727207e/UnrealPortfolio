@@ -30,4 +30,6 @@ public:
 	void SetWeaponData(const FUPWeaponTable& Model);
 	void SetWeaponId(int32 TargetId);
 	int32 GetWeaponId() const;
+	void Hidden();
+	
 };

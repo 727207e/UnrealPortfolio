@@ -22,7 +22,6 @@ class UNREALPORTFOLIO_API AUPMainCharacter : public AUPBattleBaseCharacter
 private:
 	const int32 DEFAULT_WEAPON_ID = 4;
 	const int32 GAS_START_ABILITY_ID_GAME_RESULT = 3;
-	const int32 GAS_START_ABILITY_ID_EQUIP_WEAPON = 4;
 	const int32 GAS_INPUT_ID_ATTACK_START = 0;
 	const int32 GAS_INPUT_ID_AVOID_START = 10;
 	
@@ -42,6 +41,7 @@ public :
 	virtual void OnSetDestinationReleased() override;
 	virtual void OnNPCInteraction() override;
 	virtual void BeginPlay() override;
+	
 	
 public:
 	/* Animation */
@@ -139,5 +139,7 @@ public:
 	UPROPERTY(EditAnywhere , Category = Item)
 	FName SocketWeapon = FName("Socket_ik_hand_r");
 	virtual UStaticMeshWeaponComponent* GetEquipWeapon() override;
+
+	void CreateWeaponComponent();
 	
 };

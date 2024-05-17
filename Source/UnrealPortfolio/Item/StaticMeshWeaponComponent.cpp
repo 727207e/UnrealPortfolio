@@ -6,7 +6,6 @@
 UStaticMeshWeaponComponent::UStaticMeshWeaponComponent()
 {
 	Grade = -1;
-	CreateDefaultSubobject<UStaticMeshComponent>(TEXT("InterActionCompo"));
 	SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	const ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/DownloadAssets/Primitive_Characters_Pack/Mesh/Primitive_02/Mesh_Weapons/SM_Primitive_02_Weapons_02.SM_Primitive_02_Weapons_02'"));
 	if(StaticMeshRef.Object)
@@ -33,4 +32,9 @@ void UStaticMeshWeaponComponent::SetWeaponId(int32 TargetId)
 int32 UStaticMeshWeaponComponent::GetWeaponId() const
 {
 	return  this->WeaponId;
+}
+
+void UStaticMeshWeaponComponent::Hidden()
+{
+	SetVisibility(false);
 }
