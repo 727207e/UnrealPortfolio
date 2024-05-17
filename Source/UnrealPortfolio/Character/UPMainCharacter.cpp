@@ -17,6 +17,7 @@
 #include "GAS/GA/GA_Attack.h"
 #include "GAS/GA/GA_NPCInteractor.h"
 #include "Gimmick/UPNPCDetectorSceneComponent.h"
+#include "Item/StaticMeshWeaponComponent.h"
 #include "Tag/GameplayTags.h"
 
 AUPMainCharacter::AUPMainCharacter()
@@ -54,6 +55,8 @@ AUPMainCharacter::AUPMainCharacter()
 	{
 		ComboActionData = ComboActionDataRef.Object;
 	}
+
+	CreateWeaponComponent();
 	SetupPlayerCamera();
 }
 
@@ -181,6 +184,7 @@ void AUPMainCharacter::BeginPlay()
 	{
 		ServerRequestPlayerState();
 	}
+	ActiveAbilityEquipWeapon(DEFAULT_WEAPON_ID);
 }
 void AUPMainCharacter::SetDead()
 {
@@ -238,8 +242,6 @@ IUPEntityInterface* AUPMainCharacter::GetNPCEntityInterface()
 //*##############################Camera Control##################################*/
 //*##############################Camera Control##################################*/
 
-
-
 void AUPMainCharacter::SetupPlayerCamera()
 {
 	// Create a camera boom...
@@ -277,6 +279,7 @@ void AUPMainCharacter::SetupPlayerCamera()
 	{
 		CharacterControlManager.Add(ECharacterControlType::NPC, NPCCameraDataRef.Object);
 	}
+	
 }
 
 void AUPMainCharacter::SetCharacterControl(ECharacterControlType NewCharacterControlType, FTransform TargetTransform)
@@ -397,6 +400,24 @@ void AUPMainCharacter::ActiveAbilityGameOverCheck()
 	}
 }
 
+void AUPMainCharacter::ActiveAbilityEquipWeapon(int32 TryEquipWeaponId)
+{
+	if(!IsValid(ASC) || WeaponComponent == nullptr)	{	return; }
+	
+	const FGameplayTagContainer TargetTag(TAG_WEAPON);
+	if(!ASC->HasMatchingGameplayTag(TAG_CHARACTER_STATE_EQUIP_WEAPON))
+	{
+		WeaponComponent->SetWeaponId(TryEquipWeaponId);
+		const FUPWeaponTable WeaponModelData = UUPGameSingleton::Get().WeaponTablesArray[WeaponComponent->GetWeaponId()];
+		WeaponComponent->SetWeaponData(WeaponModelData);
+		ASC->TryActivateAbilitiesByTag(TargetTag);
+	}
+	else
+	{
+		ASC->CancelAbilities(&TargetTag);
+	}
+}
+
 
 void AUPMainCharacter::SendPlayerStateToClient()
 {
@@ -411,6 +432,20 @@ void AUPMainCharacter::SendPlayerStateToClient()
 AUPPlayerState* AUPMainCharacter::GetUPPlayerState()
 {
 	return Cast<AUPPlayerState>(GetPlayerState());  
+}
+
+UStaticMeshWeaponComponent* AUPMainCharacter::GetEquipWeapon()
+{
+	return WeaponComponent;
+}
+
+void AUPMainCharacter::CreateWeaponComponent()
+{
+	WeaponComponent = CreateDefaultSubobject<UStaticMeshWeaponComponent>(TEXT("WeaponComponent"));
+	WeaponComponent->SetupAttachment(GetMesh());
+	WeaponComponent->SetActive(false);
+	WeaponComponent->K2_AttachToComponent(GetMesh(),SocketWeapon,EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,EAttachmentRule::KeepRelative,true);
+	
 }
 
 void AUPMainCharacter::ClientReceivePlayerState_Implementation(AUPPlayerController* ClientController, APlayerState* ClientPlayerState)

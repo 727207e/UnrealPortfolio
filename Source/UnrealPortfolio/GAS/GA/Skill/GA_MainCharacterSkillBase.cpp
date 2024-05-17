@@ -7,6 +7,7 @@
 #include "GAS/AbilityTask/AbilityTask_LookAtMouse.h"
 #include "GAS/AbilityTask/AbilityTask_Trace.h"
 #include "Interface/HUDControllerInterface.h"
+#include "Interface/WeaponControlInterface.h"
 #include "UI/UPMainHudWidget.h"
 #include "Tag/GameplayTags.h"
 
@@ -41,30 +42,7 @@ void UGA_MainCharacterSkillBase::ActivateAbility(const FGameplayAbilitySpecHandl
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	SetData();
-	const AUPPlayerState* PlayerState = Cast<AUPPlayerState>(ActorInfo->OwnerActor);
-	if(IHUDControllerInterface* HudOwner = Cast<IHUDControllerInterface>(PlayerState->GetPlayerController()))
-	{
-		const TObjectPtr<UUPMainHudWidget> PlayerHud = HudOwner->GetHudWidget();
-		if(PlayerHud)
-		{
-			if(const auto SkillIconWidget = PlayerHud->GetSlotViewWidgetByActionId(TargetSkillAbilityIndex))
-			{
-				if(!SkillIconWidget->GetCooldownExist())
-				{
-					SkillIconWidget->OnClickedTargetInputActionKey(Cooldown);
-					const FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(UseMpEffect,1.0f);
-					EffectSpecHandle.Data->SetSetByCallerMagnitude(TAG_DATA_USE_MP,MagicPoints * -1);
-					const FActiveGameplayEffectHandle ActiveGeHandle = ApplyGameplayEffectSpecToOwner(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,EffectSpecHandle);
-				}
-				else
-				{
-					CancelAbility(Handle, ActorInfo, ActivationInfo, (false));
-					return;
-				}
-				SkillIconWidget->OnClickedTargetInputActionKey(Cooldown);
-			}
-		}
-	}
+	CooldownProcess();
 	
 	UAbilityTask_LookAtMouse * AttackTraceTask = UAbilityTask_LookAtMouse::CreateTask(this);
 	AttackTraceTask->ReadyForActivation();
@@ -98,4 +76,34 @@ void UGA_MainCharacterSkillBase::OnCompleteCallback()
 void UGA_MainCharacterSkillBase::OnInterruptedCallback()
 {
 	Super::OnInterruptedCallback();
+}
+
+void UGA_MainCharacterSkillBase::CooldownProcess()
+{
+	const AUPPlayerState* PlayerState = Cast<AUPPlayerState>(CurrentActorInfo->OwnerActor);
+	if(IHUDControllerInterface* HudOwner = Cast<IHUDControllerInterface>(PlayerState->GetPlayerController()))
+	{
+		const TObjectPtr<UUPMainHudWidget> PlayerHud = HudOwner->GetHudWidget();
+		if(PlayerHud)
+		{
+			if(const auto SkillIconWidget = PlayerHud->GetSlotViewWidgetByActionId(TargetSkillAbilityIndex))
+			{
+				if(!SkillIconWidget->GetCooldownExist())
+				{
+					SkillIconWidget->OnClickedTargetInputActionKey(Cooldown);
+					
+					const FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(UseMpEffect,1.0f);
+					EffectSpecHandle.Data->SetSetByCallerMagnitude(TAG_DATA_USE_MP,MagicPoints * -1);
+					const FActiveGameplayEffectHandle ActiveGeHandle = ApplyGameplayEffectSpecToOwner(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,EffectSpecHandle);
+					
+				}
+				else
+				{
+					CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, (false));
+					return;
+				}
+				SkillIconWidget->OnClickedTargetInputActionKey(Cooldown);
+			}
+		}
+	}
 }

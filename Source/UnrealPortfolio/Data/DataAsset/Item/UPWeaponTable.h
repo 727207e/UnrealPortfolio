@@ -15,7 +15,11 @@ struct FUPWeaponTable : public FUPItemTable
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Mesh)
 	TObjectPtr<UStaticMesh> Mesh;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
 	int32 Grade;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GAS)
+	int32 WeaponLevel;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GAS)
+	int32 LegendLevel;
+	
 };

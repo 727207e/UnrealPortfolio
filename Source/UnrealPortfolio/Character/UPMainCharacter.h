@@ -7,20 +7,21 @@
 #include "UPBattleBaseCharacter.h"
 #include "Character/UPCharacter.h"
 #include "Interface/CharacterMovementInterface.h"
-#include "Interface/HUDControllerInterface.h"
 #include "Interface/UPPossessCharacterInterface.h"
 #include "Interface/UPUINpcInterface.h"
+#include "Interface/WeaponControlInterface.h"
 #include "UPMainCharacter.generated.h"
 
 UCLASS()
 class UNREALPORTFOLIO_API AUPMainCharacter : public AUPBattleBaseCharacter
 	,public IUPPossessCharacterInterface
 	,public ICharacterMovementInterface
+	,public IWeaponControlInterface
 {
 	GENERATED_BODY()
 private:
+	const int32 DEFAULT_WEAPON_ID = 0;
 	const int32 GAS_START_ABILITY_ID_GAME_RESULT = 3;
-	
 	const int32 GAS_INPUT_ID_ATTACK_START = 0;
 	const int32 GAS_INPUT_ID_AVOID_START = 10;
 	
@@ -40,6 +41,7 @@ public :
 	virtual void OnSetDestinationReleased() override;
 	virtual void OnNPCInteraction() override;
 	virtual void BeginPlay() override;
+	
 	
 public:
 	/* Animation */
@@ -121,7 +123,7 @@ protected:
 
 	UFUNCTION(BlueprintCallable , Category = GAS)
 	void ActiveAbilityGameOverCheck();
-
+	void ActiveAbilityEquipWeapon(int32 TryEquipWeaponId);
 private:
 	/** Hud PlayerState **/
 	void SendPlayerStateToClient();
@@ -130,4 +132,14 @@ private:
 	UFUNCTION(Client, Reliable)
 	void ClientReceivePlayerState(AUPPlayerController* ClientController, APlayerState* ClientPlayerState);
 	virtual AUPPlayerState* GetUPPlayerState() override;
+	
+public:
+	UPROPERTY(EditAnywhere , Category = Item)
+	TObjectPtr<UStaticMeshWeaponComponent> WeaponComponent;
+	UPROPERTY(EditAnywhere , Category = Item)
+	FName SocketWeapon = FName("Socket_ik_hand_r");
+	virtual UStaticMeshWeaponComponent* GetEquipWeapon() override;
+
+	void CreateWeaponComponent();
+	
 };
