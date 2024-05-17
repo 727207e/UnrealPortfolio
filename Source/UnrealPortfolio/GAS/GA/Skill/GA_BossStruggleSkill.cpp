@@ -2,6 +2,7 @@
 
 
 #include "GAS/GA/Skill/GA_BossStruggleSkill.h"
+#include "Character/UPStrugglingBoss.h"
 #include "Game/BossManager.h"
 #include "Game/UPGameInstance.h"
 
@@ -19,9 +20,16 @@ void UGA_BossStruggleSkill::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	{
 		return;
 	}
-	BossDummy = ActorInfo->AvatarActor;
+	BossDummy = Cast<AUPStrugglingBoss>(ActorInfo->AvatarActor);
 
 	SettingBossDummy();
+}
+
+void UGA_BossStruggleSkill::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
+{
+	BossDummy->PlayNextPatern();
+
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
 

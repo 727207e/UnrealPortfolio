@@ -23,6 +23,7 @@ AUPStrugglingBoss::AUPStrugglingBoss()
 	}
 
 	StartDelay = 2.0f;
+	NextPlayDelay = 0.5f;
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 	GetCharacterMovement()->GravityScale = 0.0f;
 	StrugglePatern = { 1, 2, 3, 2, 4, 5, 6, 7 };
@@ -32,18 +33,26 @@ AUPStrugglingBoss::AUPStrugglingBoss()
 void AUPStrugglingBoss::StartPatern()
 {
 	FTimerHandle StartDelayHandle;
-	GetWorld()->GetTimerManager().SetTimer(StartDelayHandle, FTimerDelegate::CreateLambda([&]
-		{
-			PaternIndex++;
-			if (PaternIndex >= StrugglePatern.Num())
-			{
-				PaternIndex = StrugglePatern.Num() - 1;
-			}
+	GetWorld()->GetTimerManager().SetTimer(StartDelayHandle, this, &AUPStrugglingBoss::PlayPatern, StartDelay, false);
+}
 
-			OnSkill(StrugglePatern[PaternIndex] - 1);
-		}), StartDelay, true, StartDelay);
+void AUPStrugglingBoss::PlayNextPatern()
+{
+	FTimerHandle NextDelayHandle;
+	GetWorld()->GetTimerManager().SetTimer(NextDelayHandle, this, &AUPStrugglingBoss::PlayPatern, NextPlayDelay, false);
 }
 
 void AUPStrugglingBoss::Hit(FVector TargetLocation, TObjectPtr<class AGameplayEventDataRequest> ActionData)
 {
+}
+
+void AUPStrugglingBoss::PlayPatern()
+{
+	PaternIndex++;
+	if (PaternIndex >= StrugglePatern.Num())
+	{
+		PaternIndex = StrugglePatern.Num() - 1;
+	}
+
+	OnSkill(StrugglePatern[PaternIndex] - 1);
 }
