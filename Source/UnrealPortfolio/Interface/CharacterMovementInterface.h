@@ -29,4 +29,5 @@ public:
 	virtual void SetCharacterMovementMod(EMovementMode MovementMode) = 0;
 	virtual ECharacterControlType GetCharacterControl() = 0;
 	virtual void SetCharacterControl(ECharacterControlType NewCharacterControlType, FTransform TargetTransform = FTransform()) = 0;
+	virtual void  SetMoveBlock(bool bBlock) = 0;
 };

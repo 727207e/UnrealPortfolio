@@ -9,9 +9,8 @@
 #include "UI/UPUserWidget.h"
 #include "SlotViewWidget.generated.h"
 
-/**
- * 
- */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCooldownFinishDelegate);
+
 UCLASS()
 class UNREALPORTFOLIO_API USlotViewWidget : public UUPUserWidget
 {
@@ -22,6 +21,8 @@ public:
 	float CollDownVariableFill;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Slot)
 	int32 TargetInputActionId;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Slot)
+	FCooldownFinishDelegate CooldownFinishDelegate;
 
 public:
 	virtual void SetData(const FSlotWidgetModelData& Model);
@@ -63,5 +64,6 @@ protected:
 	float CurrentCooldown;
 	float DelTime;
 	FTimerHandle CooldownTimer;
+
 };
 

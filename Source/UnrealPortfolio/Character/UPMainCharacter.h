@@ -41,8 +41,7 @@ public :
 	virtual void OnSetDestinationReleased() override;
 	virtual void OnNPCInteraction() override;
 	virtual void BeginPlay() override;
-	
-	
+	virtual void CallGAS(int32 GameplayAbilityInputId) override;	
 public:
 	/* Animation */
 	virtual void SetDead() override;
@@ -141,5 +140,13 @@ public:
 	virtual UStaticMeshWeaponComponent* GetEquipWeapon() override;
 
 	void CreateWeaponComponent();
+	UPROPERTY(EditAnywhere , Category = Input)
+	bool bLockMove;
+	UFUNCTION(BlueprintCallable, Category = Input)
+	virtual void SetMoveBlock(bool bBlock) override;
 	
+	UPROPERTY(EditAnywhere , Category = Input)
+	TObjectPtr<UArrowComponent> AvoidDirectionArrowComponent;
+	UFUNCTION(BlueprintCallable, Category = Input)
+	void Dodge();
 };

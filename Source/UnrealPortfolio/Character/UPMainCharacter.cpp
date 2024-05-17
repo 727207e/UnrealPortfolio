@@ -10,6 +10,7 @@
 #include "Game/UPGameSingleton.h"
 #include "UPPlayerState.h"
 #include "Camera/CameraComponent.h"
+#include "Components/ArrowComponent.h"
 #include "Data/UPCharacterControlData.h"
 #include "Data/DataAsset/MainCharacter/UPMainCharacterClassTable.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -57,6 +58,10 @@ AUPMainCharacter::AUPMainCharacter()
 	}
 
 	CreateWeaponComponent();
+
+	AvoidDirectionArrowComponent = CreateDefaultSubobject<UArrowComponent>(TEXT("AvoidDirectionArrowComponent"));
+	AvoidDirectionArrowComponent->SetupAttachment(RootComponent);
+	AvoidDirectionArrowComponent->ArrowLength = 400;
 	SetupPlayerCamera();
 }
 
@@ -109,37 +114,45 @@ void AUPMainCharacter::OnInputStart()
 }
 
 void AUPMainCharacter::OnSetDestinationTriggered()
-{	
-	// We flag that the input is being pressed
-	FollowTime += GetWorld()->GetDeltaSeconds();
-
-	// We look for the location in the world where the player has pressed the input
-	FHitResult Hit;
-	bool bHitSuccessful = false;
-	bHitSuccessful = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);
-
-	// If we hit a surface, cache the location
-	if (bHitSuccessful)
+{
+	if(!bLockMove)
 	{
-		CachedDestination = Hit.Location;
-	}
+		// We flag that the input is being pressed
+		FollowTime += GetWorld()->GetDeltaSeconds();
 
-	// Move towards mouse pointer or touch
-	FVector WorldDirection = (CachedDestination - this->GetActorLocation()).GetSafeNormal();
-	this->AddMovementInput(WorldDirection, 1.0, false);
+		// We look for the location in the world where the player has pressed the input
+		FHitResult Hit;
+		bool bHitSuccessful = false;
+		bHitSuccessful = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);
+
+		// If we hit a surface, cache the location
+		if (bHitSuccessful)
+		{
+			CachedDestination = Hit.Location;
+		}
+
+		// Move towards mouse pointer or touch
+		FVector WorldDirection = (CachedDestination - this->GetActorLocation()).GetSafeNormal();
+		this->AddMovementInput(WorldDirection, 1.0, false);
+	}
+	
 }
 
 void AUPMainCharacter::OnSetDestinationReleased()
-{	
-	// If it was a short press
-	if (FollowTime <= ShortPressThreshold)
+{
+	if(!bLockMove)
 	{
-		// We move there and spawn some particles
-		UAIBlueprintHelperLibrary::SimpleMoveToLocation(GetController(), CachedDestination);
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, CachedDestination, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
-	}
+		// If it was a short press
+		if (FollowTime <= ShortPressThreshold)
+		{
+			// We move there and spawn some particles
+			UAIBlueprintHelperLibrary::SimpleMoveToLocation(GetController(), CachedDestination);
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, CachedDestination, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
+		}
 
-	FollowTime = 0.f;
+		FollowTime = 0.f;
+	}
+	
 }
 
 void AUPMainCharacter::OnNPCInteraction()
@@ -186,6 +199,16 @@ void AUPMainCharacter::BeginPlay()
 	}
 	ActiveAbilityEquipWeapon(DEFAULT_WEAPON_ID);
 }
+
+void AUPMainCharacter::CallGAS(int32 GameplayAbilityInputId)
+{
+	if(!ASC->HasMatchingGameplayTag(TAG_PLAYER_STATE_AVOID) &&
+	   !ASC->HasMatchingGameplayTag(TAG_PLAYER_INTERACTING_WITH_NPC))
+	{
+		Super::CallGAS(GameplayAbilityInputId);
+	}
+}
+
 void AUPMainCharacter::SetDead()
 {
 	Super::SetDead();
@@ -443,9 +466,18 @@ void AUPMainCharacter::CreateWeaponComponent()
 {
 	WeaponComponent = CreateDefaultSubobject<UStaticMeshWeaponComponent>(TEXT("WeaponComponent"));
 	WeaponComponent->SetupAttachment(GetMesh());
-	WeaponComponent->SetActive(false);
 	WeaponComponent->K2_AttachToComponent(GetMesh(),SocketWeapon,EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,EAttachmentRule::KeepRelative,true);
 	
+}
+
+void AUPMainCharacter::SetMoveBlock(bool bBlock)
+{
+	bLockMove = bBlock;
+}
+
+void AUPMainCharacter::Dodge()
+{
+	LaunchCharacter(AvoidDirectionArrowComponent->GetForwardVector() * 2300,true,false);	
 }
 
 void AUPMainCharacter::ClientReceivePlayerState_Implementation(AUPPlayerController* ClientController, APlayerState* ClientPlayerState)

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GAS/GA/Skill/GA_SkillBase.h"
+#include "UI/UPMainHudWidget.h"
 #include "GA_MainCharacterSkillBase.generated.h"
 
 /**
@@ -13,6 +14,7 @@ UCLASS()
 class UNREALPORTFOLIO_API UGA_MainCharacterSkillBase : public UGA_SkillBase
 {
 	GENERATED_BODY()
+protected:
 	UGA_MainCharacterSkillBase();
 protected:
 	void SetData();
@@ -36,6 +38,7 @@ protected:
 
 	virtual void OnInterruptedCallback() override;
 	virtual void CooldownProcess();
+	virtual void SetSlotWidget(USlotViewWidget* TargetSlotWidget);
 	
 protected:
 	UPROPERTY(BlueprintReadOnly , Category = GAS);
@@ -46,4 +49,11 @@ protected:
 	int32 TargetSkillAbilityIndex;
 	UPROPERTY(EditAnywhere , Category = GAS);
 	TSubclassOf<UGameplayEffect> UseMpEffect;
+	UPROPERTY(EditAnywhere , Category = GAS);
+	bool bCantLookAtMouseAbility;
+	TObjectPtr<USlotViewWidget> SkillSlotWidget;
+
+	void UseMp();
+
+	virtual void MontageAbility() override;
 };
