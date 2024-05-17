@@ -7,7 +7,7 @@
 #include "GATA_SquareTrace.generated.h"
 
 /**
- * 
+ *  //Refactoring Require : SphereTrace And SqaureTrace
  */
 UCLASS()
 class UNREALPORTFOLIO_API AGATA_SquareTrace : public AGATA_SkillTrace
@@ -21,16 +21,28 @@ public :
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UBoxComponent> Box;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<class UDecalComponent> SquareDecal;
+
 public :
 	virtual void ConfirmTargetingAndContinue() override;
 	virtual void Destroyed() override;
-
 	virtual void BeginPlay() override;
 	
 	UFUNCTION()
 	virtual void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult);
+	
+	virtual void DrawDecal() override;
 
+protected :
+	virtual void GetAttributeSetting();
+	virtual void StartTargeting();
+	virtual	void InitSquareTrace();
 
-private :
-	void InitSquareTrace();
+	float BoxSizeX;
+	float BoxSizeY;
+	float BoxSizeZ;
+
+	float DecalDelayTime = 0;
+	float DestroyTATime = 0;
 };

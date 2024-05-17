@@ -20,9 +20,8 @@ void UGA_SkillCheck::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	CurrentData = Cast<AGameplaySkillEventDataRequest>(TriggerEventData->Instigator);
-	CurrentTA = Cast<UClass>(TriggerEventData->OptionalObject);
 
-	UAbilityTask_SkillGen* AttackTraceTask = UAbilityTask_SkillGen::CreateTaskWithData(this, CurrentTA, CurrentData);
+	AttackTraceTask = UAbilityTask_SkillGen::CreateTaskWithData(this, Cast<UClass>(TriggerEventData->OptionalObject), CurrentData);
 	AttackTraceTask->OnTargetDetect.AddDynamic(this, &UGA_SkillCheck::OnTargetDetect);
 	AttackTraceTask->OnComplete.AddDynamic(this, &UGA_SkillCheck::OnTraceResultCallback);
 	AttackTraceTask->ReadyForActivation();
@@ -36,7 +35,9 @@ void UGA_SkillCheck::OnTargetDetect(const FGameplayAbilityTargetDataHandle& Targ
 
 		for (int Index = 0; Index < TargetNumber; Index++)
 		{
-			AttackTargetWithHitResult(TargetDataHandle, Index);
+			const FHitResult HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, Index);
+
+			AttackSequence(TargetDataHandle, HitResult.Location ,HitResult.GetActor());
 		}
 	}
 
@@ -44,7 +45,7 @@ void UGA_SkillCheck::OnTargetDetect(const FGameplayAbilityTargetDataHandle& Targ
 	{
 		for (AActor* Target : UAbilitySystemBlueprintLibrary::GetActorsFromTargetData(TargetDataHandle, 0))
 		{
-			AttackTargetWithActorInfo(TargetDataHandle, Target);
+			AttackSequence(TargetDataHandle, Target->GetActorLocation(), Target);
 		}
 	}
 }
@@ -58,14 +59,12 @@ void UGA_SkillCheck::OnTraceResultCallback(const FGameplayAbilityTargetDataHandl
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, bReplicatedEndAbility, bWasCancelled);
 }
 
-void UGA_SkillCheck::AttackTargetWithHitResult(const FGameplayAbilityTargetDataHandle& TargetDataHandle, int32 IndexNumber)
+void UGA_SkillCheck::AttackSequence(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FVector TargetLocation, AActor* TargetActor)
 {
-	const FHitResult HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, IndexNumber);
-
-	if (IAttackableCharacterInterface* HitCharacter = Cast<IAttackableCharacterInterface>(HitResult.GetActor()))
+	if (IAttackableCharacterInterface* HitCharacter = Cast<IAttackableCharacterInterface>(TargetActor))
 	{
 		HitCharacter->Hit(GetAvatarActorFromActorInfo()->GetActorLocation(), nullptr);
-		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(HitResult.GetActor());
+		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
 		if (!TargetASC)
 		{
 			return;
@@ -74,6 +73,11 @@ void UGA_SkillCheck::AttackTargetWithHitResult(const FGameplayAbilityTargetDataH
 		UEntityAttributeSet* TargetAttribute = const_cast<UEntityAttributeSet*>(TargetASC->GetSet<UEntityAttributeSet>());
 
 		if (!TargetAttribute)
+		{
+			return;
+		}
+
+		if (nullptr == CurrentData->TargetAttributeSet)
 		{
 			return;
 		}
@@ -88,46 +92,9 @@ void UGA_SkillCheck::AttackTargetWithHitResult(const FGameplayAbilityTargetDataH
 		if (CurrentData->ActionGC.IsValid())
 		{
 			FGameplayCueParameters CueParam;
-			CueParam.Location = HitResult.Location;
+			CueParam.Location = TargetLocation;
 
 			TargetASC->ExecuteGameplayCue(CurrentData->ActionGC, CueParam);
 		}
 	}
 }
-
-void UGA_SkillCheck::AttackTargetWithActorInfo(const FGameplayAbilityTargetDataHandle& TargetDataHandle, AActor* Target)
-{
-	if (IAttackableCharacterInterface* HitCharacter = Cast<IAttackableCharacterInterface>(Target))
-	{
-		HitCharacter->Hit(GetAvatarActorFromActorInfo()->GetActorLocation(), nullptr);
-		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Target);
-		if (!TargetASC)
-		{
-			return;
-		}
-
-		UEntityAttributeSet* TargetAttribute = const_cast<UEntityAttributeSet*>(TargetASC->GetSet<UEntityAttributeSet>());
-
-		if (!TargetAttribute)
-		{
-			return;
-		}
-
-		FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(AttackDamageEffect);
-		if (EffectSpecHandle.IsValid())
-		{
-			EffectSpecHandle.Data->SetSetByCallerMagnitude(TAG_DATA_DAMAGE, -CurrentData->TargetAttributeSet->GetDamage());
-			ApplyGameplayEffectSpecToTarget(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, EffectSpecHandle, TargetDataHandle);
-		}
-
-		if (CurrentData->ActionGC.IsValid())
-		{
-			FGameplayCueParameters CueParam;
-			CueParam.Location = Target->GetActorLocation();
-
-			TargetASC->ExecuteGameplayCue(CurrentData->ActionGC, CueParam);
-		}
-	}
-}
-
-

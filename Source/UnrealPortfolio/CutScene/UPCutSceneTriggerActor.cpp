@@ -101,6 +101,11 @@ void AUPCutSceneTriggerActor::CameraMoveTimer()
 			if (IndexCount >= CameraMoveEventArray.Num())
 			{
 				MyCharacter->SetCharacterControl(ECharacterControlType::TopDown);
+
+				if (OnCutSceneEnd.IsBound())
+				{
+					OnCutSceneEnd.Broadcast();
+				}
 			}
 			else
 			{

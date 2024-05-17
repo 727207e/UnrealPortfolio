@@ -23,8 +23,11 @@ void AUPCutSceneBossRun::StartEvent()
 
 void AUPCutSceneBossRun::FinishEvent()
 {
-	if (DumyBoss)
+	if (IsValid(DumyBoss) && !DumyBoss->IsPendingKill() && !DumyBoss->HasAnyFlags(RF_BeginDestroyed)) 
 	{
-		DumyBoss->ConditionalBeginDestroy();
+		GetWorld()->GetTimerManager().ClearAllTimersForObject(DumyBoss.Get());
+
+		DumyBoss->Destroy();
+		DumyBoss = nullptr;
 	}
 }
