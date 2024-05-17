@@ -34,4 +34,6 @@ protected :
 	float AttackValue;
 	UPROPERTY(EditAnywhere)
 	float SphereScaleValue;
+	UPROPERTY(EditAnywhere)
+	bool bIsAttackSpotActorLocation;
 };

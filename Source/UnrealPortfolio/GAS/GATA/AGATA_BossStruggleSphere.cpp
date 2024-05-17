@@ -11,6 +11,7 @@
 AAGATA_BossStruggleSphere::AAGATA_BossStruggleSphere()
 {
 	bIsDrawDecal = true;
+	bIsAttackSpotActorLocation = true;
 }
 
 void AAGATA_BossStruggleSphere::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult)
@@ -29,6 +30,11 @@ void AAGATA_BossStruggleSphere::SearchAllTarget()
 
 	FCollisionShape SphereShape = FCollisionShape::MakeSphere(SphereRadius * SphereScale);
 	FVector TargetPosition = SourceActor->GetActorLocation();
+	if(!bIsAttackSpotActorLocation)
+	{
+		ABossManager* BossManager = Cast<UUPGameInstance>(GetGameInstance())->GetBossManager();
+		TargetPosition = BossManager->GenPosition->GetActorLocation();
+	}
 	FQuat TargetQuat = SourceActor->GetActorForwardVector().ToOrientationQuat();
 
 	bool bHasCollision = GetWorld()->OverlapMultiByObjectType(OverlapResults, TargetPosition, TargetQuat, ObjectParams, SphereShape);

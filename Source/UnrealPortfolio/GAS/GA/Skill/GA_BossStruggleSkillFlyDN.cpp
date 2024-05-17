@@ -2,6 +2,7 @@
 
 
 #include "GAS/GA/Skill/GA_BossStruggleSkillFlyDN.h"
+#include "Character/UPStrugglingBoss.h"
 #include "Game/BossManager.h"
 
 UGA_BossStruggleSkillFlyDN::UGA_BossStruggleSkillFlyDN()
