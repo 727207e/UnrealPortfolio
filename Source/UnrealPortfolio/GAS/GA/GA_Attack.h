@@ -7,7 +7,6 @@
 #include "Data/UPComboActionData.h"
 #include "Interface/AttackableCharacterInterface.h"
 #include "Interface/CharacterMovementInterface.h"
-#include "Data/UPComboActionData.h"
 #include "GA_Attack.generated.h"
 /**
  * 
@@ -36,7 +35,6 @@ protected:
 	ICharacterMovementInterface* MovementCharacter;
 	FName GetNextSection();
 protected:
-	//FMontageWaitSimpleDelegate
 	UFUNCTION()
 	void OnCompleteCallback();
 	UFUNCTION()

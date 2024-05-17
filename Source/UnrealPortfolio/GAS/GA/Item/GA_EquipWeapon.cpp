@@ -6,9 +6,12 @@
 #include "AbilitySystemComponent.h"
 #include "Interface/WeaponControlInterface.h"
 #include "Item/StaticMeshWeaponComponent.h"
+#include "Tag/GameplayTags.h"
 
 UGA_EquipWeapon::UGA_EquipWeapon(): EquipWeaponId(DEFAULT_WEAPON_ID), WeaponControl(nullptr)
 {
+	AbilityTags.AddTag(TAG_WEAPON);
+	ActivationOwnedTags.AddTag(TAG_CHARACTER_STATE_EQUIP_WEAPON);
 }
 
 void UGA_EquipWeapon::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
@@ -36,6 +39,7 @@ void UGA_EquipWeapon::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 void UGA_EquipWeapon::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 	const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)
 {
+	UnequipWeapon();
 	Super::CancelAbility(Handle, ActorInfo, ActivationInfo, bReplicateCancelAbility);
 	
 }
