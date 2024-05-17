@@ -17,6 +17,7 @@
 #include "GAS/GA/GA_Attack.h"
 #include "GAS/GA/GA_NPCInteractor.h"
 #include "Gimmick/UPNPCDetectorSceneComponent.h"
+#include "Item/StaticMeshWeaponComponent.h"
 #include "Tag/GameplayTags.h"
 
 AUPMainCharacter::AUPMainCharacter()
@@ -54,6 +55,12 @@ AUPMainCharacter::AUPMainCharacter()
 	{
 		ComboActionData = ComboActionDataRef.Object;
 	}
+	
+	WeaponComponent = CreateDefaultSubobject<UStaticMeshWeaponComponent>(TEXT("WeaponComponent"));
+	const FVector Location(0, 0, 0);
+	const FRotator Rotation(0, 0, 0);
+	WeaponComponent->K2_AttachToComponent(GetMesh(),SocketWeapon,EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,EAttachmentRule::KeepRelative,true);
+
 	SetupPlayerCamera();
 }
 
@@ -181,6 +188,7 @@ void AUPMainCharacter::BeginPlay()
 	{
 		ServerRequestPlayerState();
 	}
+	ActiveAbilityEquipWeapon(DEFAULT_WEAPON_ID);
 }
 void AUPMainCharacter::SetDead()
 {
@@ -238,8 +246,6 @@ IUPEntityInterface* AUPMainCharacter::GetNPCEntityInterface()
 //*##############################Camera Control##################################*/
 //*##############################Camera Control##################################*/
 
-
-
 void AUPMainCharacter::SetupPlayerCamera()
 {
 	// Create a camera boom...
@@ -277,6 +283,7 @@ void AUPMainCharacter::SetupPlayerCamera()
 	{
 		CharacterControlManager.Add(ECharacterControlType::NPC, NPCCameraDataRef.Object);
 	}
+	
 }
 
 void AUPMainCharacter::SetCharacterControl(ECharacterControlType NewCharacterControlType, FTransform TargetTransform)
@@ -397,6 +404,18 @@ void AUPMainCharacter::ActiveAbilityGameOverCheck()
 	}
 }
 
+void AUPMainCharacter::ActiveAbilityEquipWeapon(int32 TryEquipWeaponId)
+{
+	WeaponComponent->SetWeaponId(TryEquipWeaponId);
+	const FUPWeaponTable WeaponModelData = UUPGameSingleton::Get().WeaponTablesArray[WeaponComponent->GetWeaponId()];
+	WeaponComponent->SetWeaponData(WeaponModelData);
+	const FGameplayAbilitySpec* Spec = ASC->FindAbilitySpecFromClass(StartAbilities[GAS_START_ABILITY_ID_EQUIP_WEAPON]);
+	if(Spec)
+	{
+		ASC->TryActivateAbility(Spec->Handle);
+	}
+}
+
 
 void AUPMainCharacter::SendPlayerStateToClient()
 {
@@ -411,6 +430,11 @@ void AUPMainCharacter::SendPlayerStateToClient()
 AUPPlayerState* AUPMainCharacter::GetUPPlayerState()
 {
 	return Cast<AUPPlayerState>(GetPlayerState());  
+}
+
+UStaticMeshWeaponComponent* AUPMainCharacter::GetEquipWeapon()
+{
+	return WeaponComponent;
 }
 
 void AUPMainCharacter::ClientReceivePlayerState_Implementation(AUPPlayerController* ClientController, APlayerState* ClientPlayerState)

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Data/UPSkillData.h"
+#include "Data/DataAsset/Item/UPWeaponTable.h"
 #include "Data/DataAsset/MainCharacter/UPMainCharacterClassTable.h"
 #include "Data/DataTable/Widget/ProgressWidgetModelData.h"
 #include "Data/DataTable/Widget/SlotWidgetModelData.h"
@@ -30,6 +31,7 @@ public:
 	TArray<FSlotWidgetModelData> SlotWidgetModelDataArray;
 	TArray<FProgressWidgetModelData> ProgressWidgetModelDataArray;
 	TArray<FUPSkillData> SkillDataArray;
+	TArray<FUPWeaponTable> WeaponTablesArray;
 
 	FORCEINLINE FUPMainCharacterClassTable GetCharacterData(int32 InLevel) const
 	{

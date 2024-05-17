@@ -15,13 +15,20 @@ UCLASS()
 class UNREALPORTFOLIO_API UGA_MainCharacterSkillHitCheck : public UGA_AttackHitCheck
 {
 	GENERATED_BODY()
-	UPROPERTY()
-	FActiveGameplayEffectHandle ActiveEffectHandle;
+
+protected:
+	int32 WEAPON_GRADE_TYPE_MAGIC = 2;
+	int32 WEAPON_GRADE_TYPE_LEGEND = 3;
 public:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 protected:
+	UPROPERTY()
+	FActiveGameplayEffectHandle LegendBuffActiveEffectHandle;
+	UPROPERTY()
+	FActiveGameplayEffectHandle ActiveEffectHandle;
+	
 	UPROPERTY(EditAnywhere, Category = "GAS")
-	float CurrentLevel;
+	float AtiveSkillIndex;
 	UPROPERTY(EditAnywhere, Category = "GAS")
 	TSubclassOf<class UGameplayEffect> AttackBuffEffect;
 	UFUNCTION()
@@ -33,5 +40,10 @@ protected:
 						bool bWasCancelled) override;
 	
 	virtual void ApplyDamageEffect(const UEntityAttributeSet* SourceAttribute, const FGameplayAbilityTargetDataHandle& TargetDataHandle) override;
-	
+
+
+	UPROPERTY(EditAnywhere , Category = GAS)
+	TSubclassOf<class UGameplayEffect> LegendGradBuffEffect;
+	void LegendWeaponProcess();
+
 };
