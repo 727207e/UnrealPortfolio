@@ -75,7 +75,7 @@ void AGATA_BossStruggleSphere::GetAttributeSetting()
 	SphereScale = SphereScaleValue;
 }
 
-void AGATA_BossStruggleSphere::StartTargeting()
+void AGATA_BossStruggleSphere::StartTargetingTrace()
 {
 	TArray<UDecalComponent*> DecalComponents;
 	GetComponents(DecalComponents);

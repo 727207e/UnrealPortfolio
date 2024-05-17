@@ -51,6 +51,7 @@ AGATA_RangeEnemeyFire::AGATA_RangeEnemeyFire()
 	MuzzleComponent->SetupAttachment(RootComponent);
 
 	bReplicates = true;
+	SetReplicateMovement(true);
 	bIsDrawDecal = false;
 	bIsSettingInSocket = true;
 }
@@ -87,7 +88,6 @@ void AGATA_RangeEnemeyFire::Destroyed()
 	Super::Destroyed();
 
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitFX, GetActorLocation());
-	MuzzleComponent->SetAsset(ProjectileFX);
 }
 
 void AGATA_RangeEnemeyFire::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult)

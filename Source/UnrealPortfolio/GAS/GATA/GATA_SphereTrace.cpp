@@ -51,7 +51,7 @@ void AGATA_SphereTrace::ConfirmTargetingAndContinue()
 	}
 	else
 	{
-		StartTargeting();
+		StartTargetingTrace();
 	}
 }
 
@@ -96,7 +96,7 @@ void AGATA_SphereTrace::DrawDecal()
 	GetWorld()->GetTimerManager().SetTimer(StartTarget, FTimerDelegate::CreateLambda([&]
 		{
 			SphereDecal->SetVisibility(false);
-			StartTargeting();
+			StartTargetingTrace();
 		}), DecalDelayTime, false);
 }
 
@@ -105,7 +105,7 @@ void AGATA_SphereTrace::GetAttributeSetting()
 	SphereRadius = CurrentData->TargetAttributeSet->GetAttackRadius();
 }
 
-void AGATA_SphereTrace::StartTargeting()
+void AGATA_SphereTrace::StartTargetingTrace()
 {
 	Sphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	FTimerHandle DeadTimerHandle;

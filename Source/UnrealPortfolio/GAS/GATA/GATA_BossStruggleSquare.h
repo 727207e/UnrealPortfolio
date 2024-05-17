@@ -34,7 +34,7 @@ public :
 
 protected :
 	virtual void GetAttributeSetting() override;
-	virtual void StartTargeting() override;
+	virtual void StartTargetingTrace() override;
 
 	UFUNCTION()
 	void SearchAllTarget();
