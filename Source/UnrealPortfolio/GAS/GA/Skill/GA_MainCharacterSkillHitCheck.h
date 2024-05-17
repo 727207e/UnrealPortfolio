@@ -17,7 +17,6 @@ class UNREALPORTFOLIO_API UGA_MainCharacterSkillHitCheck : public UGA_AttackHitC
 	GENERATED_BODY()
 
 protected:
-	int32 WEAPON_GRADE_TYPE_MAGIC = 2;
 	int32 WEAPON_GRADE_TYPE_LEGEND = 3;
 public:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
