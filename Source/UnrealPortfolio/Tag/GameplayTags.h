@@ -10,3 +10,6 @@
 #define TAG_CHARACTER_SKILL FGameplayTag::RequestGameplayTag(FName("Character.Action.Skill"))
 #define TAG_COUNTER_ATTACK FGameplayTag::RequestGameplayTag(FName("Character.Action.CounterAttackPosible"))
 #define TAG_COUNTER_HIT FGameplayTag::RequestGameplayTag(FName("Character.Action.CounterHitPosible"))
+
+#define TAG_HITGROUND FGameplayTag::RequestGameplayTag(FName("GameplayCue.Effect.BombExplore"))
+#define TAG_FIREBUFF FGameplayTag::RequestGameplayTag(FName("GameplayCue.Effect.FireBuff"))

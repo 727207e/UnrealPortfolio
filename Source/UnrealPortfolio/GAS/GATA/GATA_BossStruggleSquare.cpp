@@ -174,6 +174,7 @@ void AGATA_BossStruggleSquare::SpawnGC(FTransform TargetTransform)
 
 		FGameplayCueParameters CueParam;
 		CueParam.Location = WorldPoint;
+		CueParam.RawMagnitude = 5.0f;
 
 		TargetASC->ExecuteGameplayCue(CurrentData->ActionGC, CueParam);
 

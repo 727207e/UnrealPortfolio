@@ -30,10 +30,21 @@ protected :
 	virtual void StartTargeting() override;
 	virtual	void InitTrace() override;
 
+	UFUNCTION()
+	void SpawnGC(FVector TargetSpawnLocation);
+
 	UPROPERTY(EditAnywhere)
 	float AttackValue;
 	UPROPERTY(EditAnywhere)
 	float SphereScaleValue;
 	UPROPERTY(EditAnywhere)
 	bool bIsAttackSpotActorLocation;
+
+private :
+
+	UPROPERTY(EditAnywhere)
+	float FireBuffSize;
+	UPROPERTY(EditAnywhere)
+	float HitGroundSize;
+
 };
