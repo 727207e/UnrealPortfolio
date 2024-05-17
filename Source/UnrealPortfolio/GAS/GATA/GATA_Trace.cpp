@@ -15,6 +15,9 @@
 #include "GAS/Attribute/UPMainCharacterAttributeSet.h"
 #include "Data/DataAttributeSet/EntityAttributeSet.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
+#include "defines/UPServerLogDefine.h"
 
 AGATA_Trace::AGATA_Trace()
 {
@@ -32,7 +35,6 @@ void AGATA_Trace::ConfirmTargetingAndContinue()
 	if(SourceActor)
 	{
 		const FGameplayAbilityTargetDataHandle DataHandle = MakeTargetData();
-		
 		TargetDataReadyDelegate.Broadcast(DataHandle);
 	}
 }

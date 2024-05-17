@@ -51,7 +51,6 @@ AGATA_RangeEnemeyFire::AGATA_RangeEnemeyFire()
 	MuzzleComponent->SetupAttachment(RootComponent);
 
 	bReplicates = true;
-	SetReplicateMovement(true);
 	bIsDrawDecal = false;
 	bIsSettingInSocket = true;
 }
@@ -61,8 +60,6 @@ void AGATA_RangeEnemeyFire::ConfirmTargetingAndContinue()
 	bDestroyOnConfirmation = false;
 
 	SettingProjectile();
-	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), MuzzleFX, GetActorLocation());
-	MuzzleComponent->SetAsset(ProjectileFX);
 	Capsule->OnComponentBeginOverlap.AddDynamic(this, &AGATA_RangeEnemeyFire::OnOverlapBegin);
 
 	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(SourceActor);
@@ -88,6 +85,16 @@ void AGATA_RangeEnemeyFire::Destroyed()
 	Super::Destroyed();
 
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitFX, GetActorLocation());
+	MuzzleComponent->SetAsset(ProjectileFX);
+}
+
+
+void AGATA_RangeEnemeyFire::BeginPlay()
+{
+	Super::BeginPlay();
+
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), MuzzleFX, GetActorLocation());
+	MuzzleComponent->SetAsset(ProjectileFX);
 }
 
 void AGATA_RangeEnemeyFire::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult)

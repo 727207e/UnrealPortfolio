@@ -28,5 +28,4 @@ protected:
     
 	bool bShowDebug = false;
 
-	
 };
