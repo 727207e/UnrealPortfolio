@@ -31,7 +31,7 @@ protected :
 	virtual	void InitTrace() override;
 
 	UFUNCTION()
-	void SpawnGC(FVector TargetSpawnLocation);
+	virtual void SpawnGC(FVector TargetSpawnLocation);
 
 	UPROPERTY(EditAnywhere)
 	float AttackValue;
@@ -39,8 +39,6 @@ protected :
 	float SphereScaleValue;
 	UPROPERTY(EditAnywhere)
 	bool bIsAttackSpotActorLocation;
-
-private :
 
 	UPROPERTY(EditAnywhere)
 	float FireBuffSize;

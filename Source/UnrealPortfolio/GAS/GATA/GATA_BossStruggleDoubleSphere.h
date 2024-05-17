@@ -20,6 +20,8 @@ public :
 	virtual void SearchAllTarget() override;
 
 protected:
+	virtual void SpawnGC(FVector TargetSpawnLocation) override;
+
 
 	UPROPERTY(EditAnywhere)
 	float InnerSphereScaleValue;

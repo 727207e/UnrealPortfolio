@@ -3,6 +3,9 @@
 
 #include "GAS/GATA/GATA_BossStruggleDoubleSphere.h"
 #include "GameFramework/Character.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
+#include "Tag/GameplayTags.h"
 
 AGATA_BossStruggleDoubleSphere::AGATA_BossStruggleDoubleSphere()
 {
@@ -53,8 +56,7 @@ void AGATA_BossStruggleDoubleSphere::SearchAllTarget()
 		}
 	}
 
-
-	FTransform TargetTransform(TargetQuat, TargetPosition);
+	SpawnGC(TargetPosition);
 
 #if ENABLE_DRAW_DEBUG
 
@@ -68,4 +70,18 @@ void AGATA_BossStruggleDoubleSphere::SearchAllTarget()
 	DataHandle.Add(TargetData);
 
 	TargetDataReadyDelegate.Broadcast(DataHandle);
+}
+
+void AGATA_BossStruggleDoubleSphere::SpawnGC(FVector TargetSpawnLocation)
+{
+	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(SourceActor);
+	if (!TargetASC)
+	{
+		return;
+	}
+
+	FGameplayCueParameters CueParam;
+	CueParam.Location = TargetSpawnLocation;
+	CueParam.RawMagnitude = HitGroundSize;
+	TargetASC->ExecuteGameplayCue(TAG_HITGROUND, CueParam);
 }
