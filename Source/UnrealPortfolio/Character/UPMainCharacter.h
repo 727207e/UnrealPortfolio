@@ -141,5 +141,9 @@ public:
 	virtual UStaticMeshWeaponComponent* GetEquipWeapon() override;
 
 	void CreateWeaponComponent();
-	
+
+	void CharacterLookMouseLocation();
+	UFUNCTION(Server, UnReliable)
+	void Server_SetActorRotation(FVector LookTargetLocation);
+
 };

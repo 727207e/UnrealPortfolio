@@ -18,6 +18,7 @@
 #include "GAS/GA/GA_NPCInteractor.h"
 #include "Gimmick/UPNPCDetectorSceneComponent.h"
 #include "Item/StaticMeshWeaponComponent.h"
+#include "defines/UPServerLogDefine.h"
 #include "Tag/GameplayTags.h"
 
 AUPMainCharacter::AUPMainCharacter()
@@ -68,13 +69,21 @@ UAbilitySystemComponent* AUPMainCharacter::GetAbilitySystemComponent() const
 void AUPMainCharacter::OnAttackStart()
 {
 	if(!IsValid(ASC))	{	return; }
+
+	CharacterLookMouseLocation();
 	CallGAS(GAS_INPUT_ID_ATTACK_START);
 }
 
 void AUPMainCharacter::OnSkillStart(int32 Index)
 {
+	CharacterLookMouseLocation();
 	CallGAS(Index);
 	UE_LOG(LogTemplateCharacter, Log, TEXT("Start : %d"), Index);
+}
+
+void AUPMainCharacter::Server_SetActorRotation_Implementation(FVector LookTargetLocation)
+{
+	LookTarget(LookTargetLocation);
 }
 
 void AUPMainCharacter::OnSkillRelease(int32 Index)
@@ -446,6 +455,26 @@ void AUPMainCharacter::CreateWeaponComponent()
 	WeaponComponent->SetActive(false);
 	WeaponComponent->K2_AttachToComponent(GetMesh(),SocketWeapon,EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,EAttachmentRule::KeepRelative,true);
 	
+}
+
+void AUPMainCharacter::CharacterLookMouseLocation()
+{
+	if (IsLocallyControlled())
+	{
+		FHitResult Hit;
+		bool bHitSuccessful = false;
+		bHitSuccessful = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);
+
+		if (bHitSuccessful)
+		{
+			LookTarget(Hit.Location);
+
+			if (!HasAuthority())
+			{
+				Server_SetActorRotation(Hit.Location);
+			}
+		}
+	}
 }
 
 void AUPMainCharacter::ClientReceivePlayerState_Implementation(AUPPlayerController* ClientController, APlayerState* ClientPlayerState)
