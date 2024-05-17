@@ -14,13 +14,7 @@ void UGA_SkillBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
 	AttackableCharacter = CastChecked<IAttackableCharacterInterface>(ActorInfo->AvatarActor.Get());
 	if(TargetMontage)
 	{
-		/** PlayAttackTask Ability **/
-		UAbilityTask_PlayMontageAndWait* PlayAttackTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
-			this,TEXT("PlayerSkill"),TargetMontage, AttackSpeed, TargetMontageSectionName);
-	
-		PlayAttackTask->OnCompleted.AddDynamic(this,&UGA_SkillBase::OnCompleteCallback);
-		PlayAttackTask->OnInterrupted.AddDynamic(this,&UGA_SkillBase::OnInterruptedCallback);
-		PlayAttackTask->ReadyForActivation();
+		MontageAbility();
 	}
 }
 
@@ -44,6 +38,8 @@ void UGA_SkillBase::EndAbility(const FGameplayAbilitySpecHandle Handle, const FG
 	AttackableCharacter->SkillEndCallBack();
 }
 
+
+
 void UGA_SkillBase::InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 	const FGameplayAbilityActivationInfo ActivationInfo)
 {
@@ -62,4 +58,15 @@ void UGA_SkillBase::OnInterruptedCallback()
 	bool bReplicatedEndAbility = true;
 	bool bWasCancelled = true;
 	EndAbility(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,bReplicatedEndAbility,bWasCancelled);
+}
+
+void UGA_SkillBase::MontageAbility()
+{
+
+	UAbilityTask_PlayMontageAndWait* PlayAttackTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
+		this,TEXT("PlayerSkill"),TargetMontage, AttackSpeed, TargetMontageSectionName);
+	
+	PlayAttackTask->OnCompleted.AddDynamic(this,&UGA_SkillBase::OnCompleteCallback);
+	PlayAttackTask->OnInterrupted.AddDynamic(this,&UGA_SkillBase::OnInterruptedCallback);
+	PlayAttackTask->ReadyForActivation();
 }

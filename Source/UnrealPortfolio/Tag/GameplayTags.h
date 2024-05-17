@@ -14,3 +14,4 @@
 #define TAG_FIREBUFF FGameplayTag::RequestGameplayTag(FName("GameplayCue.Effect.FireBuff"))
 #define TAG_CHARACTER_STATE_EQUIP_WEAPON FGameplayTag::RequestGameplayTag(FName("Character.State.EquipWeapon"))
 #define TAG_WEAPON FGameplayTag::RequestGameplayTag(FName("Character.State.EquipWeapon"))
+#define TAG_PLAYER_STATE_AVOID FGameplayTag::RequestGameplayTag(FName("Player.State.AbilityAvoid"))

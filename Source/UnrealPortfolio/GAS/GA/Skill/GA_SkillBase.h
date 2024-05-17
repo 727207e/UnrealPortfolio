@@ -50,6 +50,8 @@ protected:
 	virtual void OnCompleteCallback();
 	UFUNCTION()
 	virtual void OnInterruptedCallback();
+
+	virtual void MontageAbility();
 	
 	float AttackSpeed = 1.0f;
 };
