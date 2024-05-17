@@ -30,7 +30,9 @@ UUPGameSingleton::UUPGameSingleton(): CurrentMainCharacterId(2)
 	TEXT("/Script/Engine.DataTable'/Game/Data/ModelWidgetTableData/DT_ProgressModelWidgetData.DT_ProgressModelWidgetData'"),
 	ProgressWidgetModelDataArray);
 
-	
+	LoadDataTableToArray(
+	TEXT("/Script/Engine.DataTable'/Game/Data/WeaponData/DT_WeaponDataTable.DT_WeaponDataTable'"),
+	WeaponTablesArray);
 	
 }
 template <typename T>
@@ -53,6 +55,10 @@ void UUPGameSingleton::LoadDataTableToArray(const FString& DataTablePath, TArray
                             }
             );
         }
+    }
+    else
+    {
+    	UE_LOG(LogTemp,Error,TEXT("Faild LoadDataTableToArray"));
     }
 }
 

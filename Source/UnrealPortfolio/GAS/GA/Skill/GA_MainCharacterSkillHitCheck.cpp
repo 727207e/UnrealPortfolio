@@ -5,6 +5,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Data/DataAttributeSet/EntityAttributeSet.h"
 #include "GAS/Actor/GameplayEventDataRequest.h"
+#include "Interface/WeaponControlInterface.h"
 
 
 class UAbilityTask_Trace;
@@ -20,7 +21,7 @@ void UGA_MainCharacterSkillHitCheck::ActivateAbility(const FGameplayAbilitySpecH
 	}
 	if(TriggerEventData != nullptr)
 	{
-		CurrentLevel = TriggerEventData->EventMagnitude;
+		AtiveSkillIndex = TriggerEventData->EventMagnitude;
 	}
 	ApplyBuffEffect();
 	CurrentAbilityTaskSetup();
@@ -28,7 +29,7 @@ void UGA_MainCharacterSkillHitCheck::ActivateAbility(const FGameplayAbilitySpecH
 
 void UGA_MainCharacterSkillHitCheck::ApplyBuffEffect()
 {
-	const FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(AttackBuffEffect,CurrentLevel);
+	const FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(AttackBuffEffect,AtiveSkillIndex);
 	if (EffectSpecHandle.IsValid())
 	{
 		ActiveEffectHandle = ApplyGameplayEffectSpecToOwner(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,EffectSpecHandle);
@@ -37,6 +38,7 @@ void UGA_MainCharacterSkillHitCheck::ApplyBuffEffect()
 	{
 		UE_LOG(LogTemp, Error, TEXT("GA Main Skill Hit Check : Buff GA not found."));
 	}
+	LegendWeaponProcess();
 }
 
 void UGA_MainCharacterSkillHitCheck::EndAbility(const FGameplayAbilitySpecHandle Handle,
@@ -44,15 +46,33 @@ void UGA_MainCharacterSkillHitCheck::EndAbility(const FGameplayAbilitySpecHandle
 	bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-	UAbilitySystemComponent* SourceASC = GetAbilitySystemComponentFromActorInfo_Checked();
-	SourceASC->RemoveActiveGameplayEffect(ActiveEffectHandle);
+	GetAbilitySystemComponentFromActorInfo()->RemoveActiveGameplayEffect(ActiveEffectHandle);
+	GetAbilitySystemComponentFromActorInfo()->RemoveActiveGameplayEffect(LegendBuffActiveEffectHandle);
 }
 
 void UGA_MainCharacterSkillHitCheck::ApplyDamageEffect(const UEntityAttributeSet* SourceAttribute,
 	const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
-	
 	Super::ApplyDamageEffect(SourceAttribute, TargetDataHandle);
-	UAbilitySystemComponent* SourceASC = GetAbilitySystemComponentFromActorInfo_Checked();
-	SourceASC->RemoveActiveGameplayEffect(ActiveEffectHandle);
+	GetAbilitySystemComponentFromActorInfo()->RemoveActiveGameplayEffect(ActiveEffectHandle);
+	GetAbilitySystemComponentFromActorInfo()->RemoveActiveGameplayEffect(LegendBuffActiveEffectHandle);
+}
+
+void UGA_MainCharacterSkillHitCheck::LegendWeaponProcess()
+{
+	if(IWeaponControlInterface* WeaponControl = Cast<IWeaponControlInterface>(GetActorInfo().AvatarActor))
+	{
+		const int32 Grade =  WeaponControl->GetEquipWeapon()->Grade;
+		const int32 LegendSkillIndex = WeaponControl->GetEquipWeapon()->LegendSkillIndex;
+		if(Grade >= WEAPON_GRADE_TYPE_LEGEND && LegendSkillIndex == AtiveSkillIndex)
+		{
+			UE_LOG(LogTemp,Log,TEXT("LegendSkillIndex %d"),LegendSkillIndex);
+			const FGameplayEffectSpecHandle LegendEffectSpecHandle =MakeOutgoingGameplayEffectSpec(LegendGradBuffEffect,LegendSkillIndex);
+			if (LegendEffectSpecHandle.IsValid())
+			{
+				LegendBuffActiveEffectHandle = ApplyGameplayEffectSpecToOwner(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,LegendEffectSpecHandle);
+			}
+		}
+	}
+	
 }

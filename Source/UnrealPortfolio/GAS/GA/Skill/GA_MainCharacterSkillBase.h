@@ -16,7 +16,6 @@ class UNREALPORTFOLIO_API UGA_MainCharacterSkillBase : public UGA_SkillBase
 	UGA_MainCharacterSkillBase();
 protected:
 	void SetData();
-
 protected:
 	virtual auto ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 							 const FGameplayAbilityActivationInfo ActivationInfo,
@@ -36,7 +35,8 @@ protected:
 	virtual void OnCompleteCallback() override;
 
 	virtual void OnInterruptedCallback() override;
-
+	virtual void CooldownProcess();
+	
 protected:
 	UPROPERTY(BlueprintReadOnly , Category = GAS);
 	int32 Cooldown;
