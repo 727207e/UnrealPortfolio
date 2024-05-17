@@ -29,9 +29,6 @@ public:
 	TSubclassOf<ACharacter> StruggleBossDummy;
 
 	UPROPERTY(EditAnywhere)
-	TArray<int32> StrugglePatern;
-
-	UPROPERTY(EditAnywhere)
 	float Radius = 4000.f;
 
 	UPROPERTY(EditAnywhere)

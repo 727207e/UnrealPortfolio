@@ -27,12 +27,11 @@ public :
 	UPROPERTY(EditAnywhere)
 	float GCPoisionOffset;
 
-	virtual void BeginPlay() override;
 	virtual void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult);
-	virtual void DrawDecal() override;
+	virtual	void InitSquareTrace() override;
 
 	virtual FORCEINLINE float GetAttackValue() override { return AttackValue; }
-	virtual FORCEINLINE int32 GetAttackCount() override { return AttackCount; }
+
 protected :
 	virtual void GetAttributeSetting() override;
 	virtual void StartTargeting() override;
@@ -44,7 +43,12 @@ protected :
 	float AttackValue;
 	UPROPERTY(EditAnywhere)
 	int32 AttackCount;
+	UPROPERTY(EditAnywhere)
+	int32 AttackOffset;
 
 	UFUNCTION()
 	void SpawnGC(FTransform TargetTransform);
+
+private :
+	TArray<TObjectPtr<class UBoxComponent>> Boxs;
 };

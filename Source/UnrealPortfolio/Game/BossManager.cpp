@@ -2,16 +2,14 @@
 
 
 #include "Game/BossManager.h"
-#include "GameFramework/Character.h"
+#include "Character/UPStrugglingBoss.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "CutScene/UPCutSceneTriggerActor.h"
 #include "Components/SceneComponent.h"
 #include "Game/UPGameInstance.h"
 
-// Sets default values
 ABossManager::ABossManager()
 {
-	StrugglePatern = {1, 2, 3, 2, 4, 5, 6, 7};
 }
 
 void ABossManager::GenBoss()
@@ -41,10 +39,11 @@ void ABossManager::StartStruggling()
 {	
 	if (StruggleBossDummy)
 	{
-		ACharacter* struggle = Cast<ACharacter>(GetWorld()->SpawnActor(StruggleBossDummy));
+		AUPStrugglingBoss* struggle = Cast<AUPStrugglingBoss>(GetWorld()->SpawnActor(StruggleBossDummy));
 		if (struggle)
 		{
 			struggle->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+			struggle->StartPatern();
 		}
 	}
 }

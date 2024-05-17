@@ -4,44 +4,43 @@
 
 #include "CoreMinimal.h"
 #include "GAS/GATA/GATA_SkillTrace.h"
-#include "GATA_SquareTrace.generated.h"
+#include "GATA_SphereTrace.generated.h"
 
 /**
- *  //Refactoring Require : SphereTrace And SqaureTrace
+ *  //Refactoring Require : SphereTrace And SqaureTrace 
  */
 UCLASS()
-class UNREALPORTFOLIO_API AGATA_SquareTrace : public AGATA_SkillTrace
+class UNREALPORTFOLIO_API AGATA_SphereTrace : public AGATA_SkillTrace
 {
 	GENERATED_BODY()
 	
-public :
-	AGATA_SquareTrace();
+public:
+	AGATA_SphereTrace();
 
-public :
+public:
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UBoxComponent> Box;
+	TObjectPtr<class USphereComponent> Sphere;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<class UDecalComponent> SquareDecal;
+	TObjectPtr<class UDecalComponent> SphereDecal;
 
-public :
+public:
 	virtual void ConfirmTargetingAndContinue() override;
 	virtual void Destroyed() override;
 	virtual void BeginPlay() override;
-	
+
 	UFUNCTION()
 	virtual void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult);
-	
+
 	virtual void DrawDecal() override;
 
-protected :
+protected:
 	virtual void GetAttributeSetting();
 	virtual void StartTargeting();
-	virtual	void InitSquareTrace();
+	virtual	void InitTrace();
 
-	float BoxSizeX;
-	float BoxSizeY;
-	float BoxSizeZ;
+	float SphereRadius;
+	float SphereScale;
 
 	float DecalDelayTime = 0;
 	float DestroyTATime = 0;
