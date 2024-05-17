@@ -20,7 +20,7 @@ class UNREALPORTFOLIO_API AUPMainCharacter : public AUPBattleBaseCharacter
 {
 	GENERATED_BODY()
 private:
-	const int32 DEFAULT_WEAPON_ID = 4;
+	const int32 DEFAULT_WEAPON_ID = 0;
 	const int32 GAS_START_ABILITY_ID_GAME_RESULT = 3;
 	const int32 GAS_INPUT_ID_ATTACK_START = 0;
 	const int32 GAS_INPUT_ID_AVOID_START = 10;
