@@ -12,6 +12,8 @@
 #include "GameFramework/Character.h"
 #include "Character/UPBattleBaseCharacter.h"
 #include "Tag/GameplayTags.h"
+#include "defines/UPServerLogDefine.h"
+#include "Net/UnrealNetwork.h"
 
 AGATA_AOERandomAttack::AGATA_AOERandomAttack()
 {
@@ -21,6 +23,10 @@ AGATA_AOERandomAttack::AGATA_AOERandomAttack()
     bIsConfirmTargetingAndEnd = false;
     TargetTraceAreaOffset = 80.0f;
     ThisTargetTag = TAG_CHARACTER_SKILL;
+    bReplicates = true;
+    bNetLoadOnClient = true;
+    PrimaryActorTick.bCanEverTick = true;
+
 
     static ConstructorHelpers::FObjectFinder<UNiagaraSystem> AOEVisualRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/DownloadAssets/Pack_VFX/VFX_Niagara/Magic_Circle/NS_VFX_Magic_Circle_10_Long.NS_VFX_Magic_Circle_10_Long'"));
     if (AOEVisualRef.Object)
@@ -57,6 +63,7 @@ void AGATA_AOERandomAttack::ConfirmTargetingAndContinue()
             }), AttackTimeDelay, false);
     }
 
+    ReplcateSourceActorValue = SourceActor;
     AddAttackEvent();
 }
 
@@ -68,6 +75,24 @@ void AGATA_AOERandomAttack::OnAOEAttackArea(FGameplayTag TargetTag)
     }
 
     AttackArea();
+}
+
+void AGATA_AOERandomAttack::OnRep_RandomTargetLocations()
+{
+    for (int index = 0; index < RandomTargetLocations.Num(); index++)
+    {
+        UNiagaraComponent* SpawnTarget = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), AOEVisual, RandomTargetLocations[index]);
+        SpawnTarget->SetWorldScale3D(FVector(NiagaraSize, NiagaraSize, NiagaraSize));
+    }
+    AddAttackEvent();
+}
+
+void AGATA_AOERandomAttack::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(AGATA_AOERandomAttack, RandomTargetLocations);
+    DOREPLIFETIME(AGATA_AOERandomAttack, ReplcateSourceActorValue);
 }
 
 FGameplayAbilityTargetDataHandle AGATA_AOERandomAttack::MakeTargetData() const
@@ -108,42 +133,45 @@ void AGATA_AOERandomAttack::AttackArea() const
         UNiagaraComponent* SpawnTarget = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ExploreVisual, RandomTargetLocations[index]);
         SpawnTarget->SetWorldScale3D(FVector(NiagaraSize, NiagaraSize, NiagaraSize));
 
-        ACharacter* ThisCharacter = CastChecked<ACharacter>(SourceActor);
-        FCollisionShape SphereShape = FCollisionShape::MakeSphere(TargetTraceAreaOffset * NiagaraSize);
-        FCollisionObjectQueryParams ObjectParams(ECC_Pawn);
-
-        TArray<FOverlapResult> OverlapResults;
-
-        bool bHasCollision = GetWorld()->OverlapMultiByObjectType(OverlapResults, RandomTargetLocations[index], FQuat::Identity, ObjectParams, SphereShape);
-
-        TSet<TWeakObjectPtr<AActor>> LeftObjects;
-        if (bHasCollision)
+        if (HasAuthority())
         {
-            for (const FOverlapResult& OverlapResult : OverlapResults)
-            {
-                ACharacter* OverlapCharacter = Cast<ACharacter>(OverlapResult.GetActor());
+            ACharacter* ThisCharacter = CastChecked<ACharacter>(SourceActor);
+            FCollisionShape SphereShape = FCollisionShape::MakeSphere(TargetTraceAreaOffset * NiagaraSize);
+            FCollisionObjectQueryParams ObjectParams(ECC_Pawn);
 
-                if (OverlapCharacter != ThisCharacter)
+            TArray<FOverlapResult> OverlapResults;
+
+            bool bHasCollision = GetWorld()->OverlapMultiByObjectType(OverlapResults, RandomTargetLocations[index], FQuat::Identity, ObjectParams, SphereShape);
+
+            TSet<TWeakObjectPtr<AActor>> LeftObjects;
+            if (bHasCollision)
+            {
+                for (const FOverlapResult& OverlapResult : OverlapResults)
                 {
-                    LeftObjects.Add(OverlapResult.GetActor());
+                    ACharacter* OverlapCharacter = Cast<ACharacter>(OverlapResult.GetActor());
+
+                    if (OverlapCharacter != ThisCharacter)
+                    {
+                        LeftObjects.Add(OverlapResult.GetActor());
+                    }
                 }
             }
+
+#if ENABLE_DRAW_DEBUG
+
+            DrawDebugSphere(GetWorld(), RandomTargetLocations[index], TargetTraceAreaOffset * NiagaraSize, 12, FColor::Red, false, 1.0f);
+
+#endif
+
+
+            FGameplayAbilityTargetDataHandle DataHandle;
+            FGameplayAbilityTargetData_ActorArray* TargetData = new FGameplayAbilityTargetData_ActorArray();
+
+            TargetData->TargetActorArray = LeftObjects.Array();
+            DataHandle.Add(TargetData);
+
+            OnTargetDetect.Broadcast(DataHandle);
         }
-
-    #if ENABLE_DRAW_DEBUG
-
-        DrawDebugSphere(GetWorld(), RandomTargetLocations[index], TargetTraceAreaOffset * NiagaraSize, 12, FColor::Red, false, 1.0f);
-
-    #endif
-
-
-        FGameplayAbilityTargetDataHandle DataHandle;
-        FGameplayAbilityTargetData_ActorArray* TargetData = new FGameplayAbilityTargetData_ActorArray();
-
-        TargetData->TargetActorArray = LeftObjects.Array();
-        DataHandle.Add(TargetData);
-
-        OnTargetDetect.Broadcast(DataHandle);
     }
 }
 

@@ -27,8 +27,17 @@ public :
 	UFUNCTION()
 	void OnAOEAttackArea(FGameplayTag TargetTag);
 
+	UPROPERTY(ReplicatedUsing = OnRep_RandomTargetLocations)
 	mutable TArray<FVector> RandomTargetLocations;
 	mutable FDelegateHandle AttackEffectHandle;
+
+	UPROPERTY(Replicated)
+	TObjectPtr<AActor> ReplcateSourceActorValue;
+
+	UFUNCTION()
+	void OnRep_RandomTargetLocations();
+
+	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const override;
 
 protected:
 	virtual FGameplayAbilityTargetDataHandle MakeTargetData() const override;
