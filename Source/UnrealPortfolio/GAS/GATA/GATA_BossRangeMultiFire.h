@@ -22,6 +22,8 @@ protected:
 
 public:
 	virtual void ConfirmTargetingAndContinue() override;
+	virtual void BeginPlay() override;
+	virtual void Destroyed() override;
 
 private :
 	void InitializeSphere();
