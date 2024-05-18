@@ -85,6 +85,7 @@ void AGATA_SquareTrace::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 
 	FHitResult Hit = FHitResult(SweepHitResult);
 	Hit.HitObjectHandle = FActorInstanceHandle(OtherActor);
+	Hit.Location = OtherActor->GetActorLocation();
 
 	FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit(Hit);
 	DataHandle.Add(TargetData);
@@ -98,7 +99,6 @@ void AGATA_SquareTrace::DrawDecal()
 	FTimerHandle StartTarget;
 	GetWorld()->GetTimerManager().SetTimer(StartTarget, FTimerDelegate::CreateLambda([&]
 		{
-			SquareDecal->SetVisibility(false);
 			StartTargetingTrace();
 		}), DecalDelayTime, false);
 }
@@ -136,6 +136,7 @@ void AGATA_SquareTrace::InitSquareTrace()
 
 void AGATA_SquareTrace::StartTargetingTrace()
 {
+	SquareDecal->SetVisibility(false);
 	Box->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	FTimerHandle DeadTimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda([&]
