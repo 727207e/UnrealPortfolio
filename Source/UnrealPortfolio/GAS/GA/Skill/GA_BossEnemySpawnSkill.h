@@ -19,10 +19,10 @@ public :
 	UGA_BossEnemySpawnSkill();
 
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UNiagaraSystem> SpawnVisual;
-
-	UPROPERTY(EditAnywhere)
 	TArray<TSubclassOf<AUPEnemyCharacter>> EnemyArray;
+
+	UPROPERTY()
+	TObjectPtr<class AGameplayMultiCueEventData> GameplayMultiCueEventData;
 
 protected :
 	virtual auto ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -30,7 +30,7 @@ protected :
 		const FGameplayEventData* TriggerEventData) -> void override;
 
 	TArray<FVector> GetRandomRadiusPosition();
-
+	const FGameplayAbilityActorInfo* SourceActorInfo;
 private :
 	float SpawnDelay = 0.f;
 	float SearchingRadius = 0;
