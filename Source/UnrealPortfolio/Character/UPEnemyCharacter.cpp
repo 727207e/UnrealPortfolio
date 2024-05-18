@@ -99,6 +99,7 @@ void AUPEnemyCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 	}
 	ASC->AddSpawnedAttribute(EnemyEntityState->AttributeSet);
 	ASC->InitAbilityActorInfo(InOwnerActor, this);
+	AttributeSet = EnemyEntityState->AttributeSet;
 }
 
 

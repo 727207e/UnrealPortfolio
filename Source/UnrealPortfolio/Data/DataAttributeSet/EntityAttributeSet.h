@@ -45,43 +45,66 @@ public:
 	virtual void InitAttributeSet();
 
 public:
-	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData Hp;
-	
-	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxHp, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData MaxHp;
 	
-	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Attack, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData Attack;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_AttackRange, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData AttackRange;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_AttackRadius, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData AttackRadius;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Armor, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData Armor;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_AttackSpeed, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData AttackSpeed;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_AttackRate, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData AttackRate;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MovementSpeed, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData MovementSpeed;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite,EditAnywhere)
 	TObjectPtr<class UDataTable> BaseStat;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FString StatName;
 
+	virtual void GetLifetimeReplicatedProps(TArray< class FLifetimeProperty >& OutLifetimeProps) const override;
+
+	UFUNCTION()
+	virtual void OnRep_Health(const FGameplayAttributeData& OldHealth);
+	UFUNCTION()
+	virtual void OnRep_MaxHp(const FGameplayAttributeData& OldMaxHp);
+	UFUNCTION()
+	virtual void OnRep_Attack(const FGameplayAttributeData& OldAttack);
+	UFUNCTION()
+	virtual void OnRep_AttackRange(const FGameplayAttributeData& OldAttackRange);
+	UFUNCTION()
+	virtual void OnRep_AttackRadius(const FGameplayAttributeData& OldAttackRadius);
+	UFUNCTION()
+	virtual void OnRep_Armor(const FGameplayAttributeData& OldArmor);
+	UFUNCTION()
+	virtual void OnRep_AttackSpeed(const FGameplayAttributeData& OldAttackSpeed);
+	UFUNCTION()
+	virtual void OnRep_AttackRate(const FGameplayAttributeData& OldAttackRate);
+	UFUNCTION()
+	virtual void OnRep_MovementSpeed(const FGameplayAttributeData& OldMovementSpeed);
+
 	/** Dead **/
 	mutable FOnDeadDelegate OnDead;
 	bool bOutOfHp = false;
 	
+	UAbilitySystemComponent* GetOwningASC();
+
 protected:
 	template <typename T>
 	void SettingValue(T BaseTablePtr);
