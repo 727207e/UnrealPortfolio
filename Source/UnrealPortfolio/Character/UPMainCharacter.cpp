@@ -74,14 +74,11 @@ UAbilitySystemComponent* AUPMainCharacter::GetAbilitySystemComponent() const
 void AUPMainCharacter::OnAttackStart()
 {
 	if(!IsValid(ASC))	{	return; }
-
-	CharacterLookMouseLocation();
 	CallGAS(GAS_INPUT_ID_ATTACK_START);
 }
 
 void AUPMainCharacter::OnSkillStart(int32 Index)
 {
-	CharacterLookMouseLocation();
 	CallGAS(Index);
 	UE_LOG(LogTemplateCharacter, Log, TEXT("Start : %d"), Index);
 }
@@ -227,6 +224,7 @@ void AUPMainCharacter::CallGAS(int32 GameplayAbilityInputId)
 
 		if (!bHasAvoidTag && !bHasInteractingTag && !bHasAttackSkillTag)
 		{
+			CharacterLookMouseLocation();
 			Super::CallGAS(GameplayAbilityInputId);
 		}
 	}
