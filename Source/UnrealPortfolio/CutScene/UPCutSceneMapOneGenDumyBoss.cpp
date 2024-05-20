@@ -7,17 +7,24 @@
 
 void AUPCutSceneMapOneGenDumyBoss::StartEvent()
 {
+	if (!HasAuthority())
+	{
+		return;
+	}
 	Super::StartEvent();
 
 	DumyBoss = GetWorld()->SpawnActor<ACharacter>(DumyBossType, GenPosition->GetActorLocation(), GenPosition->GetActorRotation());
-
 }
 
 void AUPCutSceneMapOneGenDumyBoss::FinishEvent()
 {
+	if (!HasAuthority())
+	{
+		return;
+	}
 	Super::FinishEvent();
 
-	DumyBoss->ConditionalBeginDestroy();
+	DumyBoss->Destroy();
 
 	FTimerHandle RealBossGenTimeHandle;
 	GetWorld()->GetTimerManager().SetTimer(RealBossGenTimeHandle, FTimerDelegate::CreateLambda([&]

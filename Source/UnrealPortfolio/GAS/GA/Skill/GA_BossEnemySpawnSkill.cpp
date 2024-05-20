@@ -13,24 +13,21 @@
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "defines/UPAIDefine.h"
+#include "Tag/GameplayTags.h"
+#include "GAS/Actor/GameplayMultiCueEventData.h"
 #include "Data/DataAttributeSet/BossDataSet/UPBossSkillAttributeSet.h"
 
 UGA_BossEnemySpawnSkill::UGA_BossEnemySpawnSkill()
 {
 	SpawnDelay = 1.0f;
     SearchingRadius = 1000.f;
-
-    static ConstructorHelpers::FObjectFinder<UNiagaraSystem> SpawnVisualRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/DownloadAssets/Pack_VFX/VFX_Niagara/Buffs/NS_Buffs_Buff_11.NS_Buffs_Buff_11'"));
-    if (SpawnVisualRef.Object)
-    {
-        SpawnVisual = SpawnVisualRef.Object;
-    }
 }
 
 void UGA_BossEnemySpawnSkill::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
+    SourceActorInfo = ActorInfo;
 	FTimerHandle SpawnEnemiesTimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(SpawnEnemiesTimerHandle, this, &UGA_BossEnemySpawnSkill::SpawnEnemies, SpawnDelay, false);
 }
@@ -42,8 +39,6 @@ void UGA_BossEnemySpawnSkill::SpawnEnemies()
 
     for (int index = 0; index < SpawnArray.Num(); index++)
     {
-        UNiagaraComponent* SpawnVisualEffect = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), SpawnVisual, SpawnArray[index]);
-
         FVector Location = SpawnArray[index];
         Location.Z += 20.0f;
         FRotator Rotation = CurrentActorInfo->AvatarActor->GetActorQuat().Rotator();
@@ -63,6 +58,18 @@ void UGA_BossEnemySpawnSkill::SpawnEnemies()
             TargetEnemyIndex = 0;
         }
     }
+
+    FActorSpawnParameters SpawnParams;
+    SpawnParams.Owner = SourceActorInfo->OwnerActor.Get();
+    SpawnParams.Instigator = Cast<APawn>(SourceActorInfo->AvatarActor.Get());
+    GameplayMultiCueEventData = GetWorld()->SpawnActor<AGameplayMultiCueEventData>(AGameplayMultiCueEventData::StaticClass(), SpawnParams);
+    GameplayMultiCueEventData->SpawnLocations = SpawnArray;
+
+    FGameplayCueParameters CueParam;
+    CueParam.Instigator = GameplayMultiCueEventData;
+    CueParam.RawMagnitude = 1.0f;
+
+    SourceASC->ExecuteGameplayCue(TAG_SPAWNEFFECT, CueParam);
 }
 
 void UGA_BossEnemySpawnSkill::SettingTarget(ACharacter* TargetEnemy)

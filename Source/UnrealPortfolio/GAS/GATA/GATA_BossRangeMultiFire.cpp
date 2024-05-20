@@ -38,6 +38,22 @@ void AGATA_BossRangeMultiFire::ConfirmTargetingAndContinue()
 {
 	bDestroyOnConfirmation = false;
 	InitializeSphere();
+
+	FTimerHandle DeadTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, this, &AGATA_BossRangeMultiFire::AutoDestroy, 1.5f, false);
+}
+
+void AGATA_BossRangeMultiFire::BeginPlay()
+{
+	MuzzleFX = nullptr;
+	Super::BeginPlay();
+	MuzzleComponent->SetAsset(nullptr);
+}
+
+void AGATA_BossRangeMultiFire::Destroyed()
+{
+	HitFX = nullptr;
+	Super::Destroyed();
 }
 
 void AGATA_BossRangeMultiFire::InitializeSphere()
@@ -63,7 +79,7 @@ void AGATA_BossRangeMultiFire::InitializeSphere()
 		}
 	}
 }
-//0, 1, 2, 3
+
 FTransform AGATA_BossRangeMultiFire::GetProjecttilePos(int index)
 {
 	ACharacter* SourceCharacter = CastChecked<ACharacter>(SourceActor);

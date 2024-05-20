@@ -8,6 +8,11 @@
 
 void AUPCutSceneBossRun::StartEvent()
 {
+	if (!HasAuthority())
+	{
+		return;
+	}
+
 	if (BossManager->Boss != nullptr)
 	{
 		BossManager->Boss->Destroy();
@@ -23,7 +28,12 @@ void AUPCutSceneBossRun::StartEvent()
 
 void AUPCutSceneBossRun::FinishEvent()
 {
-	if (IsValid(DumyBoss) && !DumyBoss->IsPendingKill() && !DumyBoss->HasAnyFlags(RF_BeginDestroyed)) 
+	if (!HasAuthority())
+	{
+		return;
+	}
+
+	if (IsValid(DumyBoss) && !DumyBoss->HasAnyFlags(RF_BeginDestroyed)) 
 	{
 		GetWorld()->GetTimerManager().ClearAllTimersForObject(DumyBoss.Get());
 

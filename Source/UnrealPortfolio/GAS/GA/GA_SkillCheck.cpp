@@ -37,7 +37,7 @@ void UGA_SkillCheck::OnTargetDetect(const FGameplayAbilityTargetDataHandle& Targ
 		{
 			const FHitResult HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, Index);
 
-			AttackSequence(TargetDataHandle, HitResult.Location ,HitResult.GetActor());
+			AttackSequence(TargetDataHandle, HitResult.Location , HitResult.GetActor());
 		}
 	}
 
@@ -77,16 +77,14 @@ void UGA_SkillCheck::AttackSequence(const FGameplayAbilityTargetDataHandle& Targ
 			return;
 		}
 
-		if (nullptr == CurrentData->TargetAttributeSet)
+		if (CurrentData->TargetAttributeSet)
 		{
-			return;
-		}
-
-		FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(AttackDamageEffect);
-		if (EffectSpecHandle.IsValid())
-		{
-			EffectSpecHandle.Data->SetSetByCallerMagnitude(TAG_DATA_DAMAGE, -CurrentData->TargetAttributeSet->GetDamage());
-			ApplyGameplayEffectSpecToTarget(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, EffectSpecHandle, TargetDataHandle);
+			FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(AttackDamageEffect);
+			if (EffectSpecHandle.IsValid())
+			{
+				EffectSpecHandle.Data->SetSetByCallerMagnitude(TAG_DATA_DAMAGE, -CurrentData->TargetAttributeSet->GetDamage());
+				ApplyGameplayEffectSpecToTarget(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, EffectSpecHandle, TargetDataHandle);
+			}
 		}
 
 		if (CurrentData->ActionGC.IsValid())

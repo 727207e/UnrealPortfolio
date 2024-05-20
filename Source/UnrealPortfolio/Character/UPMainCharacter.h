@@ -149,4 +149,9 @@ public:
 	TObjectPtr<UArrowComponent> AvoidDirectionArrowComponent;
 	UFUNCTION(BlueprintCallable, Category = Input)
 	void Dodge();
+
+	void CharacterLookMouseLocation();
+	UFUNCTION(Server, UnReliable)
+	void Server_SetActorRotation(FVector LookTargetLocation);
+
 };

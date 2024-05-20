@@ -39,15 +39,19 @@ public :
 
 	FName SocketName;
 	bool bIsSettingInSocket = true;
+
 public :
 	virtual void ConfirmTargetingAndContinue() override;
 	virtual void Destroyed() override;
-	
+	virtual void BeginPlay() override;
+
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult);
 	void SetProjectileSpeed(float speed);
 
+protected :
+	void AutoDestroy();
+
 private :
 	void SettingProjectile();
-	void AutoDestroy();
 };

@@ -8,6 +8,7 @@
 #include "GAS/GA/GA_FindTarget.h"
 #include "Character/UPEnemyCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Data/DataAttributeSet/EntityAttributeSet.h"
 #include "defines/UPAIDefine.h"
 
 UBTTask_FindTarget::UBTTask_FindTarget()
@@ -43,13 +44,15 @@ EBTNodeResult::Type UBTTask_FindTarget::ExecuteTask(UBehaviorTreeComponent& Owne
 
 	//공격 받으면 캔슬
 	FOnHitDelegate OnHitDelegate;
-	OnHitDelegate.AddLambda([&]() {
-			if (FindTargetGAS.Ability)
-			{
-				FindTargetGAS.Ability->CancelAbility(FindTargetGAS.Handle, FindTargetGAS.Ability->GetCurrentActorInfo(), FindTargetGAS.ActivationInfo, true);
-				BbComponent->SetValueAsBool(BBKEY_TARGETFIND, true);
-				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-			}
+	OnHitDelegate.AddLambda([&, BbComponent, FindTargetGAS]() {
+
+			//if(!EnemyCharacter->AttributeSet->bOutOfHp && FindTargetGAS.Ability)
+			//{
+			//	FindTargetGAS.Ability->CancelAbility(FindTargetGAS.Handle, FindTargetGAS.Ability->GetCurrentActorInfo(), FindTargetGAS.ActivationInfo, true);
+			//}
+
+			BbComponent->SetValueAsBool(BBKEY_TARGETFIND, true);
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		});
 	EnemyCharacter->AddOnHitDelegate(OnHitDelegate);
 

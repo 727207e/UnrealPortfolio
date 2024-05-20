@@ -22,13 +22,13 @@ void UAbilityTask_LookAtMouse::Activate()
 
 void UAbilityTask_LookAtMouse::LookAtMouse()
 {
-	FHitResult HitResult;	
-	Cast<APawn>(GetAvatarActor())->GetLocalViewingPlayerController()->GetHitResultUnderCursorByChannel(static_cast<ETraceTypeQuery>(ECC_Visibility),true,HitResult);
-	HitResult.Location.Z = 0;
-	FVector ActorLocation =  GetAvatarActor()->GetActorLocation();
-	ActorLocation.Z = 0;
-	const FRotator TargetRotation =  UKismetMathLibrary::FindLookAtRotation(ActorLocation,HitResult.Location);
-	GetAvatarActor()->SetActorRotation(TargetRotation);
+	//FHitResult HitResult;	
+	//Cast<APawn>(GetAvatarActor())->GetLocalViewingPlayerController()->GetHitResultUnderCursorByChannel(static_cast<ETraceTypeQuery>(ECC_Visibility),true,HitResult);
+	//HitResult.Location.Z = 0;
+	//FVector ActorLocation =  GetAvatarActor()->GetActorLocation();
+	//ActorLocation.Z = 0;
+	//const FRotator TargetRotation =  UKismetMathLibrary::FindLookAtRotation(ActorLocation,HitResult.Location);
+	//GetAvatarActor()->SetActorRotation(TargetRotation);
 	
 	bIsDone = true;
 }
