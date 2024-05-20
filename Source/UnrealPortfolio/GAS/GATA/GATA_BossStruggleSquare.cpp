@@ -93,7 +93,7 @@ void AGATA_BossStruggleSquare::GetAttributeSetting()
 	BoxSizeZ = BoxSizeValue.Z;
 }
 
-void AGATA_BossStruggleSquare::StartTargeting()
+void AGATA_BossStruggleSquare::StartTargetingN()
 {
 	TArray<UDecalComponent*> DecalComponents;
 	GetComponents(DecalComponents);

@@ -53,7 +53,7 @@ void AGATA_SquareTrace::ConfirmTargetingAndContinue()
 	}
 	else
 	{
-		StartTargeting();
+		StartTargetingN();
 	}
 }
 
@@ -99,7 +99,7 @@ void AGATA_SquareTrace::DrawDecal()
 	GetWorld()->GetTimerManager().SetTimer(StartTarget, FTimerDelegate::CreateLambda([&]
 		{
 			SquareDecal->SetVisibility(false);
-			StartTargeting();
+			StartTargetingN();
 		}), DecalDelayTime, false);
 }
 
@@ -134,7 +134,7 @@ void AGATA_SquareTrace::InitSquareTrace()
 	RootComponent->SetRelativeLocationAndRotation(NewLocation, NewRotation);
 }
 
-void AGATA_SquareTrace::StartTargeting()
+void AGATA_SquareTrace::StartTargetingN()
 {
 	Box->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	FTimerHandle DeadTimerHandle;

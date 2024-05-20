@@ -36,7 +36,7 @@ public:
 
 protected:
 	virtual void GetAttributeSetting();
-	virtual void StartTargeting();
+	virtual void StartTargetingN();
 	virtual	void InitTrace();
 
 	float SphereRadius;
