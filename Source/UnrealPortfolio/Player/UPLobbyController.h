@@ -16,4 +16,13 @@ class UNREALPORTFOLIO_API AUPLobbyController : public APlayerController
 	
 public :
 	AUPLobbyController();
+
+	virtual void BeginPlay() override;
+
+public :
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUPLobbyHUDWidget> LobbyHUDWidgetType;
+
+	UPROPERTY()
+	TObjectPtr<class UUPLobbyHUDWidget> LobbyHUDWidget;
 };
