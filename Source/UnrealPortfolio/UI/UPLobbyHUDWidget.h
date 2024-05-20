@@ -14,8 +14,7 @@ class UNREALPORTFOLIO_API UUPLobbyHUDWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
+public :
 	UFUNCTION(BlueprintCallable)
-	void OnBtnConnectToServer(const FString& Address);
-	UFUNCTION(BlueprintCallable)
-	void OnSettingUserNickname(const FString& Nickname);
+	FString GetIPAddress();
 };

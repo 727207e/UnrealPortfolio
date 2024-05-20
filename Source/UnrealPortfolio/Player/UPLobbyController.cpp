@@ -2,7 +2,7 @@
 
 
 #include "Player/UPLobbyController.h"
-#include "UI/UPLobbyHUDWidget.h"
+#include "Blueprint/UserWidget.h"
 
 AUPLobbyController::AUPLobbyController()
 {
@@ -16,7 +16,7 @@ void AUPLobbyController::BeginPlay()
 
 	if (nullptr != LobbyHUDWidgetType)
 	{
-		LobbyHUDWidget = CastChecked<UUPLobbyHUDWidget>(CreateWidget(GetWorld(), LobbyHUDWidgetType, TEXT("LobbyHUDWidgetType")));
+		LobbyHUDWidget = CreateWidget(GetWorld(), LobbyHUDWidgetType, TEXT("LobbyHUDWidgetType"));
 		LobbyHUDWidget->AddToViewport();
 	}
 

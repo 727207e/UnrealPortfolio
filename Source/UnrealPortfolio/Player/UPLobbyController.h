@@ -21,10 +21,10 @@ public :
 
 public :
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UUPLobbyHUDWidget> LobbyHUDWidgetType;
+	TSubclassOf<class UUserWidget> LobbyHUDWidgetType;
 
 	UPROPERTY()
-	TObjectPtr<class UUPLobbyHUDWidget> LobbyHUDWidget;
+	TObjectPtr<class UUserWidget> LobbyHUDWidget;
 
 	void TryConnectToServer(const FString& Address);
 
