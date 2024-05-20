@@ -25,4 +25,10 @@ public :
 
 	UPROPERTY()
 	TObjectPtr<class UUPLobbyHUDWidget> LobbyHUDWidget;
+
+	void TryConnectToServer(const FString& Address);
+
+private :
+	FTimerHandle IPCheckTimerHandle;
+	void CheckIPAddress();
 };

@@ -13,5 +13,7 @@ UCLASS()
 class UNREALPORTFOLIO_API UUPLobbyHUDWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
+	UFUNCTION(BlueprintCallable)
+	void OnBtnConnectToServer(const FString& Address);
 };

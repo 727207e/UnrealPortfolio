@@ -14,11 +14,28 @@ void AUPLobbyController::BeginPlay()
 {	
 	Super::BeginPlay();
 
-	UE_LOG(LogTemp, Error, TEXT("111"));
 	if (nullptr != LobbyHUDWidgetType)
 	{
-		UE_LOG(LogTemp, Error, TEXT("1112222"));
 		LobbyHUDWidget = CastChecked<UUPLobbyHUDWidget>(CreateWidget(GetWorld(), LobbyHUDWidgetType, TEXT("LobbyHUDWidgetType")));
 		LobbyHUDWidget->AddToViewport();
+	}
+
+}
+
+void AUPLobbyController::TryConnectToServer(const FString& Address)
+{
+	ConsoleCommand("open " + Address);
+	GetWorld()->GetTimerManager().SetTimer(IPCheckTimerHandle, this, &AUPLobbyController::CheckIPAddress, 3.0f, false);
+}
+
+void AUPLobbyController::CheckIPAddress()
+{
+	if (GetWorld() && GetWorld()->GetNetDriver())
+	{
+		GetWorld()->GetNetDriver()->Shutdown();
+	}
+	if (IsLocalPlayerController())
+	{
+		GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
 	}
 }
