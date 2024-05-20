@@ -16,6 +16,7 @@ class IHUDControllerInterface;
 
 UGA_MainCharacterSkillBase::UGA_MainCharacterSkillBase(): Cooldown(0), MagicPoints(0), TargetSkillAbilityIndex(0)
 {
+	ActivationOwnedTags.AddTag(TAG_PLAYER_STATE_ATTACK_SKILL);	
 }
 
 void UGA_MainCharacterSkillBase::SetData()
@@ -66,16 +67,6 @@ void UGA_MainCharacterSkillBase::InputPressed(const FGameplayAbilitySpecHandle H
 	Super::InputPressed(Handle, ActorInfo, ActivationInfo);
 }
 
-void UGA_MainCharacterSkillBase::OnCompleteCallback()
-{
-	Super::OnCompleteCallback();
-}
-
-void UGA_MainCharacterSkillBase::OnInterruptedCallback()
-{
-	Super::OnInterruptedCallback();
-}
-
 void UGA_MainCharacterSkillBase::CooldownProcess()
 {
 	const AUPPlayerState* PlayerState = Cast<AUPPlayerState>(CurrentActorInfo->OwnerActor);
@@ -120,11 +111,3 @@ void UGA_MainCharacterSkillBase::UseMp()
 	const FActiveGameplayEffectHandle ActiveGeHandle = ApplyGameplayEffectSpecToOwner(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,EffectSpecHandle);
 					
 }
-
-void UGA_MainCharacterSkillBase::MontageAbility()
-{
-	UAbilityTask_PlayMontageAndWait* PlayAttackTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
-		this,TEXT("PlayerSkill"),TargetMontage, AttackSpeed, TargetMontageSectionName);
-	PlayAttackTask->ReadyForActivation();
-}
-

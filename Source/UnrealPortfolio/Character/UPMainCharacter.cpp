@@ -74,14 +74,11 @@ UAbilitySystemComponent* AUPMainCharacter::GetAbilitySystemComponent() const
 void AUPMainCharacter::OnAttackStart()
 {
 	if(!IsValid(ASC))	{	return; }
-
-	CharacterLookMouseLocation();
 	CallGAS(GAS_INPUT_ID_ATTACK_START);
 }
 
 void AUPMainCharacter::OnSkillStart(int32 Index)
 {
-	CharacterLookMouseLocation();
 	CallGAS(Index);
 	UE_LOG(LogTemplateCharacter, Log, TEXT("Start : %d"), Index);
 }
@@ -211,10 +208,25 @@ void AUPMainCharacter::BeginPlay()
 
 void AUPMainCharacter::CallGAS(int32 GameplayAbilityInputId)
 {
-	if(!ASC->HasMatchingGameplayTag(TAG_PLAYER_STATE_AVOID) &&
-	   !ASC->HasMatchingGameplayTag(TAG_PLAYER_INTERACTING_WITH_NPC))
+	const bool bHasAvoidTag = ASC->HasMatchingGameplayTag(TAG_PLAYER_STATE_AVOID);
+	const bool bHasInteractingTag = ASC->HasMatchingGameplayTag(TAG_PLAYER_INTERACTING_WITH_NPC);
+
+	if (GameplayAbilityInputId == GAS_INPUT_ID_AVOID_START)
 	{
-		Super::CallGAS(GameplayAbilityInputId);
+		if (!bHasAvoidTag && !bHasInteractingTag)
+		{
+			Super::CallGAS(GameplayAbilityInputId);
+		}
+	}
+	else
+	{
+		const bool bHasAttackSkillTag = ASC->HasMatchingGameplayTag(TAG_PLAYER_STATE_ATTACK_SKILL);
+
+		if (!bHasAvoidTag && !bHasInteractingTag && !bHasAttackSkillTag)
+		{
+			CharacterLookMouseLocation();
+			Super::CallGAS(GameplayAbilityInputId);
+		}
 	}
 }
 
