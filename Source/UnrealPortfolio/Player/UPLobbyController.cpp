@@ -25,10 +25,10 @@ void AUPLobbyController::BeginPlay()
 void AUPLobbyController::TryConnectToServer(const FString& Address)
 {
 	ConsoleCommand("open " + Address);
-	GetWorld()->GetTimerManager().SetTimer(IPCheckTimerHandle, this, &AUPLobbyController::CheckIPAddress, 3.0f, false);
+	GetWorld()->GetTimerManager().SetTimer(IPCheckTimerHandle, this, &AUPLobbyController::ConnectTimeOver, 5.0f, false);
 }
 
-void AUPLobbyController::CheckIPAddress()
+void AUPLobbyController::ConnectTimeOver()
 {
 	if (GetWorld() && GetWorld()->GetNetDriver())
 	{

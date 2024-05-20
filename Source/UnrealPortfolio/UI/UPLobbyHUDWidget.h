@@ -16,4 +16,6 @@ class UNREALPORTFOLIO_API UUPLobbyHUDWidget : public UUserWidget
 
 	UFUNCTION(BlueprintCallable)
 	void OnBtnConnectToServer(const FString& Address);
+	UFUNCTION(BlueprintCallable)
+	void OnSettingUserNickname(const FString& Nickname);
 };

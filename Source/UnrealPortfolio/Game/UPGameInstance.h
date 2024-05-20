@@ -23,6 +23,9 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Manager")
     void SetBossManager(class ABossManager* TargetBossManager);
 
+    UPROPERTY()
+    FString PlayerNickname;
+
 private:
     UPROPERTY()
     class ABossManager* BossManager;

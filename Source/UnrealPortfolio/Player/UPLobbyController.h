@@ -30,5 +30,5 @@ public :
 
 private :
 	FTimerHandle IPCheckTimerHandle;
-	void CheckIPAddress();
+	void ConnectTimeOver();
 };

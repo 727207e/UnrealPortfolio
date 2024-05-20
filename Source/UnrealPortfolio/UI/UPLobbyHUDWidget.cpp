@@ -3,6 +3,7 @@
 
 #include "UI/UPLobbyHUDWidget.h"
 #include "Player/UPLobbyController.h"
+#include "Game/UPGameInstance.h"
 
 void UUPLobbyHUDWidget::OnBtnConnectToServer(const FString& Address)
 {
@@ -37,5 +38,17 @@ void UUPLobbyHUDWidget::OnBtnConnectToServer(const FString& Address)
 	if (LobbyController)
 	{
 		LobbyController->TryConnectToServer(Address);
+	}
+}
+
+void UUPLobbyHUDWidget::OnSettingUserNickname(const FString& Nickname)
+{
+	UUPGameInstance* GameInstance = Cast< UUPGameInstance>(GetWorld()->GetGameInstance());
+	if (GameInstance)
+	{
+		GameInstance->PlayerNickname = Nickname;
+
+
+		UE_LOG(LogTemp, Error, TEXT("UserNick : %s"), *GameInstance->PlayerNickname);
 	}
 }
