@@ -16,6 +16,10 @@ void UGA_SkillBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
 	{
 		MontageAbility();
 	}
+	else
+	{
+		UE_LOG(LogTemp,Error,TEXT("GA_SkillBase Not found Play Montage."));
+	}
 }
 
 void UGA_SkillBase::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
