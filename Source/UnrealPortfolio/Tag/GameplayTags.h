@@ -17,5 +17,7 @@
 #define TAG_PLAYER_STATE_AVOID FGameplayTag::RequestGameplayTag(FName("Player.State.AbilityAvoid"))
 #define TAG_PLAYER_STATE_ATTACK_SKILL FGameplayTag::RequestGameplayTag(FName("Player.State.AbilitySkill"))
 #define TAG_HEAD_ATTACK FGameplayTag::RequestGameplayTag(FName("Player.SkillType.HeadAttackPossible"))
+#define TAG_BACK_ATTACK FGameplayTag::RequestGameplayTag(FName("Player.SkillType.BackAttackPossible"))
 #define TAG_SPAWNEFFECT FGameplayTag::RequestGameplayTag(FName("GameplayCue.Character.EnemySpawn"))
 #define TAG_HEAD_ATTACK_HIT FGameplayTag::RequestGameplayTag(FName("Character.Action.HeadAttackHitPossible"))
+#define TAG_BACK_ATTACK_HIT FGameplayTag::RequestGameplayTag(FName("Character.Action.BackAttackHitPossible"))

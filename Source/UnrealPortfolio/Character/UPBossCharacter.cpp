@@ -68,6 +68,7 @@ void AUPBossCharacter::PostInitializeComponents()
 	else
 	{
 		TargetASC->AddLooseGameplayTag(TAG_HEAD_ATTACK_HIT);
+		TargetASC->AddLooseGameplayTag(TAG_BACK_ATTACK_HIT);
 	}
 
 	for (TObjectPtr<UUPACSkillState> SkillState : BossSkillStateArray)
