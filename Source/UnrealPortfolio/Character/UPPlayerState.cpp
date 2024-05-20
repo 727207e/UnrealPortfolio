@@ -12,6 +12,8 @@ AUPPlayerState::AUPPlayerState()
 	AttributeSet = CreateDefaultSubobject<UUPMainCharacterAttributeSet>(TEXT("AttributeSet"));
 	ASC->SetIsReplicated(true);
 	ASC->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
+
+	NetUpdateFrequency = 60;
 }
 
 UAbilitySystemComponent* AUPPlayerState::GetAbilitySystemComponent() const
