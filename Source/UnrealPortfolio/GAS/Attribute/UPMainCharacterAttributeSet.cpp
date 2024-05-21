@@ -16,7 +16,6 @@ void UUPMainCharacterAttributeSet::PreAttributeChange(const FGameplayAttribute& 
 	Super::PreAttributeChange(Attribute, NewValue);
 	if (Attribute == GetMpAttribute())
 	{
-		UE_LOG(LogTemp,Log,TEXT("%f"),NewValue);
 		NewValue = FMath::Clamp(NewValue, 0.0f,GetMaxMp());
 	}
 }
