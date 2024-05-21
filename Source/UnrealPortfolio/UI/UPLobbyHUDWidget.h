@@ -17,4 +17,19 @@ class UNREALPORTFOLIO_API UUPLobbyHUDWidget : public UUserWidget
 public :
 	UFUNCTION(BlueprintCallable)
 	FString GetIPAddress();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void InitLobbyHud();
+	virtual void InitLobbyHud_Implementation();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void AddUserDataInfo(const FString& NickName);
+	virtual void AddUserDataInfo_Implementation(const FString& NickName);
+
+	UPROPERTY()
+	TObjectPtr<class UUPACLobbyUIHelper> ACLobbyUIHelper;
+
+	UFUNCTION(BlueprintCallable)
+	void CallUpdateMyInfoToServer(const FString& NickName);
+
 };

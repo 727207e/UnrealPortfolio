@@ -23,7 +23,7 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Manager")
     void SetBossManager(class ABossManager* TargetBossManager);
 
-    UPROPERTY()
+    UPROPERTY(BlueprintReadOnly)
     FString PlayerNickname;
 
 private:

@@ -6,6 +6,9 @@
 #include "Sockets.h"
 #include "SocketSubsystem.h"
 #include "IPAddress.h"
+#include "Engine/World.h"
+#include "Game/UPGameInstance.h"
+#include "UI/UPACLobbyUIHelper.h"
 
 FString UUPLobbyHUDWidget::GetIPAddress()
 {
@@ -19,5 +22,21 @@ FString UUPLobbyHUDWidget::GetIPAddress()
     else
     {
         return FString();
+    }
+}
+
+void UUPLobbyHUDWidget::InitLobbyHud_Implementation()
+{
+}
+
+void UUPLobbyHUDWidget::AddUserDataInfo_Implementation(const FString& NickName)
+{
+}
+
+void UUPLobbyHUDWidget::CallUpdateMyInfoToServer(const FString& NickName)
+{
+    if (ACLobbyUIHelper)
+    {
+        ACLobbyUIHelper->UpdateUserInfo(NickName);
     }
 }

@@ -17,18 +17,6 @@ class UNREALPORTFOLIO_API AUPLobbyController : public APlayerController
 public :
 	AUPLobbyController();
 
-	virtual void BeginPlay() override;
-
 public :
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UUserWidget> LobbyHUDWidgetType;
-
-	UPROPERTY()
-	TObjectPtr<class UUserWidget> LobbyHUDWidget;
-
-	void TryConnectToServer(const FString& Address);
-
-private :
-	FTimerHandle IPCheckTimerHandle;
-	void ConnectTimeOver();
+	TObjectPtr<class UUPACLobbyUIHelper> LobbyUIHelperComponent;
 };
