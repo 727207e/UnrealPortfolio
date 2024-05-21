@@ -203,7 +203,7 @@ void AUPMainCharacter::BeginPlay()
 			HostController->HudWidgetComponent->MainHudWidget->SetProgress(PS);
 		}
 	}
-	ActiveAbilityEquipWeapon(DEFAULT_WEAPON_ID);
+	
 }
 
 void AUPMainCharacter::CallGAS(int32 GameplayAbilityInputId)
@@ -404,13 +404,17 @@ void AUPMainCharacter::SetMainCharacterTableData() const
 void AUPMainCharacter::SetupASCClientPlayer()
 {
 	Super::SetupASCClientPlayer();
+	CreateHudWidget();
 	SetMainCharacterTableData();
+	ActiveAbilityEquipWeapon(DEFAULT_WEAPON_ID);
 }
 
 void AUPMainCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 {
 	Super::SetupASCHostPlayer(InOwnerActor);
+	CreateHudWidget();
 	SetMainCharacterTableData();
+	ActiveAbilityEquipWeapon(DEFAULT_WEAPON_ID);
 }
 
 
@@ -463,15 +467,6 @@ void AUPMainCharacter::ActiveAbilityEquipWeapon(int32 TryEquipWeaponId)
 }
 
 
-void AUPMainCharacter::SendPlayerStateToClient()
-{
-	APlayerState* ClientPlayerState = GetPlayerState();
-	AUPPlayerController* ClientController = Cast<AUPPlayerController>(GetController());
-	if(ClientPlayerState)
-	{
-		ClientReceivePlayerState(ClientController, ClientPlayerState);
-	}
-}
 
 AUPPlayerState* AUPMainCharacter::GetUPPlayerState()
 {
@@ -510,9 +505,8 @@ void AUPMainCharacter::CharacterLookMouseLocation()
 	}
 }
 
-void AUPMainCharacter::OnRep_PlayerState()
+void AUPMainCharacter::CreateHudWidget()
 {
-	Super::OnRep_PlayerState();
 	AUPPlayerState* PS = GetPlayerState<AUPPlayerState>();
 	AUPPlayerController* MyClienetController = Cast<AUPPlayerController>(PS->GetPlayerController());
 	if(MyClienetController)
@@ -523,6 +517,7 @@ void AUPMainCharacter::OnRep_PlayerState()
 	,TEXT("UUPMainHudWidget")));
 			MyClienetController->HudWidgetComponent->MainHudWidget->AddToViewport();
 			MyClienetController->HudWidgetComponent->MainHudWidget->SetProgress(PS);
+			
 		}
 	}
 }
@@ -538,20 +533,6 @@ void AUPMainCharacter::Dodge()
 }
 
 
-//TODO: 버그 GetHudWidget이 호스트를 반환한다.
-void AUPMainCharacter::ClientReceivePlayerState_Implementation(AUPPlayerController* ClientController, APlayerState* ClientPlayerState)
-{
-	if(ClientController && ClientPlayerState)
-	{
-		ClientController->GetHudWidget()->SetProgress(ClientPlayerState);
-	}
-}
-
-
-void AUPMainCharacter::ServerRequestPlayerState_Implementation()
-{
-	SendPlayerStateToClient();
-}
 
 ECharacterControlType AUPMainCharacter::GetCharacterControl()
 {
