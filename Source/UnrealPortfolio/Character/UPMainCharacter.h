@@ -153,5 +153,5 @@ public:
 	void CharacterLookMouseLocation();
 	UFUNCTION(Server, UnReliable)
 	void Server_SetActorRotation(FVector LookTargetLocation);
-
+	virtual void OnRep_PlayerState() override;
 };

@@ -13,8 +13,4 @@ UCLASS()
 class UNREALPORTFOLIO_API UGE_AttackDamage : public UGameplayEffect
 {
 	GENERATED_BODY()
-
-public:
-	UGE_AttackDamage();
-	static float CalculateArmorRatio(float BaseDamage, float ArmorRatio);
 };

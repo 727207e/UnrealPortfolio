@@ -28,14 +28,20 @@ public:
 	ATTRIBUTE_ACCESSORS(UUPMainCharacterAttributeSet, MaxMp);
 
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
-
-	UPROPERTY(BlueprintReadOnly, Category = "MP", Meta = (AllowPrivateAccess = true))
+	virtual bool PreGameplayEffectExecute(struct FGameplayEffectModCallbackData& Data) override;
+	virtual void GetLifetimeReplicatedProps(TArray< class FLifetimeProperty >& OutLifetimeProps) const override;
+	UFUNCTION()
+	virtual void OnRep_MaxMp(const FGameplayAttributeData& OldMaxMp);
+	UFUNCTION()
+	virtual void OnRep_Mp(const FGameplayAttributeData& OldMp);
+	
+	UPROPERTY(BlueprintReadOnly,ReplicatedUsing = OnRep_Mp, Category = "MP", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData Mp;
 	
-	UPROPERTY(BlueprintReadOnly, Category = "MP", Meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly,ReplicatedUsing = OnRep_MaxMp, Category = "MP", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData MaxMp;
 	
 	void MainCharacterSettingValue(const FUPMainCharacterClassTable& Table);
-
+	
 	virtual  void InitAttributeSet() override;
 };

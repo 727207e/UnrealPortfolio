@@ -85,8 +85,7 @@ void UGA_MainCharacterSkillBase::CooldownProcess()
 					UseMp();
 					if(!bCantLookAtMouseAbility)
 					{
-						UAbilityTask_LookAtMouse * AttackTraceTask = UAbilityTask_LookAtMouse::CreateTask(this);
-						AttackTraceTask->ReadyForActivation();
+						Cast<ICharacterMovementInterface>(CurrentActorInfo->AvatarActor)->SetMoveBlock(true);
 					}
 				}
 				else
@@ -104,10 +103,20 @@ void UGA_MainCharacterSkillBase::SetSlotWidget(USlotViewWidget* TargetSlotViewWi
 	SkillSlotWidget = TargetSlotViewWidget;
 }
 
-void UGA_MainCharacterSkillBase::UseMp()
+void UGA_MainCharacterSkillBase::OnCompleteCallback()
 {
-	const FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(UseMpEffect,1.0f);
-	EffectSpecHandle.Data->SetSetByCallerMagnitude(TAG_DATA_USE_MP,MagicPoints * -1);
-	const FActiveGameplayEffectHandle ActiveGeHandle = ApplyGameplayEffectSpecToOwner(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,EffectSpecHandle);
-					
+	Super::OnCompleteCallback();
+	Cast<ICharacterMovementInterface>(GetCurrentActorInfo()->AvatarActor)->SetMoveBlock(false);
+}
+
+
+void UGA_MainCharacterSkillBase::UseMp() const
+{
+	const UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo();
+	if (ASC && UseMpEffect)
+	{
+		const FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(UseMpEffect,1.0f);
+		EffectSpecHandle.Data->SetSetByCallerMagnitude(TAG_DATA_USE_MP,MagicPoints * -1);
+		const FActiveGameplayEffectHandle ActiveGeHandle = ApplyGameplayEffectSpecToOwner(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,EffectSpecHandle);
+	}				
 }

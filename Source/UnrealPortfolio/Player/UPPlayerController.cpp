@@ -15,6 +15,7 @@ DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 AUPPlayerController::AUPPlayerController()
 {
 	ChatActorComponent = CreateDefaultSubobject<UUPACChatGenerator>(TEXT("ChatWidgetActorComponent"));
+	HudWidgetComponent = CreateDefaultSubobject<UWidgetHUDComponent>(TEXT("HudComponent"));
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;
 	PossessCharacter = nullptr;
@@ -35,11 +36,6 @@ void AUPPlayerController::BeginPlay()
 	if (nullptr == PossessCharacter)
 	{
 		UE_LOG(LogTemplateCharacter, Log, TEXT("Failed To Get PossessCharacter"));
-	}
-	
-	if(UClass* HudWidgetClass = LoadClass<UUserWidget>(nullptr, TEXT("/Game/UI/WBP_Hud.WBP_Hud_C")))
-	{
-		MainHudWidget = CastChecked<UUPMainHudWidget>(CreateWidget(GetWorld(),HudWidgetClass,TEXT("UUPMainHudWidget")));
 	}
 }
 
@@ -174,7 +170,7 @@ void AUPPlayerController::ChatScroll(bool bUp)
 
 TObjectPtr<UUPMainHudWidget> AUPPlayerController::GetHudWidget()
 {
-	return  MainHudWidget;
+	return  HudWidgetComponent->MainHudWidget;
 }
 
 void AUPPlayerController::OnInputStarted()
