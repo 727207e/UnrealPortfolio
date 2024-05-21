@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "Game/UPLobbyGameState.h"
 #include "UPLobbyController.generated.h"
 
 /**
@@ -18,5 +19,18 @@ public :
 	AUPLobbyController();
 
 public :
+	virtual void BeginPlay() override;
+	
+public :
 	TObjectPtr<class UUPACLobbyUIHelper> LobbyUIHelperComponent;
+	FUPUserData MyUserData;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUserWidget> LobbyHUDWidgetType;
+	UPROPERTY()
+	TObjectPtr<class UUPLobbyHUDWidget> LobbyHUDWidget;
+
+	UFUNCTION(Server, Unreliable)
+	void Server_UpdateUserData(const FUPUserData& UserData);
+
 };

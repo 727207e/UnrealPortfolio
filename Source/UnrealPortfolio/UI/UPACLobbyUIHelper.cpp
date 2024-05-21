@@ -29,7 +29,7 @@ void UUPACLobbyUIHelper::BeginPlay()
 
 void UUPACLobbyUIHelper::UpdateUserInfo(const FString& NickName)
 {
-    Server_UpdateUserInfo(NickName);
+    //Server_UpdateUserInfo(NickName);
 }
 
 void UUPACLobbyUIHelper::UpdateUserInfoSpecific()
@@ -46,5 +46,5 @@ void UUPACLobbyUIHelper::Server_UpdateUserInfo_Implementation(const FString& Nic
 
 void UUPACLobbyUIHelper::Client_UpdateUserInfo_Implementation(const FString& NickName)
 {
-    LobbyHUDWidget->AddUserDataInfo(NickName);
+    //LobbyHUDWidget->AddUserDataInfo(NickName);
 }

@@ -7,6 +7,7 @@
 #include "SocketSubsystem.h"
 #include "IPAddress.h"
 #include "Engine/World.h"
+#include "Game/UPLobbyGameState.h"
 #include "Game/UPGameInstance.h"
 #include "UI/UPACLobbyUIHelper.h"
 
@@ -25,18 +26,30 @@ FString UUPLobbyHUDWidget::GetIPAddress()
     }
 }
 
+void UUPLobbyHUDWidget::UpdateUserInfo()
+{
+    
+}
+
 void UUPLobbyHUDWidget::InitLobbyHud_Implementation()
 {
+
 }
 
-void UUPLobbyHUDWidget::AddUserDataInfo_Implementation(const FString& NickName)
+void UUPLobbyHUDWidget::AddUpdateEventToGameState()
 {
-}
-
-void UUPLobbyHUDWidget::CallUpdateMyInfoToServer(const FString& NickName)
-{
-    if (ACLobbyUIHelper)
+    AUPLobbyGameState* GameState = Cast<AUPLobbyGameState>(GetWorld()->GetGameState());
+    if (GameState)
     {
-        ACLobbyUIHelper->UpdateUserInfo(NickName);
+        GameState->OnPlayerDataListChanged.AddUObject(this, &UUPLobbyHUDWidget::AddUserDataInfoArray);
     }
+}
+
+
+void UUPLobbyHUDWidget::AddUserDataInfo_Implementation(const FUPUserData& NickName)
+{
+}
+
+void UUPLobbyHUDWidget::AddUserDataInfoArray_Implementation(const TArray<FUPUserData>& PlayerList)
+{
 }

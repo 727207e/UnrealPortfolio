@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Game/UPLobbyGameState.h"
 #include "UPLobbyHUDWidget.generated.h"
 
 /**
@@ -18,13 +19,22 @@ public :
 	UFUNCTION(BlueprintCallable)
 	FString GetIPAddress();
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void InitLobbyHud();
-	virtual void InitLobbyHud_Implementation();
+	UFUNCTION(BlueprintCallable)
+	void UpdateUserInfo();
+
+	UFUNCTION(BlueprintCallable)
+	void AddUpdateEventToGameState();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void AddUserDataInfo(const FString& NickName);
-	virtual void AddUserDataInfo_Implementation(const FString& NickName);
+	void InitLobbyHud();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void AddUserDataInfo(const FUPUserData& NickName);
+	virtual void AddUserDataInfo_Implementation(const FUPUserData& NickName);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void AddUserDataInfoArray(const TArray<FUPUserData>& PlayerList);
+	virtual void AddUserDataInfoArray_Implementation(const TArray<FUPUserData>& PlayerList);
 
 	UPROPERTY()
 	TObjectPtr<class UUPACLobbyUIHelper> ACLobbyUIHelper;

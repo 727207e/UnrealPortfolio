@@ -42,7 +42,7 @@ void UUPPersistentHUDWidget::OnBtnConnectToServer(const FString& Address)
 
 void UUPPersistentHUDWidget::OnSettingUserNickname(const FString& Nickname)
 {
-	UUPGameInstance* GameInstance = Cast< UUPGameInstance>(GetWorld()->GetGameInstance());
+	UUPGameInstance* GameInstance = Cast<UUPGameInstance>(GetWorld()->GetGameInstance());
 	if (GameInstance)
 	{
 		GameInstance->PlayerNickname = Nickname;
