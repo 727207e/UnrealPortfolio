@@ -3,7 +3,6 @@
 
 #include "Game/UPLobbyGameState.h"
 #include "Net/UnrealNetwork.h"
-#include "defines/UPServerLogDefine.h"
 
 AUPLobbyGameState::AUPLobbyGameState()
 {

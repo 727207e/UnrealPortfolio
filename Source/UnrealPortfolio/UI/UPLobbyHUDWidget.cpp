@@ -9,7 +9,6 @@
 #include "Engine/World.h"
 #include "Game/UPLobbyGameState.h"
 #include "Game/UPGameInstance.h"
-#include "UI/UPACLobbyUIHelper.h"
 
 FString UUPLobbyHUDWidget::GetIPAddress()
 {

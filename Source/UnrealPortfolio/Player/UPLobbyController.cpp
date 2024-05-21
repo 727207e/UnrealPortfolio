@@ -3,11 +3,9 @@
 
 #include "Player/UPLobbyController.h"
 #include "Blueprint/UserWidget.h"
-#include "UI/UPACLobbyUIHelper.h"
 #include "UI/UPLobbyHUDWidget.h"
 #include "Game/UPGameInstance.h"
 #include "Game/UPLobbyGameState.h"
-#include "defines/UPServerLogDefine.h"
 
 AUPLobbyController::AUPLobbyController()
 {
@@ -44,7 +42,6 @@ void AUPLobbyController::BeginPlay()
 	}
 	else
 	{
-		UE_SERVER_LOG(LogUPNetwork, Error, TEXT("%s"), *MyUserData.NickName);
 		Server_UpdateUserData(MyUserData);
 	}
 }
@@ -52,7 +49,6 @@ void AUPLobbyController::BeginPlay()
 
 void AUPLobbyController::Server_UpdateUserData_Implementation(const FUPUserData& UserData)
 {
-	UE_SERVER_LOG(LogUPNetwork, Error, TEXT("%s"), *UserData.NickName);
 	AUPLobbyGameState* GameState = Cast<AUPLobbyGameState>(GetWorld()->GetGameState());
 	if (GameState)
 	{

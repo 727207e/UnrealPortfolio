@@ -35,11 +35,4 @@ public :
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void AddUserDataInfoArray(const TArray<FUPUserData>& PlayerList);
 	virtual void AddUserDataInfoArray_Implementation(const TArray<FUPUserData>& PlayerList);
-
-	UPROPERTY()
-	TObjectPtr<class UUPACLobbyUIHelper> ACLobbyUIHelper;
-
-	UFUNCTION(BlueprintCallable)
-	void CallUpdateMyInfoToServer(const FString& NickName);
-
 };

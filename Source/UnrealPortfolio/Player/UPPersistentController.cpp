@@ -3,7 +3,6 @@
 
 #include "Player/UPPersistentController.h"
 #include "Blueprint/UserWidget.h"
-#include "UI/UPACLobbyUIHelper.h"
 #include "UI/UPLobbyHUDWidget.h"
 
 AUPPersistentController::AUPPersistentController()
