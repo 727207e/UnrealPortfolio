@@ -3,20 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayEffectExecutionCalculation.h"
-#include "GE_DirectionalAttackBonus.h"
+#include "GAS/GE/GE_DirectionalAttackBonus.h"
+#include "GE_BackAttack.generated.h"
 
-#include "GE_HeadAttack.generated.h"
-
-
-
+/**
+ * 
+ */
 UCLASS()
-class UNREALPORTFOLIO_API UGE_HeadAttack : public UGE_DirectionalAttackBonus
+class UNREALPORTFOLIO_API UGE_BackAttack : public UGE_DirectionalAttackBonus
 {
 	GENERATED_BODY()
-	
+	UGE_BackAttack();
 public:
-	UGE_HeadAttack();
 	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
 	
 };
