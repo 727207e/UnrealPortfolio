@@ -36,14 +36,10 @@ public :
 	TObjectPtr<class UUPLoadLevelUserWidget> LevelLoadWidget;
 
 private :
-	
-	UFUNCTION()
-	void OpenLevel();
-
-	UFUNCTION()
-	void ProgressCheck();
-	
 	UPROPERTY()
 	TObjectPtr<class UWidgetComponent> LevelLoadWidgetComp;
 
+	FString LevelName;
+	UFUNCTION()
+	void OnLevelLoaded();
 };

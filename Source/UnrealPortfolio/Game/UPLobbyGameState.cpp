@@ -67,8 +67,7 @@ void AUPLobbyGameState::GamePlayStart()
      AUPLevelScriptActor* UpLevelScript = Cast<AUPLevelScriptActor>(GetWorld()->GetLevelScriptActor());
      if (UpLevelScript)
      {
-     	UE_LOG(LogTemp, Log, TEXT("ShowRaiderSelector22222"));
-        UpLevelScript->LoadNextLevelByAsync("/Game/Level/Village");
+        UpLevelScript->LoadNextLevelByAsync("/Game/Level/TopDownSampleScene1");
      }
 }
 
