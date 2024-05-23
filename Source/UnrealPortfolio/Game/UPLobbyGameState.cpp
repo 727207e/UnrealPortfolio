@@ -23,6 +23,27 @@ void AUPLobbyGameState::AddUserData(const FUPUserData& UserData)
     }
 }
 
+void AUPLobbyGameState::ChangeUserData(const FUPUserData& UserData)
+{
+    if (HasAuthority())
+    {
+        for (FUPUserData& TheUserData : PlayerDataList)
+        {
+            if (TheUserData.NickName == UserData.NickName)
+            {
+                TheUserData.bIsReady = UserData.bIsReady;
+                TheUserData.ThisCharacterClass = UserData.ThisCharacterClass;
+
+                OnRep_PlayerDataList();
+                return;
+            }
+        }
+
+        UE_LOG(LogTemp, Error, TEXT("UPLobbyGameState : Can't Find User NickName"));
+        return;
+    }
+}
+
 void AUPLobbyGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);

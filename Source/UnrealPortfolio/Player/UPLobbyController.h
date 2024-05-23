@@ -21,8 +21,11 @@ public :
 public :
 	virtual void BeginPlay() override;
 	
-public :
-	TObjectPtr<class UUPACLobbyUIHelper> LobbyUIHelperComponent;
+public:
+	UPROPERTY()
+	TObjectPtr<class AUPLobbyGameState> LobbyGameState;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Game State")
 	FUPUserData MyUserData;
 
 	UPROPERTY(EditAnywhere)
@@ -30,7 +33,17 @@ public :
 	UPROPERTY()
 	TObjectPtr<class UUPLobbyHUDWidget> LobbyHUDWidget;
 
+	UFUNCTION()
+	void UserDataUpdate();
+
 	UFUNCTION(Server, Unreliable)
 	void Server_UpdateUserData(const FUPUserData& UserData);
 
+	UFUNCTION(Server, Unreliable)
+	void Server_SetPlayerReady(uint8 bIsReady);
+	void SetPlayerReady();
+
+	UFUNCTION(Server, Unreliable)
+	void Server_SetPlayerClass(CharacterClass TargetClass);
+	void SetPlayerClass(CharacterClass TargetClass);
 };

@@ -16,6 +16,9 @@ class UNREALPORTFOLIO_API UUPLobbyHUDWidget : public UUserWidget
 	GENERATED_BODY()
 
 public :
+	UPROPERTY()
+	TObjectPtr<class AUPLobbyController> UPLobbyController;
+
 	UFUNCTION(BlueprintCallable)
 	FString GetIPAddress();
 
@@ -24,6 +27,11 @@ public :
 
 	UFUNCTION(BlueprintCallable)
 	void AddUpdateEventToGameState();
+
+	UFUNCTION(BlueprintCallable)
+	void OnBtnReady();
+	UFUNCTION(BlueprintCallable)
+	void OnBtnChangeClass(CharacterClass TargetClass);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void InitLobbyHud();

@@ -9,6 +9,7 @@
 #include "Engine/World.h"
 #include "Game/UPLobbyGameState.h"
 #include "Game/UPGameInstance.h"
+#include "Player/UPLobbyController.h"
 
 FString UUPLobbyHUDWidget::GetIPAddress()
 {
@@ -37,11 +38,22 @@ void UUPLobbyHUDWidget::InitLobbyHud_Implementation()
 
 void UUPLobbyHUDWidget::AddUpdateEventToGameState()
 {
+    UPLobbyController = Cast<AUPLobbyController>(GetWorld()->GetFirstPlayerController());
     AUPLobbyGameState* GameState = Cast<AUPLobbyGameState>(GetWorld()->GetGameState());
     if (GameState)
     {
         GameState->OnPlayerDataListChanged.AddUObject(this, &UUPLobbyHUDWidget::AddUserDataInfoArray);
     }
+}
+
+void UUPLobbyHUDWidget::OnBtnReady()
+{
+    UPLobbyController->SetPlayerReady();
+}
+
+void UUPLobbyHUDWidget::OnBtnChangeClass(CharacterClass TargetClass)
+{
+    UPLobbyController->SetPlayerClass(TargetClass);
 }
 
 

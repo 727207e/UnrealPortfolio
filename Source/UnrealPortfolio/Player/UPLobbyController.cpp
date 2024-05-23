@@ -6,6 +6,7 @@
 #include "UI/UPLobbyHUDWidget.h"
 #include "Game/UPGameInstance.h"
 #include "Game/UPLobbyGameState.h"
+#include "UPLobbyController.h"
 
 AUPLobbyController::AUPLobbyController()
 {
@@ -18,6 +19,7 @@ AUPLobbyController::AUPLobbyController()
 
 void AUPLobbyController::BeginPlay()
 {
+	LobbyGameState = Cast<AUPLobbyGameState>(GetWorld()->GetGameState());
 	if (!IsLocalController())
 	{
 		return;
@@ -26,7 +28,7 @@ void AUPLobbyController::BeginPlay()
 	UUPGameInstance* GameInstance = Cast<UUPGameInstance>(GetWorld()->GetGameInstance());
 	if (GameInstance)
 	{
-		MyUserData = FUPUserData(GameInstance->PlayerNickname);
+		MyUserData.NickName = GameInstance->PlayerNickname;
 		LobbyHUDWidget = Cast<UUPLobbyHUDWidget>(CreateWidget(GetWorld(), LobbyHUDWidgetType));
 		LobbyHUDWidget->AddToViewport();
 		LobbyHUDWidget->InitLobbyHud();
@@ -34,10 +36,14 @@ void AUPLobbyController::BeginPlay()
 
 	if (HasAuthority())
 	{
-		AUPLobbyGameState* GameState = Cast<AUPLobbyGameState>(GetWorld()->GetGameState());
-		if (GameState)
+		if (LobbyGameState)
 		{
-			GameState->AddUserData(MyUserData);
+			LobbyGameState->AddUserData(MyUserData);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("UPLobbyController Server : Can't BeginPlay , No LobbyGameState"));
+			return;
 		}
 	}
 	else
@@ -46,12 +52,53 @@ void AUPLobbyController::BeginPlay()
 	}
 }
 
-
 void AUPLobbyController::Server_UpdateUserData_Implementation(const FUPUserData& UserData)
 {
-	AUPLobbyGameState* GameState = Cast<AUPLobbyGameState>(GetWorld()->GetGameState());
-	if (GameState)
+	if (LobbyGameState)
 	{
-		GameState->AddUserData(UserData);
+		MyUserData = UserData;
+		LobbyGameState->AddUserData(UserData);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("UPLobbyController Server : Can't UpdateUserData , No LobbyGameState"));
+		return;
+	}
+}
+
+void AUPLobbyController::Server_SetPlayerReady_Implementation(uint8 bIsReady)
+{
+	MyUserData.bIsReady = bIsReady;
+	UserDataUpdate();
+}
+
+void AUPLobbyController::SetPlayerReady()
+{
+	MyUserData.bIsReady = MyUserData.bIsReady == 0 ? 1 : 0;
+	Server_SetPlayerReady(MyUserData.bIsReady);
+}
+
+void AUPLobbyController::Server_SetPlayerClass_Implementation(CharacterClass TargetClass)
+{
+	MyUserData.ThisCharacterClass = TargetClass;
+	UserDataUpdate();
+}
+
+void AUPLobbyController::SetPlayerClass(CharacterClass TargetClass)
+{
+	MyUserData.ThisCharacterClass = TargetClass;
+	Server_SetPlayerClass(TargetClass);
+}
+
+void AUPLobbyController::UserDataUpdate()
+{
+	if (LobbyGameState)
+	{
+		LobbyGameState->ChangeUserData(MyUserData);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("UPLobbyController Server : Can't UserDataUpdate , No LobbyGameState"));
+		return;
 	}
 }

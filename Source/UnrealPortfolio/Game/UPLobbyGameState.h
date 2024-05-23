@@ -49,6 +49,7 @@ public :
     void OnRep_PlayerDataList();
 
     void AddUserData(const FUPUserData& UserData);
+    void ChangeUserData(const FUPUserData& UserData);
 
     FOnPlayerDataListChanged OnPlayerDataListChanged;
 
