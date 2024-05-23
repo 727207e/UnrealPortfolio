@@ -176,6 +176,8 @@ void AUPMainCharacter::OnNPCInteraction()
 	}
 }
 
+
+
 void AUPMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -195,15 +197,13 @@ void AUPMainCharacter::BeginPlay()
 		if(HostController->PlayerState)
 		{
 			AActor* PS = HostController->PlayerState;
-			HostController->GetHudWidget()->SetProgress(PS);
-			HostController->GetHudWidget()->AddToViewport();
+			HostController->HudWidgetComponent->MainHudWidget = CastChecked<UUPMainHudWidget>(CreateWidget(GetWorld(),HostController->HudWidgetComponent->HudWidgetClass
+,TEXT("UUPMainHudWidget")));
+			HostController->HudWidgetComponent->MainHudWidget->AddToViewport();
+			HostController->HudWidgetComponent->MainHudWidget->SetProgress(PS);
 		}
 	}
-	else if(IsLocallyControlled())
-	{
-		ServerRequestPlayerState();
-	}
-	ActiveAbilityEquipWeapon(DEFAULT_WEAPON_ID);
+	
 }
 
 void AUPMainCharacter::CallGAS(int32 GameplayAbilityInputId)
@@ -404,13 +404,17 @@ void AUPMainCharacter::SetMainCharacterTableData() const
 void AUPMainCharacter::SetupASCClientPlayer()
 {
 	Super::SetupASCClientPlayer();
+	CreateHudWidget();
 	SetMainCharacterTableData();
+	ActiveAbilityEquipWeapon(DEFAULT_WEAPON_ID);
 }
 
 void AUPMainCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 {
 	Super::SetupASCHostPlayer(InOwnerActor);
+	CreateHudWidget();
 	SetMainCharacterTableData();
+	ActiveAbilityEquipWeapon(DEFAULT_WEAPON_ID);
 }
 
 
@@ -463,15 +467,6 @@ void AUPMainCharacter::ActiveAbilityEquipWeapon(int32 TryEquipWeaponId)
 }
 
 
-void AUPMainCharacter::SendPlayerStateToClient()
-{
-	APlayerState* ClientPlayerState = GetPlayerState();
-	AUPPlayerController* ClientController = Cast<AUPPlayerController>(GetController());
-	if(ClientPlayerState)
-	{
-		ClientReceivePlayerState(ClientController, ClientPlayerState);
-	}
-}
 
 AUPPlayerState* AUPMainCharacter::GetUPPlayerState()
 {
@@ -486,9 +481,8 @@ UStaticMeshWeaponComponent* AUPMainCharacter::GetEquipWeapon()
 void AUPMainCharacter::CreateWeaponComponent()
 {
 	WeaponComponent = CreateDefaultSubobject<UStaticMeshWeaponComponent>(TEXT("WeaponComponent"));
-	WeaponComponent->SetupAttachment(GetMesh());
-	WeaponComponent->K2_AttachToComponent(GetMesh(),SocketWeapon,EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,EAttachmentRule::KeepRelative,true);
-	
+	const FAttachmentTransformRules Rules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,EAttachmentRule::KeepRelative,false);
+	WeaponComponent->AttachToComponent(GetMesh(),Rules, SocketWeapon);
 }
 
 void AUPMainCharacter::CharacterLookMouseLocation()
@@ -511,6 +505,23 @@ void AUPMainCharacter::CharacterLookMouseLocation()
 	}
 }
 
+void AUPMainCharacter::CreateHudWidget()
+{
+	AUPPlayerState* PS = GetPlayerState<AUPPlayerState>();
+	AUPPlayerController* MyClienetController = Cast<AUPPlayerController>(PS->GetPlayerController());
+	if(MyClienetController)
+	{
+		if(MyClienetController)
+		{
+			MyClienetController->HudWidgetComponent->MainHudWidget = CastChecked<UUPMainHudWidget>(CreateWidget(GetWorld(),MyClienetController->HudWidgetComponent->HudWidgetClass
+	,TEXT("UUPMainHudWidget")));
+			MyClienetController->HudWidgetComponent->MainHudWidget->AddToViewport();
+			MyClienetController->HudWidgetComponent->MainHudWidget->SetProgress(PS);
+			
+		}
+	}
+}
+
 void AUPMainCharacter::SetMoveBlock(bool bBlock)
 {
 	bLockMove = bBlock;
@@ -521,20 +532,7 @@ void AUPMainCharacter::Dodge()
 	LaunchCharacter(AvoidDirectionArrowComponent->GetForwardVector() * 2300,true,false);	
 }
 
-void AUPMainCharacter::ClientReceivePlayerState_Implementation(AUPPlayerController* ClientController, APlayerState* ClientPlayerState)
-{
-	if(ClientController && ClientPlayerState)
-	{
-		ClientController->GetHudWidget()->SetProgress(ClientPlayerState);
-		ClientController->GetHudWidget()->AddToViewport();
-	}
-}
 
-
-void AUPMainCharacter::ServerRequestPlayerState_Implementation()
-{
-	SendPlayerStateToClient();
-}
 
 ECharacterControlType AUPMainCharacter::GetCharacterControl()
 {

@@ -124,12 +124,7 @@ protected:
 	void ActiveAbilityGameOverCheck();
 	void ActiveAbilityEquipWeapon(int32 TryEquipWeaponId);
 private:
-	/** Hud PlayerState **/
-	void SendPlayerStateToClient();
-	UFUNCTION(Server, Reliable)
-	void ServerRequestPlayerState();
-	UFUNCTION(Client, Reliable)
-	void ClientReceivePlayerState(AUPPlayerController* ClientController, APlayerState* ClientPlayerState);
+
 	virtual AUPPlayerState* GetUPPlayerState() override;
 	
 public:
@@ -154,4 +149,5 @@ public:
 	UFUNCTION(Server, UnReliable)
 	void Server_SetActorRotation(FVector LookTargetLocation);
 
+	void CreateHudWidget();
 };

@@ -7,7 +7,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Interface/HUDControllerInterface.h"
 #include "Interface/UPPossessCharacterInterface.h"
-#include "UI/UPMainHudWidget.h"
+#include "UI/Componenet/WidgetHUDComponent.h"
 #include "UPPlayerController.generated.h"
 
 /** Forward declaration to improve compiling times */
@@ -72,7 +72,7 @@ public:
 	TObjectPtr<class UUPACChatGenerator> ChatActorComponent;
 
 	UPROPERTY()
-	TObjectPtr<class UUPMainHudWidget> MainHudWidget;
+	TObjectPtr<class UWidgetHUDComponent> HudWidgetComponent;
 	
 	virtual  TObjectPtr<class UUPMainHudWidget> GetHudWidget() override;
 

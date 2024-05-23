@@ -8,7 +8,6 @@
 #include "Tag/GameplayTags.h"
 #include "Net/UnrealNetwork.h"
 #include "Character/UPPlayerState.h"
-#include "GameFramework/PlayerState.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 
