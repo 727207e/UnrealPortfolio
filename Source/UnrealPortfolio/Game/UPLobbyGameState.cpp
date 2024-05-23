@@ -3,6 +3,7 @@
 
 #include "Game/UPLobbyGameState.h"
 #include "Net/UnrealNetwork.h"
+#include "Level/UPLevelScriptActor.h"
 
 AUPLobbyGameState::AUPLobbyGameState()
 {
@@ -42,6 +43,33 @@ void AUPLobbyGameState::ChangeUserData(const FUPUserData& UserData)
         UE_LOG(LogTemp, Error, TEXT("UPLobbyGameState : Can't Find User NickName"));
         return;
     }
+}
+
+void AUPLobbyGameState::TryGamePlayStart()
+{
+    if (HasAuthority())
+    {
+        for (FUPUserData TheUserData : PlayerDataList)
+        {
+            if (TheUserData.bIsReady != 1)
+            {
+                UE_LOG(LogTemp, Error, TEXT("UPLobbyGameState : User(%s) is not Ready"), *TheUserData.NickName);
+                return;
+            }
+        }
+
+        GamePlayStart();
+    }
+}
+
+void AUPLobbyGameState::GamePlayStart()
+{	
+     AUPLevelScriptActor* UpLevelScript = Cast<AUPLevelScriptActor>(GetWorld()->GetLevelScriptActor());
+     if (UpLevelScript)
+     {
+     	UE_LOG(LogTemp, Log, TEXT("ShowRaiderSelector22222"));
+        UpLevelScript->LoadNextLevelByAsync("/Game/Level/Village");
+     }
 }
 
 void AUPLobbyGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

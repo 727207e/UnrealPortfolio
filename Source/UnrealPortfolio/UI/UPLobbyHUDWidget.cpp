@@ -56,6 +56,11 @@ void UUPLobbyHUDWidget::OnBtnChangeClass(CharacterClass TargetClass)
     UPLobbyController->SetPlayerClass(TargetClass);
 }
 
+void UUPLobbyHUDWidget::OnBtnStart()
+{
+    UPLobbyController->TryPlayStart();
+}
+
 
 void UUPLobbyHUDWidget::AddUserDataInfo_Implementation(const FUPUserData& NickName)
 {

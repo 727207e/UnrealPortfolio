@@ -50,6 +50,8 @@ public :
 
     void AddUserData(const FUPUserData& UserData);
     void ChangeUserData(const FUPUserData& UserData);
+    void TryGamePlayStart();
+    void GamePlayStart();
 
     FOnPlayerDataListChanged OnPlayerDataListChanged;
 

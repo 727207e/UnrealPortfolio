@@ -32,6 +32,8 @@ public :
 	void OnBtnReady();
 	UFUNCTION(BlueprintCallable)
 	void OnBtnChangeClass(CharacterClass TargetClass);
+	UFUNCTION(BlueprintCallable)
+	void OnBtnStart();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void InitLobbyHud();

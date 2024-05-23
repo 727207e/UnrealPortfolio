@@ -90,6 +90,27 @@ void AUPLobbyController::SetPlayerClass(CharacterClass TargetClass)
 	Server_SetPlayerClass(TargetClass);
 }
 
+void AUPLobbyController::Server_TryPlayStart_Implementation()
+{
+	if (LobbyGameState)
+	{
+		LobbyGameState->TryGamePlayStart();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("UPLobbyController Server : Can't Server_TryPlayStart , No LobbyGameState"));
+		return;
+	}
+}
+
+void AUPLobbyController::TryPlayStart()
+{
+	if (MyUserData.bIsReady == 1)
+	{
+		Server_TryPlayStart();
+	}
+}
+
 void AUPLobbyController::UserDataUpdate()
 {
 	if (LobbyGameState)

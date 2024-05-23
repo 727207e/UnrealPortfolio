@@ -46,4 +46,8 @@ public:
 	UFUNCTION(Server, Unreliable)
 	void Server_SetPlayerClass(CharacterClass TargetClass);
 	void SetPlayerClass(CharacterClass TargetClass);
+
+	UFUNCTION(Server, Unreliable)
+	void Server_TryPlayStart();
+	void TryPlayStart();
 };
