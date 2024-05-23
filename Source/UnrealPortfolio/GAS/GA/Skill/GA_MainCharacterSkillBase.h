@@ -32,13 +32,9 @@ protected:
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
 	virtual void InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) override;
-	
-
-	virtual void OnCompleteCallback() override;
-
-	virtual void OnInterruptedCallback() override;
 	virtual void CooldownProcess();
 	virtual void SetSlotWidget(USlotViewWidget* TargetSlotWidget);
+	virtual void OnCompleteCallback() override;
 	
 protected:
 	UPROPERTY(BlueprintReadOnly , Category = GAS);
@@ -52,8 +48,5 @@ protected:
 	UPROPERTY(EditAnywhere , Category = GAS);
 	bool bCantLookAtMouseAbility;
 	TObjectPtr<USlotViewWidget> SkillSlotWidget;
-
-	void UseMp();
-
-	virtual void MontageAbility() override;
+	void UseMp() const;
 };

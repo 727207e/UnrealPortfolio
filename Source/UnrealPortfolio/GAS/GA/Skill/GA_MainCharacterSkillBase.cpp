@@ -16,6 +16,7 @@ class IHUDControllerInterface;
 
 UGA_MainCharacterSkillBase::UGA_MainCharacterSkillBase(): Cooldown(0), MagicPoints(0), TargetSkillAbilityIndex(0)
 {
+	ActivationOwnedTags.AddTag(TAG_PLAYER_STATE_ATTACK_SKILL);	
 }
 
 void UGA_MainCharacterSkillBase::SetData()
@@ -66,16 +67,6 @@ void UGA_MainCharacterSkillBase::InputPressed(const FGameplayAbilitySpecHandle H
 	Super::InputPressed(Handle, ActorInfo, ActivationInfo);
 }
 
-void UGA_MainCharacterSkillBase::OnCompleteCallback()
-{
-	Super::OnCompleteCallback();
-}
-
-void UGA_MainCharacterSkillBase::OnInterruptedCallback()
-{
-	Super::OnInterruptedCallback();
-}
-
 void UGA_MainCharacterSkillBase::CooldownProcess()
 {
 	const AUPPlayerState* PlayerState = Cast<AUPPlayerState>(CurrentActorInfo->OwnerActor);
@@ -94,8 +85,7 @@ void UGA_MainCharacterSkillBase::CooldownProcess()
 					UseMp();
 					if(!bCantLookAtMouseAbility)
 					{
-						UAbilityTask_LookAtMouse * AttackTraceTask = UAbilityTask_LookAtMouse::CreateTask(this);
-						AttackTraceTask->ReadyForActivation();
+						Cast<ICharacterMovementInterface>(CurrentActorInfo->AvatarActor)->SetMoveBlock(true);
 					}
 				}
 				else
@@ -113,18 +103,20 @@ void UGA_MainCharacterSkillBase::SetSlotWidget(USlotViewWidget* TargetSlotViewWi
 	SkillSlotWidget = TargetSlotViewWidget;
 }
 
-void UGA_MainCharacterSkillBase::UseMp()
+void UGA_MainCharacterSkillBase::OnCompleteCallback()
 {
-	const FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(UseMpEffect,1.0f);
-	EffectSpecHandle.Data->SetSetByCallerMagnitude(TAG_DATA_USE_MP,MagicPoints * -1);
-	const FActiveGameplayEffectHandle ActiveGeHandle = ApplyGameplayEffectSpecToOwner(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,EffectSpecHandle);
-					
+	Super::OnCompleteCallback();
+	Cast<ICharacterMovementInterface>(GetCurrentActorInfo()->AvatarActor)->SetMoveBlock(false);
 }
 
-void UGA_MainCharacterSkillBase::MontageAbility()
-{
-	UAbilityTask_PlayMontageAndWait* PlayAttackTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
-		this,TEXT("PlayerSkill"),TargetMontage, AttackSpeed, TargetMontageSectionName);
-	PlayAttackTask->ReadyForActivation();
-}
 
+void UGA_MainCharacterSkillBase::UseMp() const
+{
+	const UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo();
+	if (ASC && UseMpEffect)
+	{
+		const FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(UseMpEffect,1.0f);
+		EffectSpecHandle.Data->SetSetByCallerMagnitude(TAG_DATA_USE_MP,MagicPoints * -1);
+		const FActiveGameplayEffectHandle ActiveGeHandle = ApplyGameplayEffectSpecToOwner(CurrentSpecHandle,CurrentActorInfo,CurrentActivationInfo,EffectSpecHandle);
+	}				
+}

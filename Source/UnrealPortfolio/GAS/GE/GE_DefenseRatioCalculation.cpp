@@ -18,13 +18,6 @@ void UGE_DefenseRatioCalculation::Execute_Implementation(
 	const FGameplayEffectCustomExecutionParameters& ExecutionParams,
 	FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
-	//Super::Execute_Implementation(ExecutionParams, OutExecutionOutput);
-	UAbilitySystemComponent* TargetABSC = ExecutionParams.GetTargetAbilitySystemComponent();
-	AActor* TargetActor = TargetABSC ? TargetABSC->GetAvatarActor() : nullptr;
-
-	UAbilitySystemComponent* SourceABSC = ExecutionParams.GetTargetAbilitySystemComponent();
-	AActor* SourceActor = SourceABSC ? SourceABSC->GetAvatarActor() : nullptr;
-
 	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
 	const FGameplayTagContainer* SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	const FGameplayTagContainer* TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
@@ -38,6 +31,8 @@ void UGE_DefenseRatioCalculation::Execute_Implementation(
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().ArmorDef,EvaluationParameters,Armor);
 	const float DamageDone = CalculateDoneDamageWithArmor(AttackRate,Armor);
 	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics().HpProperty,EGameplayModOp::Additive,DamageDone));
+	UE_LOG(LogTemp,Log,TEXT("AttackRate %f , Armor : %f , DamageDone %f"),AttackRate,Armor,DamageDone);
+
 }
 
 const FDamageStatics& UGE_DefenseRatioCalculation::DamageStatics()

@@ -41,7 +41,7 @@ void UGA_AttackHitCheck::OnTraceResultCallback(const FGameplayAbilityTargetDataH
 
 		if(IAttackableCharacterInterface* HitCharacter = Cast<IAttackableCharacterInterface>(HitResult.GetActor()))
 		{
-			HitCharacter->Hit(GetAvatarActorFromActorInfo()->GetActorLocation(),CurrentAction);
+			
 			UAbilitySystemComponent* SourceASC = GetAbilitySystemComponentFromActorInfo_Checked();
 			UAbilitySystemComponent* TargetASC =  UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(HitResult.GetActor());
 			if(!SourceASC || !TargetASC)
@@ -58,7 +58,7 @@ void UGA_AttackHitCheck::OnTraceResultCallback(const FGameplayAbilityTargetDataH
 			}
 			
 			ApplyDamageEffect(SourceAttribute ,TargetDataHandle);
-
+			HitCharacter->Hit(GetAvatarActorFromActorInfo()->GetActorLocation(),CurrentAction);
 			if (CurrentAction->ActionGC.IsValid())
 			{
 				FGameplayCueParameters CueParam;

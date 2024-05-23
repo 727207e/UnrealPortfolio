@@ -42,17 +42,3 @@ void UGA_AvoidProcess::EndAbility(const FGameplayAbilitySpecHandle Handle, const
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 	Cast<ICharacterMovementInterface>(ActorInfo->AvatarActor)->SetMoveBlock(false);
 }
-
-void UGA_AvoidProcess::MontageAbility()
-{
-	UAbilityTask_PlayMontageAndWait* PlayAttackTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
-		this,TEXT("PlayerSkill"),TargetMontage, AttackSpeed, TargetMontageSectionName);
-	PlayAttackTask->OnCompleted.AddDynamic(this,&UGA_AvoidProcess::OnCompleteCallback);
-	PlayAttackTask->ReadyForActivation();
-	
-}
-
-void UGA_AvoidProcess::OnCompleteCallback()
-{
-	Cast<ICharacterMovementInterface>(GetCurrentActorInfo()->AvatarActor)->SetMoveBlock(false);
-}
