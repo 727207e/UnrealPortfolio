@@ -3,9 +3,9 @@
 
 #include "Level/UPLevelScriptActor.h"
 #include "Blueprint/UserWidget.h"
-#include "Kismet/GameplayStatics.h"
 #include "UI/UPLoadLevelUserWidget.h"
 #include "Components/WidgetComponent.h"
+#include "Player/UPLobbyController.h"
 #include "Engine/LevelStreamingDynamic.h"
 
 AUPLevelScriptActor::AUPLevelScriptActor()
@@ -78,5 +78,10 @@ void AUPLevelScriptActor::OnLevelLoaded()
     GetWorld()->GetTimerManager().ClearTimer(ProgressCheckTimeHandle);
 
     LevelLoadWidget->ProgressValue = 1;
-    UGameplayStatics::OpenLevel(this, FName(*LevelName));
+
+    AUPLobbyController* LobbyController = Cast<AUPLobbyController>(GetWorld()->GetFirstPlayerController());
+    if (LobbyController)
+    {
+        LobbyController->AnnounceLevelLoadDone();
+    }
 }

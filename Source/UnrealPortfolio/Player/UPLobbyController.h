@@ -50,4 +50,8 @@ public:
 	UFUNCTION(Server, Unreliable)
 	void Server_TryPlayStart();
 	void TryPlayStart();
+
+	UFUNCTION(Server, Unreliable)
+	void Server_AnnounceLevelLoadDone();
+	void AnnounceLevelLoadDone();
 };

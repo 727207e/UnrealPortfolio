@@ -3,11 +3,13 @@
 
 #include "Game/UPLobbyGameState.h"
 #include "Net/UnrealNetwork.h"
+#include "Kismet/GameplayStatics.h"
 #include "Level/UPLevelScriptActor.h"
 
 AUPLobbyGameState::AUPLobbyGameState()
 {
     bReplicates = true;
+    NextLevelPath = "/Game/Level/TopDownSampleScene1";
 }
 
 void AUPLobbyGameState::OnRep_PlayerDataList()
@@ -58,17 +60,27 @@ void AUPLobbyGameState::TryGamePlayStart()
             }
         }
 
-        GamePlayStart();
+        NetMulti_LevelLoad();
     }
 }
 
-void AUPLobbyGameState::GamePlayStart()
-{	
-     AUPLevelScriptActor* UpLevelScript = Cast<AUPLevelScriptActor>(GetWorld()->GetLevelScriptActor());
-     if (UpLevelScript)
-     {
-        UpLevelScript->LoadNextLevelByAsync("/Game/Level/TopDownSampleScene1");
-     }
+void AUPLobbyGameState::MoveNextLevelAllUser()
+{
+    ReadyUserNumber++;
+
+    if (ReadyUserNumber == PlayerDataList.Num())
+    {
+        GetWorld()->ServerTravel(NextLevelPath);
+    }
+}
+
+void AUPLobbyGameState::NetMulti_LevelLoad_Implementation()
+{
+    AUPLevelScriptActor* UpLevelScript = Cast<AUPLevelScriptActor>(GetWorld()->GetLevelScriptActor());
+    if (UpLevelScript)
+    {
+        UpLevelScript->LoadNextLevelByAsync(NextLevelPath);
+    }
 }
 
 void AUPLobbyGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

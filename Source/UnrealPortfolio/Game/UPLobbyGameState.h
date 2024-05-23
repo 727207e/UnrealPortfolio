@@ -51,10 +51,18 @@ public :
     void AddUserData(const FUPUserData& UserData);
     void ChangeUserData(const FUPUserData& UserData);
     void TryGamePlayStart();
-    void GamePlayStart();
 
+    UFUNCTION(NetMulticast, Unreliable)
+    void NetMulti_LevelLoad();
+
+    void MoveNextLevelAllUser();
+
+    FString NextLevelPath;
     FOnPlayerDataListChanged OnPlayerDataListChanged;
 
 protected:
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+private :
+    int32 ReadyUserNumber = 0;
 };
