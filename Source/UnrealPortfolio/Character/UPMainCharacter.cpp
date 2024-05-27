@@ -425,7 +425,7 @@ void AUPMainCharacter::OnDead()
 		DisableInput(DeadPlayerController);
 	}
 }
-
+//
 void AUPMainCharacter::ActiveAbilityGameOverCheck()
 {
 	if(HasAuthority() && GetController()) 
