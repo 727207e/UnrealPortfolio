@@ -2,6 +2,7 @@
 
 
 #include "GAS/GA/Skill/GA_BossStruggleSkillCross.h"
+#include "Character/UPStrugglingBoss.h"
 #include "Game/BossManager.h"
 
 UGA_BossStruggleSkillCross::UGA_BossStruggleSkillCross()

@@ -9,6 +9,8 @@
 
 UUPGameInstance::UUPGameInstance()
 {
+    PlayerNickname = "PlayerNickName";
+    BossManager = nullptr;
 }
 
 ABossManager* UUPGameInstance::GetBossManager() const
