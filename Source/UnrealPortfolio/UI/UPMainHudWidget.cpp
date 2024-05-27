@@ -2,7 +2,20 @@
 
 
 #include "UI/UPMainHudWidget.h"
+
+#include "Components/HorizontalBox.h"
+#include "Components/WidgetComponent.h"
 #include "Game/UPGameSingleton.h"
+
+UUPMainHudWidget::UUPMainHudWidget()
+{
+	static ConstructorHelpers::FClassFinder<USlotViewWidget> BuffSlotRef(TEXT("/Game/UI/Hud/WBP_BuffSlot.WBP_BuffSlot_C"));
+	if(BuffSlotRef.Class)
+	{
+		BuffViewer = BuffSlotRef.Class;
+	}
+
+}
 
 void UUPMainHudWidget::NativeConstruct()
 {
@@ -17,6 +30,21 @@ void UUPMainHudWidget::NativeConstruct()
 			SkillSlotViewArray.Add(SkillSlotView);
 		}
 	}
+	
+	const int32 BuffMaxCount = UUPGameSingleton::Get().GetBuffTypeCount();
+	const auto BuffSlotBox = Cast<UHorizontalBox>(GetWidgetFromName(TEXT("BuffSlotBox")));
+	if(BuffSlotBox)
+	{
+		for(int i = 0 ; i <= BuffMaxCount; i++)
+		{
+			const auto NewBuffWidget = CreateWidget(GetWorld(),BuffViewer,*WIDGET_BUFF_VIEW);
+			NewBuffWidget->AddToViewport();
+			NewBuffWidget->SetVisibility(ESlateVisibility::Hidden);
+			BuffSlotViewArray.Add(Cast<USlotViewWidget>(NewBuffWidget));
+			BuffSlotBox->AddChildToHorizontalBox(NewBuffWidget);
+		}
+	}
+
 
 	for(int i = ItemSlotMinId ; i <= ItemSlotMaxId; i++)
 	{
@@ -80,4 +108,29 @@ void UUPMainHudWidget::SetProgress(AActor* Owner)
 			MpProgressView->SetAbilitySystemComponent(Owner);
 		}
 	}
+}
+
+TTuple<bool,TObjectPtr<USlotViewWidget>> UUPMainHudWidget::GetLastBuffViewWidget(int32 CastingBuffId)
+{
+	bool bBuffUsed = false;
+	for(const auto& BuffSlotWidget : BuffSlotViewArray)
+	{
+		if(BuffSlotWidget->GetVisibility() == ESlateVisibility::Hidden)
+		{
+			BuffSlotWidget->BuffId = CastingBuffId;
+			return TTuple<bool, TObjectPtr<USlotViewWidget>>(bBuffUsed, BuffSlotWidget);
+		}
+	}
+	UE_LOG(LogTemp,Error,TEXT("Not found unused slot"))
+	bBuffUsed = true;
+	for(const auto& BuffSlotWidget : BuffSlotViewArray)
+	{
+		if(BuffSlotWidget->BuffId != CastingBuffId)
+		{
+			continue;
+		}
+		return TTuple<bool, TObjectPtr<USlotViewWidget>>(bBuffUsed, BuffSlotWidget);
+	}
+
+	return {};
 }

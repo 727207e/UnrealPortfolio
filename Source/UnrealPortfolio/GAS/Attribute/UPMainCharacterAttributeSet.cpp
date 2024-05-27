@@ -20,11 +20,6 @@ void UUPMainCharacterAttributeSet::PreAttributeChange(const FGameplayAttribute& 
 	}
 }
 
-bool UUPMainCharacterAttributeSet::PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data)
-{
-	return Super::PreGameplayEffectExecute(Data);
-}
-
 void UUPMainCharacterAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);

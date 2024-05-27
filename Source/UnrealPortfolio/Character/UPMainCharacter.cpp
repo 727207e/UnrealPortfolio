@@ -404,9 +404,6 @@ void AUPMainCharacter::SetMainCharacterTableData() const
 void AUPMainCharacter::SetupASCClientPlayer()
 {
 	Super::SetupASCClientPlayer();
-	CreateHudWidget();
-	SetMainCharacterTableData();
-	ActiveAbilityEquipWeapon(DEFAULT_WEAPON_ID);
 }
 
 void AUPMainCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
@@ -428,6 +425,14 @@ void AUPMainCharacter::OnDead()
 	{
 		DisableInput(DeadPlayerController);
 	}
+}
+
+void AUPMainCharacter::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+	CreateHudWidget();
+	SetMainCharacterTableData();
+	ActiveAbilityEquipWeapon(DEFAULT_WEAPON_ID);
 }
 
 void AUPMainCharacter::ActiveAbilityGameOverCheck()
@@ -481,8 +486,7 @@ UStaticMeshWeaponComponent* AUPMainCharacter::GetEquipWeapon()
 void AUPMainCharacter::CreateWeaponComponent()
 {
 	WeaponComponent = CreateDefaultSubobject<UStaticMeshWeaponComponent>(TEXT("WeaponComponent"));
-	const FAttachmentTransformRules Rules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,EAttachmentRule::KeepRelative,false);
-	WeaponComponent->AttachToComponent(GetMesh(),Rules, SocketWeapon);
+	WeaponComponent->SetupAttachment(GetMesh(), SocketWeapon);
 }
 
 void AUPMainCharacter::CharacterLookMouseLocation()

@@ -16,6 +16,10 @@ UCLASS()
 class UNREALPORTFOLIO_API UUPMainHudWidget : public UUPUserWidget
 {
 	GENERATED_BODY()
+
+public:
+	UUPMainHudWidget();
+	
 public:
 
 	const FString HP_PROGRESS_WIDGET_NAME = TEXT("WBP_Pb0");
@@ -23,9 +27,11 @@ public:
 	
 protected:
 	const FString PROGRESS_WIDGET_NAME = TEXT("WBP_Pb");
+	const FString WIDGET_BUFF_VIEW  = TEXT("BuffSlot");
+	
 	const int32 SkillSlotMinId = 0;
 	const int32 SkillSlotMaxId = 8;
-
+	
 	const int32 ItemSlotMinId = 9;
 	const int32 ItemSlotMaxId = 12;
 
@@ -34,11 +40,15 @@ protected:
 
 	
 	
+	
 	virtual void NativeConstruct() override;
 	
 	UPROPERTY(EditAnywhere , Category = Widget)
 	TArray<TObjectPtr<USlotViewWidget>> SkillSlotViewArray;
 
+	UPROPERTY(EditAnywhere , Category = Widget)
+	TArray<TObjectPtr<USlotViewWidget>> BuffSlotViewArray;
+	
 	UPROPERTY(EditAnywhere , Category = Widget)
 	TArray<TObjectPtr<UItemSlotViewWidget>> ItemSlotViewArray;
 
@@ -47,9 +57,13 @@ protected:
 
 	UPROPERTY(EditAnywhere , Category = Widget)
 	TObjectPtr<UProgressViewWidget> MpProgressView;
-	
+
+	UPROPERTY(EditAnywhere , Category = Widget)
+	TSubclassOf<class USlotViewWidget> BuffViewer;
 public:
 	TArray<TObjectPtr<USlotViewWidget>> GetSkillSlotArray();
 	TObjectPtr<USlotViewWidget> GetSlotViewWidgetByActionId(int32 ActionId);
+	TTuple<bool,TObjectPtr<USlotViewWidget>>  GetLastBuffViewWidget(int32 CastingBuffId);
 	void SetProgress(AActor* Owner);
 };
+

@@ -25,6 +25,10 @@ public:
 	FCooldownFinishDelegate CooldownFinishDelegate;
 
 public:
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Buff)
+	int32 BuffId;
+	
+public:
 	virtual void SetData(const FSlotWidgetModelData& Model);
 	virtual void OnClickedTargetInputActionKey(int32 Cooldown);
 	virtual bool GetCooldownExist();
