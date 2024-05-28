@@ -9,7 +9,7 @@
 AUPLobbyGameState::AUPLobbyGameState()
 {
     bReplicates = true;
-    NextLevelPath = "/Game/Level/TopDownSampleScene1";
+    NextLevelPath = "/Game/Level/Village";
 }
 
 void AUPLobbyGameState::OnRep_PlayerDataList()
