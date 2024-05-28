@@ -5,7 +5,7 @@
 #include "Blueprint/UserWidget.h"
 #include "UI/UPLoadLevelUserWidget.h"
 #include "Components/WidgetComponent.h"
-#include "Player/UPLobbyController.h"
+#include "Player/UPBaseController.h"
 #include "Engine/LevelStreamingDynamic.h"
 
 AUPLevelScriptActor::AUPLevelScriptActor()
@@ -79,9 +79,9 @@ void AUPLevelScriptActor::OnLevelLoaded()
 
     LevelLoadWidget->ProgressValue = 1;
 
-    AUPLobbyController* LobbyController = Cast<AUPLobbyController>(GetWorld()->GetFirstPlayerController());
-    if (LobbyController)
+    AUPBaseController* BaseController = Cast<AUPBaseController>(GetWorld()->GetFirstPlayerController());
+    if (BaseController)
     {
-        LobbyController->AnnounceLevelLoadDone();
+        BaseController->AnnounceLevelLoadDone();
     }
 }

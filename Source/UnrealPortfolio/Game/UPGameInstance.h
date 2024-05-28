@@ -26,6 +26,8 @@ public:
     UPROPERTY(BlueprintReadOnly)
     FString PlayerNickname;
 
+    int32 UserNumber;
+
 private:
     UPROPERTY()
     class ABossManager* BossManager;
