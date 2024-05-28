@@ -26,12 +26,13 @@ public :
 	
 	UFUNCTION(BlueprintCallable, Category = "LoadLevel")
 	void LoadNextLevelByAsync(const FString& NextLevelPath);	//NextLevelPath : /Game/Level/TopDownSampleScene
+	void ProgressCheck();
 
 	FString NextLevel;
-	bool IsDoneCheckReady = false;
 	
 	UPROPERTY(BlueprintReadOnly)
 	float ProgressLoad;
+	float OldProgressLoad;
 
 	TObjectPtr<class UUPLoadLevelUserWidget> LevelLoadWidget;
 

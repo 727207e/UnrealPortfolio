@@ -12,6 +12,8 @@ AUPGameState::AUPGameState()
 
 void AUPGameState::BeginPlay()
 {
+    Super::BeginPlay();
+
     UpGameInstance = Cast<UUPGameInstance>(GetWorld()->GetGameInstance());
     if (nullptr == UpGameInstance)
     {
@@ -24,13 +26,13 @@ void AUPGameState::MoveNextLevel(FString LevelPath)
 {
     if (HasAuthority())
     {
-        NextLevelPath = LevelPath;
-        NetMulti_LevelLoad();
+        NetMulti_LevelLoad(LevelPath);
     }
 }
 
-void AUPGameState::NetMulti_LevelLoad_Implementation()
+void AUPGameState::NetMulti_LevelLoad_Implementation(const FString& LevelPath)
 {
+    NextLevelPath = LevelPath;
     if (NextLevelPath.IsEmpty())
     {
         UE_LOG(LogTemp, Error, TEXT("UPGameState : NextLevelPath is Empty"));

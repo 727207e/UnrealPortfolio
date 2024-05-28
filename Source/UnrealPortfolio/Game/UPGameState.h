@@ -41,7 +41,7 @@ public :
 	AUPGameState();
 
 	UFUNCTION(NetMulticast, Unreliable)
-	void NetMulti_LevelLoad();
+	void NetMulti_LevelLoad(const FString& LevelPath);
 
     UFUNCTION(BlueprintCallable)
     virtual void MoveNextLevel(FString LevelPath);
