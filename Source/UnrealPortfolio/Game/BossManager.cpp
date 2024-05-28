@@ -71,11 +71,16 @@ FTransform ABossManager::GetRandomAroundTransform()
 
 void ABossManager::BossHPTriggerCheck()
 {
-	UE_LOG(LogTemp, Error, TEXT("Boss Hit"));
+	float CurBossHp = Boss->GetAbilitySystemComponent()->GetSet<UEntityAttributeSet>()->GetHp();
 
-	if (Boss->GetAbilitySystemComponent()->GetSet<UEntityAttributeSet>()->GetHp() <= BossTriggerHp)
+	for (int32 index = 0; index < BossTriggers.Num(); ++index)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Boss Event On"));
+		if (CurBossHp <= BossTriggers[index].BossTriggerHp)
+		{
+			BossTriggers[index].CutSceneTrigger->ExecuteEvent();
+			BossTriggers.RemoveAt(index);
+			break;
+		}
 	}
 }
 

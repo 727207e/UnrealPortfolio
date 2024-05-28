@@ -6,6 +6,17 @@
 #include "GameFramework/Actor.h"
 #include "BossManager.generated.h"
 
+USTRUCT(BlueprintType)
+struct FBossHealthEvent
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<class AUPCutSceneTriggerActor> CutSceneTrigger;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BossTriggerHp;
+};
+
 UCLASS()
 class UNREALPORTFOLIO_API ABossManager : public AActor
 {
@@ -34,8 +45,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	float ZOffset = 100.f;
 
-	UPROPERTY(EditAnywhere)
-	float BossTriggerHp = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FBossHealthEvent> BossTriggers;
 
 	UPROPERTY(EditAnywhere)
 	float BossPhaseNumber = 1;

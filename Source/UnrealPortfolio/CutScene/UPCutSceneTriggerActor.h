@@ -62,6 +62,7 @@ public :
 	void Multi_StartCutScene();
 	UFUNCTION()
 	virtual void PlayNextCutScene();
+	void ExecuteEvent();
 
 	FOnCutSceneEnd OnCutSceneEnd;
 
