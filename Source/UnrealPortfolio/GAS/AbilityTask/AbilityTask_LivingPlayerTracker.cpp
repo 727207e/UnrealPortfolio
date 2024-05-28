@@ -23,6 +23,7 @@ void UAbilityTask_LivingPlayerTracker::Activate()
 {
 	Super::Activate();
 	SpawnAndInitializeTargetActor();
+	FinalizeTargetActor();
 }
 
 void UAbilityTask_LivingPlayerTracker::OnDestroy(bool AbilityEnded)
@@ -50,17 +51,15 @@ void UAbilityTask_LivingPlayerTracker::FinalizeTargetActor()
 	{
 		const FTransform SpawnTransform = ASC->GetAvatarActor()->GetTransform();
 		SpawnedTargetActor->FinishSpawning(SpawnTransform);
-    
 		ASC->SpawnedTargetActors.Push(SpawnedTargetActor);
 		SpawnedTargetActor->StartTargeting(Ability);
-		SpawnedTargetActor->ConfirmTargeting();
+		SpawnedTargetActor->ConfirmTargetingAndContinue();
 	}
 }
 
 
 void UAbilityTask_LivingPlayerTracker::OnTargetDataReadyCallback(const FGameplayAbilityTargetDataHandle& DataHandle)
 {
-	
 	if(ShouldBroadcastAbilityTaskDelegates())
 	{
 		OnComplete.Broadcast(DataHandle);

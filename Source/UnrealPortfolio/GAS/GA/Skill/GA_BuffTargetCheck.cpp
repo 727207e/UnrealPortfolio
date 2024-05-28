@@ -9,7 +9,6 @@
 #include "GAS/AbilityTask/AbilityTask_LivingPlayerTracker.h"
 #include "GAS/GA/GA_AttackHitCheck.h"
 #include "GAS/GATA/GATA_LivingPlayerTracker.h"
-#include "Interface/AttackableCharacterInterface.h"
 #include "Interface/HUDControllerInterface.h"
 #include "Tag/GameplayTags.h"
 
@@ -26,10 +25,14 @@ void UGA_BuffTargetCheck::ActivateAbility(const FGameplayAbilitySpecHandle Handl
                                           const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-	SimpleTargetMaker();
-	// UAbilityTask_LivingPlayerTracker * AttackTraceTask = UAbilityTask_LivingPlayerTracker::CreateTask(this, CurrentTA);
-	// AttackTraceTask->OnComplete.AddDynamic(this, &UGA_BuffTargetCheck::OnTraceResultCallback);
-	// AttackTraceTask->ReadyForActivation();
+	
+
+
+
+	
+	UAbilityTask_LivingPlayerTracker * AttackTraceTask = UAbilityTask_LivingPlayerTracker::CreateTask(this, CurrentTA);
+	AttackTraceTask->OnComplete.AddDynamic(this, &UGA_BuffTargetCheck::OnTraceResultCallback);
+	AttackTraceTask->ReadyForActivation();
 }
 
 void UGA_BuffTargetCheck::CancelAbility(const FGameplayAbilitySpecHandle Handle,
@@ -58,25 +61,51 @@ void UGA_BuffTargetCheck::OnBuffEnd()
 
 void UGA_BuffTargetCheck::OnTraceResultCallback(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
-	if (UAbilitySystemBlueprintLibrary::TargetDataHasHitResult(TargetDataHandle, 0))
+
+	const FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(AttackDamageEffect);
+	if (EffectSpecHandle.IsValid())
 	{
-		TargetData = TargetDataHandle;
+		ApplyGameplayEffectSpecToTarget(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo,EffectSpecHandle,TargetDataHandle);
 	}
+	
+	// const int TargetNumber = UAbilitySystemBlueprintLibrary::GetDataCountFromTargetData(TargetDataHandle);
+	// for (int Index = 0; Index < TargetNumber; Index++)
+	// {
+	// 	const FGameplayAbilityTargetData* Data = TargetDataHandle.Get(Index);
+	// 	auto TargetArray = Data->GetActors();
+	//
+	// 	for(const auto& TargetActor : TargetArray)
+	// 	{
+	// 		if(TargetActor != nullptr)
+	// 		{
+	// 			SetCurrentBuffSlot(TargetActor.Get());
+	// 			if(BuffSlot == nullptr)
+	// 			{
+	// 				continue;
+	// 			}
+	// 			BuffSlot->OnClickedTargetInputActionKey(10);
+	// 			BuffSlot->SetVisibility(ESlateVisibility::Visible);
+	// 			BuffSlot->CooldownFinishDelegate.AddDynamic(this,&UGA_BuffTargetCheck::OnBuffEnd);
+	// 			
+	// 		}
+	// 	}
+	
+		
+	//}
+
+	
 }
 
 void UGA_BuffTargetCheck::ApplyBuff()
 {
-	if(TargetData != nullptr)
+	UE_LOG(LogTemp,Log,TEXT("ApplyBuff"));
+	BuffSlot->OnClickedTargetInputActionKey(10);
+	BuffSlot->SetVisibility(ESlateVisibility::Visible);
+	BuffSlot->CooldownFinishDelegate.AddDynamic(this,&UGA_BuffTargetCheck::OnBuffEnd);
+	const FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(AttackDamageEffect);
+	if (EffectSpecHandle.IsValid())
 	{
-		BuffSlot->OnClickedTargetInputActionKey(10);
-		BuffSlot->SetVisibility(ESlateVisibility::Visible);
-		BuffSlot->CooldownFinishDelegate.AddDynamic(this,&UGA_BuffTargetCheck::OnBuffEnd);
-		const FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(AttackDamageEffect);
-		if (EffectSpecHandle.IsValid())
-		{
-			//ApplyGameplayEffectSpecToTarget(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, EffectSpecHandle, TargetData);
-			ApplyGameplayEffectSpecToOwner(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, EffectSpecHandle);
-		}
+		ApplyGameplayEffectSpecToOwner(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, EffectSpecHandle);
 	}
 
 }
@@ -95,22 +124,16 @@ void UGA_BuffTargetCheck::SimpleTargetMaker()
 			{
 				if(Actor->HasAuthority())
 				{
-					SimepleProrcess(Actor);
+					SimepleProrcess(Actor->GetPlayerState());
 				}
-				else
-				{
-					OnRep_PlayerState();
-				}
-				
 			}
 		}
 	}
 }
 
-void UGA_BuffTargetCheck::SimepleProrcess(AUPMainCharacter* MainCharacter)
+void UGA_BuffTargetCheck::SimepleProrcess(APlayerState* TargetPlayerState)
 {
-	const AUPPlayerState* PlayerState = Cast<AUPPlayerState>(MainCharacter);
-	if(IHUDControllerInterface* HudOwner = Cast<IHUDControllerInterface>(PlayerState->GetPlayerController()))
+	if(IHUDControllerInterface* HudOwner = Cast<IHUDControllerInterface>(TargetPlayerState->GetPlayerController()))
 	{
 		const TObjectPtr<UUPMainHudWidget> PlayerHud = HudOwner->GetHudWidget();
 		if(PlayerHud)
@@ -136,3 +159,29 @@ void UGA_BuffTargetCheck::OnRep_PlayerState()
 {
 	
 }
+
+void UGA_BuffTargetCheck::SetCurrentBuffSlot(AActor* Target)
+{
+	const auto CastMainCharacter = Cast<AUPMainCharacter>(Target);
+	if(!CastMainCharacter)
+	{
+		return;
+	}
+	const auto CastUpPlayerState = Cast<AUPPlayerState>(CastMainCharacter->GetPlayerState());
+	if(!CastUpPlayerState)
+	{
+		return;
+	}
+	
+	if(IHUDControllerInterface* HudOwner = Cast<IHUDControllerInterface>(CastUpPlayerState->GetPlayerController()))
+	{
+		const TObjectPtr<UUPMainHudWidget> PlayerHud = HudOwner->GetHudWidget();
+		if(PlayerHud)
+		{
+			TTuple<bool, TObjectPtr<USlotViewWidget>> MyTuple =  PlayerHud->GetLastBuffViewWidget(TargetSkillAbilityIndex);
+			bool bUsedBuff = MyTuple.Get<0>();
+			BuffSlot = MyTuple.Get<1>();
+		}
+	}
+}
+

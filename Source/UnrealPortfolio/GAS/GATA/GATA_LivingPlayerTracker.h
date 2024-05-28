@@ -14,8 +14,7 @@ UCLASS()
 class UNREALPORTFOLIO_API AGATA_LivingPlayerTracker : public AGameplayAbilityTargetActor
 {
 	GENERATED_BODY()
-protected:
+public:
+	virtual void StartTargeting(UGameplayAbility* Ability) override;
 	virtual void ConfirmTargetingAndContinue() override;
-private:
-	void FilterDeadCharacters(TArray<AUPMainCharacter*>& OutActors);
 };

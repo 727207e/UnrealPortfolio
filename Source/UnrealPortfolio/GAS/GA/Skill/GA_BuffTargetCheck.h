@@ -40,9 +40,10 @@ protected:
 	virtual  void OnTraceResultCallback(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
 	void ApplyBuff();
 	void SimpleTargetMaker();
-	void SimepleProrcess(AUPMainCharacter* MainCharacter);
+	void SimepleProrcess(APlayerState* TargetPlayerState);
 	void OnRep_PlayerState();
+	void TestCode();
 	UClass* CurrentTA;
-
+	void SetCurrentBuffSlot(AActor* Target);
 	FGameplayAbilityTargetDataHandle TargetData;
 };
