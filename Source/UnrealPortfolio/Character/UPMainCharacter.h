@@ -118,7 +118,6 @@ protected:
 	virtual void SetupASCClientPlayer() override;
 	virtual void SetupASCHostPlayer(AActor* InOwnerActor) override;
 	virtual void OnDead() override;
-	virtual void OnRep_PlayerState() override;
 
 	UFUNCTION(BlueprintCallable , Category = GAS)
 	void ActiveAbilityGameOverCheck();
@@ -148,6 +147,6 @@ public:
 	void CharacterLookMouseLocation();
 	UFUNCTION(Server, UnReliable)
 	void Server_SetActorRotation(FVector LookTargetLocation);
-
+	void CreateHostHudWidget();
 	void CreateHudWidget();
 };

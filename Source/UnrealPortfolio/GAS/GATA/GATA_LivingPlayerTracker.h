@@ -4,14 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbilityTargetActor_Radius.h"
+#include "Character/UPMainCharacter.h"
 #include "GATA_LivingPlayerTracker.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class UNREALPORTFOLIO_API AGATA_LivingPlayerTracker : public AGameplayAbilityTargetActor_Radius
+class UNREALPORTFOLIO_API AGATA_LivingPlayerTracker : public AGameplayAbilityTargetActor
 {
 	GENERATED_BODY()
-	
+protected:
+	virtual void ConfirmTargetingAndContinue() override;
+private:
+	void FilterDeadCharacters(TArray<AUPMainCharacter*>& OutActors);
 };

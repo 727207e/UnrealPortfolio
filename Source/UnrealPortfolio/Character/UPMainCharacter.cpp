@@ -191,19 +191,8 @@ void AUPMainCharacter::BeginPlay()
 		NPCDetectorSceneComponent->SetParent(GetRootComponent());
 		NPCDetectorSceneComponent->RegisterComponent();
 	}
-	if (HasAuthority())
-	{
-		AUPPlayerController* HostController =  Cast<AUPPlayerController>(GetWorld()->GetFirstPlayerController());
-		if(HostController->PlayerState)
-		{
-			AActor* PS = HostController->PlayerState;
-			HostController->HudWidgetComponent->MainHudWidget = CastChecked<UUPMainHudWidget>(CreateWidget(GetWorld(),HostController->HudWidgetComponent->HudWidgetClass
-,TEXT("UUPMainHudWidget")));
-			HostController->HudWidgetComponent->MainHudWidget->AddToViewport();
-			HostController->HudWidgetComponent->MainHudWidget->SetProgress(PS);
-		}
-	}
-	
+
+
 }
 
 void AUPMainCharacter::CallGAS(int32 GameplayAbilityInputId)
@@ -404,12 +393,19 @@ void AUPMainCharacter::SetMainCharacterTableData() const
 void AUPMainCharacter::SetupASCClientPlayer()
 {
 	Super::SetupASCClientPlayer();
+	CreateHudWidget();
+	SetMainCharacterTableData();
+	ActiveAbilityEquipWeapon(DEFAULT_WEAPON_ID);
 }
 
 void AUPMainCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 {
 	Super::SetupASCHostPlayer(InOwnerActor);
 	CreateHudWidget();
+
+	//TODO:: TEST Code 
+	//CreateHostHudWidget();
+	
 	SetMainCharacterTableData();
 	ActiveAbilityEquipWeapon(DEFAULT_WEAPON_ID);
 }
@@ -427,13 +423,6 @@ void AUPMainCharacter::OnDead()
 	}
 }
 
-void AUPMainCharacter::OnRep_PlayerState()
-{
-	Super::OnRep_PlayerState();
-	CreateHudWidget();
-	SetMainCharacterTableData();
-	ActiveAbilityEquipWeapon(DEFAULT_WEAPON_ID);
-}
 
 void AUPMainCharacter::ActiveAbilityGameOverCheck()
 {
@@ -509,6 +498,23 @@ void AUPMainCharacter::CharacterLookMouseLocation()
 	}
 }
 
+
+void AUPMainCharacter::CreateHostHudWidget()
+{
+		if (HasAuthority())
+		{
+			AUPPlayerController* HostController =  Cast<AUPPlayerController>(GetWorld()->GetFirstPlayerController());
+			if(HostController->PlayerState)
+			{
+				AActor* PS = HostController->PlayerState;
+				HostController->HudWidgetComponent->MainHudWidget = CastChecked<UUPMainHudWidget>(CreateWidget(GetWorld(),HostController->HudWidgetComponent->HudWidgetClass
+	,TEXT("UUPMainHudWidget")));
+				HostController->HudWidgetComponent->MainHudWidget->AddToViewport();
+				HostController->HudWidgetComponent->MainHudWidget->SetProgress(PS);
+			}
+		}
+}
+
 void AUPMainCharacter::CreateHudWidget()
 {
 	AUPPlayerState* PS = GetPlayerState<AUPPlayerState>();
@@ -524,6 +530,8 @@ void AUPMainCharacter::CreateHudWidget()
 			
 		}
 	}
+
+	
 }
 
 void AUPMainCharacter::SetMoveBlock(bool bBlock)

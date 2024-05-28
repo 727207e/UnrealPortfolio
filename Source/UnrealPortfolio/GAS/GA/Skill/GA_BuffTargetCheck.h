@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
+#include "Character/UPMainCharacter.h"
 #include "UI/View/SlotViewWidget.h"
 #include "GA_BuffTargetCheck.generated.h"
 
@@ -13,6 +14,9 @@
 UCLASS()
 class UNREALPORTFOLIO_API UGA_BuffTargetCheck : public UGameplayAbility
 {
+
+	UGA_BuffTargetCheck();
+	
 	GENERATED_BODY()
 	int32 TargetSkillAbilityIndex;
 	UPROPERTY()
@@ -32,7 +36,13 @@ protected:
 	void OnBuffEnd();
 	UPROPERTY(EditAnywhere, Category = "GAS")
 	TSubclassOf<class UGameplayEffect> AttackDamageEffect;
-
+	UFUNCTION()
+	virtual  void OnTraceResultCallback(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
 	void ApplyBuff();
-	
+	void SimpleTargetMaker();
+	void SimepleProrcess(AUPMainCharacter* MainCharacter);
+	void OnRep_PlayerState();
+	UClass* CurrentTA;
+
+	FGameplayAbilityTargetDataHandle TargetData;
 };

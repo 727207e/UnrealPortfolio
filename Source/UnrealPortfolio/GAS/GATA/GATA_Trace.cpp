@@ -9,15 +9,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Data/DataAttributeSet/EntityAttributeSet.h"
-#include "AbilitySystemBlueprintLibrary.h"
 #include "defines/UPCollision.h"
-#include "AbilitySystemComponent.h"
-#include "GAS/Attribute/UPMainCharacterAttributeSet.h"
-#include "Data/DataAttributeSet/EntityAttributeSet.h"
-#include "AbilitySystemBlueprintLibrary.h"
-#include "NiagaraComponent.h"
-#include "NiagaraFunctionLibrary.h"
-#include "defines/UPServerLogDefine.h"
 
 AGATA_Trace::AGATA_Trace()
 {
