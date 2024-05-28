@@ -30,7 +30,13 @@ void AUPCutSceneTriggerActor::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (BoxRoot->OnComponentBeginOverlap.IsAlreadyBound(this, &AUPCutSceneTriggerActor::OnOverlapBegin))
+	{
+		BoxRoot->OnComponentBeginOverlap.RemoveDynamic(this, &AUPCutSceneTriggerActor::OnOverlapBegin);
+	}
+
 	BoxRoot->OnComponentBeginOverlap.AddDynamic(this, &AUPCutSceneTriggerActor::OnOverlapBegin);
+
 }
 
 void AUPCutSceneTriggerActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult)
