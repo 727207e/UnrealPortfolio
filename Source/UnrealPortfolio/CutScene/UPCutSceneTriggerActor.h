@@ -54,21 +54,25 @@ public:
 	TArray<FCameraMoveEvent> CameraMoveEventArray;
 
 public :
+	virtual void BeginPlay() override;
+
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult);
 	UFUNCTION(NetMulticast, Unreliable)
 	void Multi_StartCutScene();
 	UFUNCTION()
-	void PlayNextCutScene();
+	virtual void PlayNextCutScene();
 
 	FOnCutSceneEnd OnCutSceneEnd;
 
 	UPROPERTY(EditAnywhere)
 	bool bIsShareView;
 
+protected :
+	bool bIsTriggerFirst;
+
 private :
 
-	bool bIsTriggerFirst;
 	void CameraMoveTimer();
 	FTimerHandle CameraMoveTimerHandle;
 	FCameraMoveEvent CameraMoveEvent;

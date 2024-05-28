@@ -28,6 +28,9 @@ public :
 	void LoadNextLevelByAsync(const FString& NextLevelPath);	//NextLevelPath : /Game/Level/TopDownSampleScene
 	void ProgressCheck();
 
+	UFUNCTION(BlueprintCallable)
+	void SetBossHp(float Value);
+
 	FString NextLevel;
 	
 	UPROPERTY(BlueprintReadOnly)

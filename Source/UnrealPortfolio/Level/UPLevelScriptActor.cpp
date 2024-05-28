@@ -7,6 +7,9 @@
 #include "Components/WidgetComponent.h"
 #include "Player/UPBaseController.h"
 #include "Engine/LevelStreamingDynamic.h"
+#include "Kismet/GameplayStatics.h"
+#include "Character/UPBossCharacter.h"
+#include "Data/DataAttributeSet/EntityAttributeSet.h"
 
 AUPLevelScriptActor::AUPLevelScriptActor()
 {
@@ -83,5 +86,20 @@ void AUPLevelScriptActor::ProgressCheck()
 
 		LevelLoadWidget->ProgressValue = ProgressLoad;
 		UE_LOG(LogTemp, Log, TEXT("Progress : %f"), ProgressLoad);
+	}
+}
+
+void AUPLevelScriptActor::SetBossHp(float Value)
+{
+	if (HasAuthority())
+	{
+		TArray<AActor*> FoundActors;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AUPBossCharacter::StaticClass(), FoundActors);
+
+		if (!FoundActors.IsEmpty())
+		{
+			AUPBossCharacter* BossCharacter = Cast<AUPBossCharacter>(FoundActors[0]);
+			const_cast<UEntityAttributeSet*>(BossCharacter->GetAbilitySystemComponent()->GetSet<UEntityAttributeSet>())->SetHpValue(Value);
+		}
 	}
 }

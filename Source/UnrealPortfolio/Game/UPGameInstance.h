@@ -28,6 +28,8 @@ public:
 
     int32 UserNumber;
 
+    uint8 bIsBossFirstMeet = true;
+
 private:
     UPROPERTY()
     class ABossManager* BossManager;

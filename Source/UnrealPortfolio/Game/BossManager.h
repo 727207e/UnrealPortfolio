@@ -20,7 +20,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<ACharacter> BossBody;
-	ACharacter* Boss;
+	class AUPBossCharacter* Boss;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class AUPCutSceneTriggerActor> CutSceneTrigger; 
@@ -34,12 +34,21 @@ public:
 	UPROPERTY(EditAnywhere)
 	float ZOffset = 100.f;
 
+	UPROPERTY(EditAnywhere)
+	float BossTriggerHp = 1;
+
+	UPROPERTY(EditAnywhere)
+	float BossPhaseNumber = 1;
+
 public :
 	void GenBoss();
 	virtual void BeginPlay() override;
 
 	void StartStruggling();
 	FTransform GetRandomAroundTransform();
+
+	UFUNCTION()
+	void BossHPTriggerCheck();
 
 private :
 	void SpawnActorsAroundCenter(const FVector& Center);

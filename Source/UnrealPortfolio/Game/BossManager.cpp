@@ -3,9 +3,11 @@
 
 #include "Game/BossManager.h"
 #include "Character/UPStrugglingBoss.h"
+#include "Character/UPBossCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "CutScene/UPCutSceneTriggerActor.h"
 #include "Components/SceneComponent.h"
+#include "Data/DataAttributeSet/EntityAttributeSet.h"
 #include "Game/UPGameInstance.h"
 
 ABossManager::ABossManager()
@@ -14,8 +16,17 @@ ABossManager::ABossManager()
 
 void ABossManager::GenBoss()
 {
-	Boss = GetWorld()->SpawnActor<ACharacter>(BossBody, GenPosition->GetActorLocation(), GenPosition->GetActorRotation());
+	ACharacter* SpawnBoss = GetWorld()->SpawnActor<ACharacter>(BossBody, GenPosition->GetActorLocation(), GenPosition->GetActorRotation());
+	Boss = Cast<AUPBossCharacter>(SpawnBoss);
 
+	if (nullptr == Boss)
+	{
+		UE_LOG(LogTemp, Error, TEXT("BossManager : The Spawn Boss is Not UPBossCharacter"));
+		return;
+	}
+
+	Boss->CurPhaseNumber = BossPhaseNumber;
+	Boss->OnHitDelegate.AddUObject(this, &ABossManager::BossHPTriggerCheck);
 }
 
 void ABossManager::BeginPlay()
@@ -56,6 +67,16 @@ FTransform ABossManager::GetRandomAroundTransform()
 		return AroundActors[RandomIndex]->GetActorTransform();
 	}
 	return FTransform();
+}
+
+void ABossManager::BossHPTriggerCheck()
+{
+	UE_LOG(LogTemp, Error, TEXT("Boss Hit"));
+
+	if (Boss->GetAbilitySystemComponent()->GetSet<UEntityAttributeSet>()->GetHp() <= BossTriggerHp)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Boss Event On"));
+	}
 }
 
 void ABossManager::SpawnActorsAroundCenter(const FVector& Center)

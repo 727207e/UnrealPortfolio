@@ -168,3 +168,8 @@ void UEntityAttributeSet::OnRep_MovementSpeed(const FGameplayAttributeData& OldM
 		GAMEPLAYATTRIBUTE_REPNOTIFY(UEntityAttributeSet, MovementSpeed, OldMovementSpeed);
 	}
 }
+
+void UEntityAttributeSet::SetHpValue(float Value)
+{
+	SetHp(Value);
+}

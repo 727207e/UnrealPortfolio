@@ -16,7 +16,6 @@ AUPCutSceneTriggerActor::AUPCutSceneTriggerActor()
 {
 	BoxRoot = CreateDefaultSubobject<UBoxComponent>(TEXT("Root"));
 	SetRootComponent(BoxRoot);
-	BoxRoot->OnComponentBeginOverlap.AddDynamic(this, &AUPCutSceneTriggerActor::OnOverlapBegin);
 	BoxRoot->SetWorldScale3D(FVector(15.0f, 15.0f, 15.0f));
 	BoxRoot->SetCollisionProfileName(CPROFILE_UP_CUTSCENETRIGGER);
 
@@ -25,6 +24,13 @@ AUPCutSceneTriggerActor::AUPCutSceneTriggerActor()
 	bIsTriggerFirst = true;
 	IndexCount = 0;
 	CurTime = 0;
+}
+
+void AUPCutSceneTriggerActor::BeginPlay()
+{
+	Super::BeginPlay();
+
+	BoxRoot->OnComponentBeginOverlap.AddDynamic(this, &AUPCutSceneTriggerActor::OnOverlapBegin);
 }
 
 void AUPCutSceneTriggerActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult)
