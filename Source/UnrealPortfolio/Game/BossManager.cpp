@@ -14,6 +14,18 @@ ABossManager::ABossManager()
 {
 }
 
+void ABossManager::PreInitializeComponents()
+{
+	Super::PreInitializeComponents();
+
+	UUPGameInstance* UPGameInstance = Cast<UUPGameInstance>(GetGameInstance());
+
+	if (UPGameInstance)
+	{
+		UPGameInstance->SetBossManager(this);
+	}
+}
+
 void ABossManager::GenBoss()
 {
 	ACharacter* SpawnBoss = GetWorld()->SpawnActor<ACharacter>(BossBody, GenPosition->GetActorLocation(), GenPosition->GetActorRotation());
@@ -27,16 +39,16 @@ void ABossManager::GenBoss()
 
 	Boss->CurPhaseNumber = BossPhaseNumber;
 	Boss->OnHitDelegate.AddUObject(this, &ABossManager::BossHPTriggerCheck);
+
+	if (BossStartingHP > 0 && HasAuthority())
+	{
+		const_cast<UEntityAttributeSet*>(Boss->GetAbilitySystemComponent()->GetSet<UEntityAttributeSet>())->SetHpValue(BossStartingHP);
+	}
 }
 
 void ABossManager::BeginPlay()
 {
-	UUPGameInstance* UPGameInstance = Cast<UUPGameInstance>(GetGameInstance());
-
-	if (UPGameInstance)
-	{
-		UPGameInstance->SetBossManager(this);
-	}
+	Super::BeginPlay();
 
 	if (CutSceneTrigger)
 	{
@@ -44,6 +56,12 @@ void ABossManager::BeginPlay()
 	}
 
 	SpawnActorsAroundCenter(GenPosition->GetActorLocation());
+
+	if (bIsSpawnImmediately && HasAuthority())
+	{
+		FTimerHandle BossGenTimeHandle;
+		GetWorld()->GetTimerManager().SetTimer(BossGenTimeHandle, this, &ABossManager::GenBoss, 2.0f, false);
+	}
 }
 
 void ABossManager::StartStruggling()
@@ -82,6 +100,12 @@ void ABossManager::BossHPTriggerCheck()
 			break;
 		}
 	}
+}
+
+void ABossManager::BossDestroy()
+{
+	Boss->Destroy();
+	Boss = nullptr;
 }
 
 void ABossManager::SpawnActorsAroundCenter(const FVector& Center)

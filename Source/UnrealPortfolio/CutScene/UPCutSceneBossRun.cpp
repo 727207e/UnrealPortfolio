@@ -15,8 +15,7 @@ void AUPCutSceneBossRun::StartEvent()
 
 	if (BossManager->Boss != nullptr)
 	{
-		BossManager->Boss->Destroy();
-		BossManager->Boss = nullptr;
+		BossManager->BossDestroy();
 	}
 	
 	DumyBoss = GetWorld()->SpawnActor<ACharacter>(DumyBossType, GenPosition->GetActorLocation(), GenPosition->GetActorRotation());
@@ -39,5 +38,6 @@ void AUPCutSceneBossRun::FinishEvent()
 
 		DumyBoss->Destroy();
 		DumyBoss = nullptr;
+		BossManager->bIsBossDie = 1;
 	}
 }

@@ -24,10 +24,6 @@ public :
 	virtual void StartEvent() override;
 	virtual void FinishEvent() override;
 
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class ABossManager> BossManager;
-
-
 protected:
 	UPROPERTY()
 	TObjectPtr<ACharacter> DumyBoss;

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Game/BossManager.h"
 #include "UPCutSceneEvent.generated.h"
 
 UCLASS()
@@ -15,6 +16,11 @@ public:
 	// Sets default values for this actor's properties
 	AUPCutSceneEvent();
 
+	virtual void BeginPlay() override;
 	virtual void StartEvent();
 	virtual void FinishEvent();
+
+protected :
+	UPROPERTY()
+	TObjectPtr<ABossManager> BossManager;
 };

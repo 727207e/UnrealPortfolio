@@ -26,6 +26,8 @@ public:
 	// Sets default values for this actor's properties
 	ABossManager();
 
+	virtual void PreInitializeComponents() override;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<AActor> GenPosition;
 
@@ -50,6 +52,13 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float BossPhaseNumber = 1;
+	UPROPERTY(EditAnywhere)
+	float BossStartingHP = -1;
+
+	uint8 bIsBossDie = 0;
+
+	UPROPERTY(EditAnywhere)
+	bool bIsSpawnImmediately = false;
 
 public :
 	void GenBoss();
@@ -60,6 +69,8 @@ public :
 
 	UFUNCTION()
 	void BossHPTriggerCheck();
+
+	void BossDestroy();
 
 private :
 	void SpawnActorsAroundCenter(const FVector& Center);

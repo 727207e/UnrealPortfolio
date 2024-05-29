@@ -25,6 +25,4 @@ public :
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<AActor> GenPosition;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<class ABossManager> BossManager;
 };
