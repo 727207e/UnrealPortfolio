@@ -51,6 +51,7 @@ void AUPGameState::MoveNextLevelAllUser()
     ReadyUserNumber++;
     if (ReadyUserNumber >= UpGameInstance->UserNumber)
     {
+        CollectGarbage(GARBAGE_COLLECTION_KEEPFLAGS, true);
         GetWorld()->ServerTravel(NextLevelPath);
     }
 }

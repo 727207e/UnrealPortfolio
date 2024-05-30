@@ -35,8 +35,8 @@ void AUPCutSceneTriggerActor::BeginPlay()
 		BoxRoot->OnComponentBeginOverlap.RemoveDynamic(this, &AUPCutSceneTriggerActor::OnOverlapBegin);
 	}
 
+	MyCharacter = Cast<AUPMainCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	BoxRoot->OnComponentBeginOverlap.AddDynamic(this, &AUPCutSceneTriggerActor::OnOverlapBegin);
-
 }
 
 void AUPCutSceneTriggerActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult)
@@ -46,7 +46,6 @@ void AUPCutSceneTriggerActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp
 		return;
 	}
 
-	MyCharacter = Cast<AUPMainCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	if (MyCharacter != OtherActor)
 	{
 		return;
