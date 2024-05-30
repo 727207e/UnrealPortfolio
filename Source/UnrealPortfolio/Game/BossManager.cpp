@@ -37,7 +37,7 @@ void ABossManager::GenBoss()
 		return;
 	}
 
-	Boss->CurPhaseNumber = BossPhaseNumber;
+	Boss->UpdatePhaseNumber(BossPhaseNumber);
 	Boss->OnHitDelegate.AddUObject(this, &ABossManager::BossHPTriggerCheck);
 
 	if (BossStartingHP > 0 && HasAuthority())

@@ -71,10 +71,7 @@ void AUPBossCharacter::PostInitializeComponents()
 		TargetASC->AddLooseGameplayTag(TAG_BACK_ATTACK_HIT);
 	}
 
-	for (TObjectPtr<UUPACSkillState> SkillState : BossSkillStateArray)
-	{
-		SkillState->PostInitialize(CurPhaseNumber);
-	}
+	UpdatePhaseNumber(CurPhaseNumber);
 }
 
 void AUPBossCharacter::SkillEndCallBack()
@@ -100,6 +97,15 @@ void AUPBossCharacter::CounterAttackHit()
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	AnimInstance->Montage_Play(GroggyMontage);
 	AnimInstance->OnMontageEnded.AddDynamic(this, &AUPBossCharacter::MontageEndEvent);
+}
+
+void AUPBossCharacter::UpdatePhaseNumber(int32 PhaseNumber)
+{
+	CurPhaseNumber = PhaseNumber;
+	for (TObjectPtr<UUPACSkillState> SkillState : BossSkillStateArray)
+	{
+		SkillState->PostInitialize(CurPhaseNumber);
+	}
 }
 
 void AUPBossCharacter::MontageEndEvent(UAnimMontage* Montage, bool bInterrupted)
