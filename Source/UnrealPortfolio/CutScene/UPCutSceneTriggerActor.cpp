@@ -16,7 +16,6 @@ AUPCutSceneTriggerActor::AUPCutSceneTriggerActor()
 {
 	BoxRoot = CreateDefaultSubobject<UBoxComponent>(TEXT("Root"));
 	SetRootComponent(BoxRoot);
-	BoxRoot->OnComponentBeginOverlap.AddDynamic(this, &AUPCutSceneTriggerActor::OnOverlapBegin);
 	BoxRoot->SetWorldScale3D(FVector(15.0f, 15.0f, 15.0f));
 	BoxRoot->SetCollisionProfileName(CPROFILE_UP_CUTSCENETRIGGER);
 
@@ -27,6 +26,19 @@ AUPCutSceneTriggerActor::AUPCutSceneTriggerActor()
 	CurTime = 0;
 }
 
+void AUPCutSceneTriggerActor::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (BoxRoot->OnComponentBeginOverlap.IsAlreadyBound(this, &AUPCutSceneTriggerActor::OnOverlapBegin))
+	{
+		BoxRoot->OnComponentBeginOverlap.RemoveDynamic(this, &AUPCutSceneTriggerActor::OnOverlapBegin);
+	}
+
+	MyCharacter = Cast<AUPMainCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	BoxRoot->OnComponentBeginOverlap.AddDynamic(this, &AUPCutSceneTriggerActor::OnOverlapBegin);
+}
+
 void AUPCutSceneTriggerActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult)
 {
 	if (!bIsTriggerFirst)
@@ -34,27 +46,11 @@ void AUPCutSceneTriggerActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp
 		return;
 	}
 
-	MyCharacter = Cast<AUPMainCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
-
-	if (CameraMoveEventArray.Num() == 0)
+	if (MyCharacter != OtherActor)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UPCutSceneTriggerActor Doesn't Have CameraMoveEventArray"));
 		return;
 	}
-
-	if (!bIsShareView)
-	{
-		if (MyCharacter == OtherActor)
-		{
-			PlayNextCutScene();
-			return;
-		}
-	}
-	else if (bIsShareView && HasAuthority())
-	{
-		Multi_StartCutScene();
-		return;
-	}
+	ExecuteEvent();
 }
 
 void AUPCutSceneTriggerActor::PlayNextCutScene()
@@ -84,6 +80,27 @@ void AUPCutSceneTriggerActor::PlayNextCutScene()
 
 	GetWorld()->GetTimerManager().ClearTimer(CameraMoveTimerHandle);
 	GetWorld()->GetTimerManager().SetTimer(CameraMoveTimerHandle, this, &AUPCutSceneTriggerActor::CameraMoveTimer, GetWorld()->DeltaTimeSeconds, true);
+}
+
+void AUPCutSceneTriggerActor::ExecuteEvent()
+{
+	MyCharacter = Cast<AUPMainCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	if (CameraMoveEventArray.Num() == 0)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UPCutSceneTriggerActor Doesn't Have CameraMoveEventArray"));
+		return;
+	}
+
+	if (!bIsShareView)
+	{
+		PlayNextCutScene();
+		return;
+	}
+	else if (bIsShareView && HasAuthority())
+	{
+		Multi_StartCutScene();
+		return;
+	}
 }
 
 void AUPCutSceneTriggerActor::CameraMoveTimer()

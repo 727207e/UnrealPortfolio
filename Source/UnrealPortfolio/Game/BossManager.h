@@ -6,6 +6,17 @@
 #include "GameFramework/Actor.h"
 #include "BossManager.generated.h"
 
+USTRUCT(BlueprintType)
+struct FBossHealthEvent
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<class AUPCutSceneTriggerActor> CutSceneTrigger;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BossTriggerHp;
+};
+
 UCLASS()
 class UNREALPORTFOLIO_API ABossManager : public AActor
 {
@@ -15,12 +26,14 @@ public:
 	// Sets default values for this actor's properties
 	ABossManager();
 
+	virtual void PreInitializeComponents() override;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<AActor> GenPosition;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<ACharacter> BossBody;
-	ACharacter* Boss;
+	class AUPBossCharacter* Boss;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class AUPCutSceneTriggerActor> CutSceneTrigger; 
@@ -34,12 +47,30 @@ public:
 	UPROPERTY(EditAnywhere)
 	float ZOffset = 100.f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FBossHealthEvent> BossTriggers;
+
+	UPROPERTY(EditAnywhere)
+	float BossPhaseNumber = 1;
+	UPROPERTY(EditAnywhere)
+	float BossStartingHP = -1;
+
+	uint8 bIsBossDie = 0;
+
+	UPROPERTY(EditAnywhere)
+	bool bIsSpawnImmediately = false;
+
 public :
 	void GenBoss();
 	virtual void BeginPlay() override;
 
 	void StartStruggling();
 	FTransform GetRandomAroundTransform();
+
+	UFUNCTION()
+	void BossHPTriggerCheck();
+
+	void BossDestroy();
 
 private :
 	void SpawnActorsAroundCenter(const FVector& Center);

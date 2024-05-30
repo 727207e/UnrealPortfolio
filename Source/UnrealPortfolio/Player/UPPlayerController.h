@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Templates/SubclassOf.h"
-#include "GameFramework/PlayerController.h"
+#include "Player/UPBaseController.h"
 #include "Interface/HUDControllerInterface.h"
 #include "Interface/UPPossessCharacterInterface.h"
 #include "UI/Componenet/WidgetHUDComponent.h"
@@ -18,7 +18,7 @@ class UInputAction;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS()
-class AUPPlayerController : public APlayerController ,public  IHUDControllerInterface
+class AUPPlayerController : public AUPBaseController,public  IHUDControllerInterface
 {
 	GENERATED_BODY()
 

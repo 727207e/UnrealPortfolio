@@ -3,6 +3,7 @@
 
 #include "CutScene/UPCutSceneMapOneGenDumyBoss.h"
 #include "GameFramework/Character.h"
+#include "Game/UPGameInstance.h"
 #include "Game/BossManager.h"
 
 void AUPCutSceneMapOneGenDumyBoss::StartEvent()
@@ -13,7 +14,7 @@ void AUPCutSceneMapOneGenDumyBoss::StartEvent()
 	}
 	Super::StartEvent();
 
-	DumyBoss = GetWorld()->SpawnActor<ACharacter>(DumyBossType, GenPosition->GetActorLocation(), GenPosition->GetActorRotation());
+	DummyBoss = GetWorld()->SpawnActor<ACharacter>(DumyBossType, GenPosition->GetActorLocation(), GenPosition->GetActorRotation());
 }
 
 void AUPCutSceneMapOneGenDumyBoss::FinishEvent()
@@ -24,7 +25,18 @@ void AUPCutSceneMapOneGenDumyBoss::FinishEvent()
 	}
 	Super::FinishEvent();
 
-	DumyBoss->Destroy();
+	UUPGameInstance* UPGameInstance = Cast<UUPGameInstance>(GetWorld()->GetGameInstance());
+	if (nullptr == UPGameInstance)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AUPCutSceneTriggerBossFirst : Can't Find UPGameInstance"));
+		return;
+	}
+	UPGameInstance->bIsBossFirstMeet = false;
+
+	if (nullptr != DummyBoss)
+	{
+		DummyBoss->Destroy();
+	}
 
 	FTimerHandle RealBossGenTimeHandle;
 	GetWorld()->GetTimerManager().SetTimer(RealBossGenTimeHandle, FTimerDelegate::CreateLambda([&]

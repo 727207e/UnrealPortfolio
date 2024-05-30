@@ -3,29 +3,52 @@
 
 #include "Game/BossManager.h"
 #include "Character/UPStrugglingBoss.h"
+#include "Character/UPBossCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "CutScene/UPCutSceneTriggerActor.h"
 #include "Components/SceneComponent.h"
+#include "Data/DataAttributeSet/EntityAttributeSet.h"
 #include "Game/UPGameInstance.h"
 
 ABossManager::ABossManager()
 {
 }
 
-void ABossManager::GenBoss()
+void ABossManager::PreInitializeComponents()
 {
-	Boss = GetWorld()->SpawnActor<ACharacter>(BossBody, GenPosition->GetActorLocation(), GenPosition->GetActorRotation());
+	Super::PreInitializeComponents();
 
-}
-
-void ABossManager::BeginPlay()
-{
 	UUPGameInstance* UPGameInstance = Cast<UUPGameInstance>(GetGameInstance());
 
 	if (UPGameInstance)
 	{
 		UPGameInstance->SetBossManager(this);
 	}
+}
+
+void ABossManager::GenBoss()
+{
+	ACharacter* SpawnBoss = GetWorld()->SpawnActor<ACharacter>(BossBody, GenPosition->GetActorLocation(), GenPosition->GetActorRotation());
+	Boss = Cast<AUPBossCharacter>(SpawnBoss);
+
+	if (nullptr == Boss)
+	{
+		UE_LOG(LogTemp, Error, TEXT("BossManager : The Spawn Boss is Not UPBossCharacter"));
+		return;
+	}
+
+	Boss->UpdatePhaseNumber(BossPhaseNumber);
+	Boss->OnHitDelegate.AddUObject(this, &ABossManager::BossHPTriggerCheck);
+
+	if (BossStartingHP > 0 && HasAuthority())
+	{
+		const_cast<UEntityAttributeSet*>(Boss->GetAbilitySystemComponent()->GetSet<UEntityAttributeSet>())->SetHpValue(BossStartingHP);
+	}
+}
+
+void ABossManager::BeginPlay()
+{
+	Super::BeginPlay();
 
 	if (CutSceneTrigger)
 	{
@@ -33,6 +56,12 @@ void ABossManager::BeginPlay()
 	}
 
 	SpawnActorsAroundCenter(GenPosition->GetActorLocation());
+
+	if (bIsSpawnImmediately && HasAuthority())
+	{
+		FTimerHandle BossGenTimeHandle;
+		GetWorld()->GetTimerManager().SetTimer(BossGenTimeHandle, this, &ABossManager::GenBoss, 2.0f, false);
+	}
 }
 
 void ABossManager::StartStruggling()
@@ -56,6 +85,27 @@ FTransform ABossManager::GetRandomAroundTransform()
 		return AroundActors[RandomIndex]->GetActorTransform();
 	}
 	return FTransform();
+}
+
+void ABossManager::BossHPTriggerCheck()
+{
+	float CurBossHp = Boss->GetAbilitySystemComponent()->GetSet<UEntityAttributeSet>()->GetHp();
+
+	for (int32 index = 0; index < BossTriggers.Num(); ++index)
+	{
+		if (CurBossHp <= BossTriggers[index].BossTriggerHp)
+		{
+			BossTriggers[index].CutSceneTrigger->ExecuteEvent();
+			BossTriggers.RemoveAt(index);
+			break;
+		}
+	}
+}
+
+void ABossManager::BossDestroy()
+{
+	Boss->Destroy();
+	Boss = nullptr;
 }
 
 void ABossManager::SpawnActorsAroundCenter(const FVector& Center)

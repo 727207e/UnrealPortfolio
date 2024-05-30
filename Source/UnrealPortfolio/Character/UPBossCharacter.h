@@ -32,6 +32,8 @@ public:
 	virtual void PostInitializeComponents() override;
 	virtual void SkillEndCallBack() override;
 	virtual void CounterAttackHit();
+	
+	void UpdatePhaseNumber(int32 PhaseNumber);
 
 public :
 	UFUNCTION()
