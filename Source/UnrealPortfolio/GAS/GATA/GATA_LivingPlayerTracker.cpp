@@ -10,7 +10,7 @@
 void AGATA_LivingPlayerTracker::StartTargeting(UGameplayAbility* Ability)
 {
 	Super::StartTargeting(Ability);
-	
+	bReplicates = true;
 }
 
 void AGATA_LivingPlayerTracker::ConfirmTargetingAndContinue()

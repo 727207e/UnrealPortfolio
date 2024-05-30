@@ -37,13 +37,18 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "GAS")
 	TSubclassOf<class UGameplayEffect> AttackDamageEffect;
 	UFUNCTION()
-	virtual  void OnTraceResultCallback(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
-	void ApplyBuff();
-	void SimpleTargetMaker();
-	void SimepleProrcess(APlayerState* TargetPlayerState);
-	void OnRep_PlayerState();
-	void TestCode();
+	virtual void OnTraceResultCallback(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
 	UClass* CurrentTA;
-	void SetCurrentBuffSlot(AActor* Target);
 	FGameplayAbilityTargetDataHandle TargetData;
+	int32 BuffCount;
+	
+	//함수를 클라이언트에서 호출되지만
+	//서버에서 실행되는 rpc입니다.
+	UFUNCTION(Server, Unreliable)
+	void Server_SendMessageBuffSlot();
+	
+	//함수를 서버에서 호출되지만
+	//클라이언트에서 실행되는 rpc입니다.
+	
+
 };

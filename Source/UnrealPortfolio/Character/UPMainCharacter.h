@@ -149,4 +149,5 @@ public:
 	void Server_SetActorRotation(FVector LookTargetLocation);
 	void CreateHostHudWidget();
 	void CreateHudWidget();
+	int32 HudCount;
 };

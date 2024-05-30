@@ -50,5 +50,6 @@ public:
 	void LoadDataTableToArray(const FString& DataTablePath, TArray<T>& OutArray);
 	FUPSkillData GetSkillDataBySKillAbilityIndex(int32 InputAction);
 	int32 GetBuffTypeCount();
+	int32 HudCount;
 };
 

@@ -64,6 +64,7 @@ void UUPACChatGenerator::BeginPlay()
 	APlayerController* OwnerController = Cast<APlayerController>(GetOwner());
 	if (OwnerController->IsLocalController())
 	{
+		UE_LOG(LogTemp,Log,TEXT("Spwn!"));
 		ChatUIBP = Cast<UUPChatUIUserWidget>(CreateWidget(GetWorld(), ChatUIWidget));
 		ChatUIBP->AddToViewport();
 		ChatUIBP->InitChatBoxWidget();

@@ -402,7 +402,6 @@ void AUPMainCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 {
 	Super::SetupASCHostPlayer(InOwnerActor);
 	CreateHudWidget();
-
 	//TODO:: TEST Code 
 	//CreateHostHudWidget();
 	
@@ -517,21 +516,21 @@ void AUPMainCharacter::CreateHostHudWidget()
 
 void AUPMainCharacter::CreateHudWidget()
 {
-	AUPPlayerState* PS = GetPlayerState<AUPPlayerState>();
-	AUPPlayerController* MyClienetController = Cast<AUPPlayerController>(PS->GetPlayerController());
-	if(MyClienetController)
-	{
-		if(MyClienetController)
-		{
-			MyClienetController->HudWidgetComponent->MainHudWidget = CastChecked<UUPMainHudWidget>(CreateWidget(GetWorld(),MyClienetController->HudWidgetComponent->HudWidgetClass
-	,TEXT("UUPMainHudWidget")));
-			MyClienetController->HudWidgetComponent->MainHudWidget->AddToViewport();
-			MyClienetController->HudWidgetComponent->MainHudWidget->SetProgress(PS);
-			
-		}
-	}
-
+	UUPGameSingleton::Get().HudCount += 1; 
+	const int32 ReHudCount = UUPGameSingleton::Get().HudCount;
 	
+	AUPPlayerState* PS = GetPlayerState<AUPPlayerState>();
+	AUPPlayerController* OwnerController = Cast<AUPPlayerController>(GetOwner());
+	if(OwnerController)
+	{
+		const FName NextSection = *FString::Printf(TEXT("%s%d"), TEXT("UUPMainHudWidget"), ReHudCount);
+		OwnerController->HudWidgetComponent->MainHudWidget = CastChecked<UUPMainHudWidget>(CreateWidget(GetWorld(),OwnerController->HudWidgetComponent->HudWidgetClass
+		,NextSection));
+		OwnerController->HudWidgetComponent->MainHudWidget->AddToViewport();
+		OwnerController->HudWidgetComponent->MainHudWidget->SetProgress(PS);
+		UE_LOG(LogTemp,Log,TEXT("신규플레이어의 허드 Controller %s"),*OwnerController->HudWidgetComponent->MainHudWidget->GetName());
+		UE_LOG(LogTemp,Log,TEXT("NewPlayer Controller %s"),*OwnerController->GetName());
+	}
 }
 
 void AUPMainCharacter::SetMoveBlock(bool bBlock)
