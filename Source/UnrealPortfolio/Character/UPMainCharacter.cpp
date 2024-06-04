@@ -24,8 +24,6 @@
 
 AUPMainCharacter::AUPMainCharacter()
 {
-	//ASC = nullptr;
-
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/DownloadAssets/Primitive_Characters_Pack/Mesh/Primitive_02/Mesh_UE4/Full/SK_Primitive_02_Full.SK_Primitive_02_Full'"));
 	if (CharacterMeshRef.Object)
 	{
@@ -73,14 +71,16 @@ UAbilitySystemComponent* AUPMainCharacter::GetAbilitySystemComponent() const
 
 void AUPMainCharacter::OnAttackStart()
 {
-	if(!IsValid(ASC))	{	return; }
+	if(!IsValid(ASC))	
+	{	
+		return; 
+	}
 	CallGAS(GAS_INPUT_ID_ATTACK_START);
 }
 
 void AUPMainCharacter::OnSkillStart(int32 Index)
 {
 	CallGAS(Index);
-	UE_LOG(LogTemplateCharacter, Log, TEXT("Start : %d"), Index);
 }
 
 void AUPMainCharacter::Server_SetActorRotation_Implementation(FVector LookTargetLocation)
@@ -101,7 +101,6 @@ void AUPMainCharacter::OnConsumableStart(int32 Index)
 void AUPMainCharacter::OnAvoidStart()
 {
 	CallGAS(GAS_INPUT_ID_AVOID_START);
-	UE_LOG(LogTemplateCharacter, Log, TEXT("AvoidStart"));
 }
 
 void AUPMainCharacter::OnMenuStart()
@@ -117,15 +116,9 @@ void AUPMainCharacter::OnInventoryStart()
 void AUPMainCharacter::OnInputStart()
 {
 	GetController()->StopMovement();
-}
 
-void AUPMainCharacter::OnSetDestinationTriggered()
-{
-	if(!bLockMove)
+	if (!bLockMove)
 	{
-		// We flag that the input is being pressed
-		FollowTime += GetWorld()->GetDeltaSeconds();
-
 		// We look for the location in the world where the player has pressed the input
 		FHitResult Hit;
 		bool bHitSuccessful = false;
@@ -140,25 +133,21 @@ void AUPMainCharacter::OnSetDestinationTriggered()
 		// Move towards mouse pointer or touch
 		FVector WorldDirection = (CachedDestination - this->GetActorLocation()).GetSafeNormal();
 		this->AddMovementInput(WorldDirection, 1.0, false);
+
+		// We move there and spawn some particles
+		UAIBlueprintHelperLibrary::SimpleMoveToLocation(GetController(), CachedDestination);
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, CachedDestination, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
 	}
+}
+
+void AUPMainCharacter::OnSetDestinationTriggered()
+{
 	
 }
 
 void AUPMainCharacter::OnSetDestinationReleased()
 {
-	if(!bLockMove)
-	{
-		// If it was a short press
-		if (FollowTime <= ShortPressThreshold)
-		{
-			// We move there and spawn some particles
-			UAIBlueprintHelperLibrary::SimpleMoveToLocation(GetController(), CachedDestination);
-			UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, CachedDestination, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
-		}
 
-		FollowTime = 0.f;
-	}
-	
 }
 
 void AUPMainCharacter::OnNPCInteraction()
