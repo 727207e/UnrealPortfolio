@@ -20,6 +20,7 @@
 #include "Gimmick/UPNPCDetectorSceneComponent.h"
 #include "Item/StaticMeshWeaponComponent.h"
 #include "defines/UPServerLogDefine.h"
+#include "defines/UPCollision.h"
 #include "Tag/GameplayTags.h"
 
 AUPMainCharacter::AUPMainCharacter()
@@ -122,7 +123,7 @@ void AUPMainCharacter::OnInputStart()
 		// We look for the location in the world where the player has pressed the input
 		FHitResult Hit;
 		bool bHitSuccessful = false;
-		bHitSuccessful = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);
+		bHitSuccessful = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHitResultUnderCursor(CHANNEL_FLOOR, true, Hit);
 
 		// If we hit a surface, cache the location
 		if (bHitSuccessful)
