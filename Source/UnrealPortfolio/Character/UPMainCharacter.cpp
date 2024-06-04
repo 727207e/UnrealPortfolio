@@ -481,8 +481,7 @@ UStaticMeshWeaponComponent* AUPMainCharacter::GetEquipWeapon()
 void AUPMainCharacter::CreateWeaponComponent()
 {
 	WeaponComponent = CreateDefaultSubobject<UStaticMeshWeaponComponent>(TEXT("WeaponComponent"));
-	const FAttachmentTransformRules Rules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget,EAttachmentRule::SnapToTarget,EAttachmentRule::KeepRelative,false);
-	WeaponComponent->AttachToComponent(GetMesh(),Rules, SocketWeapon);
+	WeaponComponent->SetupAttachment(GetMesh(), SocketWeapon);
 }
 
 void AUPMainCharacter::CharacterLookMouseLocation()

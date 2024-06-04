@@ -11,9 +11,9 @@ struct FProgressWidgetModelData : public FTableRowBase
 {
 	GENERATED_BODY()
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
-	FLinearColor ProgressFillColor;
+	FLinearColor ProgressFillColor = FLinearColor::Black;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
-	FLinearColor ProgressBgColor;
+	FLinearColor ProgressBgColor = FLinearColor::Black;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
-	float Duration;
+	float Duration = 0;
 };

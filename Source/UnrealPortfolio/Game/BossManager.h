@@ -14,7 +14,7 @@ struct FBossHealthEvent
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<class AUPCutSceneTriggerActor> CutSceneTrigger;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float BossTriggerHp;
+	float BossTriggerHp = 0;
 };
 
 UCLASS()

@@ -5,6 +5,7 @@
 #include "Components/BoxComponent.h"
 #include "Game/BossManager.h"
 #include "Game/UPGameState.h"
+#include "Game/UPGameInstance.h"
 #include "Character/UPMainCharacter.h"
 #include "defines/UPCollision.h"
 
@@ -22,6 +23,12 @@ void AUPMoveNextLevelActor::BeginPlay()
 	Super::BeginPlay();
 	
 	BoxRoot->OnComponentBeginOverlap.AddDynamic(this, &AUPMoveNextLevelActor::OnOverlapBegin);
+
+	UUPGameInstance* UPGameInstance = Cast<UUPGameInstance>(GetWorld()->GetGameInstance());
+	if (UPGameInstance)
+	{
+		TargetBossManager = UPGameInstance->GetBossManager();
+	}
 }
 
 void AUPMoveNextLevelActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult)

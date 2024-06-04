@@ -22,7 +22,7 @@ struct FCameraMoveEvent
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EStartType StartType;
+	EStartType StartType = EStartType::StartCamera;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<AActor> DestinationCameraTrans;
@@ -34,9 +34,9 @@ struct FCameraMoveEvent
 	UCurveFloat* CurveData;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float PlayTime;
+	float PlayTime = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float StayTime;
+	float StayTime = 0;
 };
 
 UCLASS()

@@ -26,6 +26,6 @@ struct FSlotWidgetModelData : public FTableRowBase
 	TObjectPtr<UTexture2D> IconTexture;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
-	int32 InputActionId;
+	int32 InputActionId = 0;
 	
 };

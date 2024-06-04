@@ -23,7 +23,7 @@ struct FUPUserData
     FString NickName;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Data")
-    CharacterClass ThisCharacterClass;
+    CharacterClass ThisCharacterClass = CharacterClass::Warrior;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Data")
     uint8 bIsReady = 0;

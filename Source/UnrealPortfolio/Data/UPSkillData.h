@@ -13,7 +13,7 @@ struct FUPSkillData : public  FTableRowBase
 	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
-	int32 SKillAbilityIndex;
+	int32 SKillAbilityIndex = 0;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
 	TSubclassOf<class UGameplayAbility> TargetGameplayAbility;
@@ -22,8 +22,8 @@ public:
 	TObjectPtr<UTexture2D> SKillIconTexture;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
-	float CooldownTime;
+	float CooldownTime = 0;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
-	int32 MagicPoints;
+	int32 MagicPoints = 0;
 };
