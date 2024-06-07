@@ -72,4 +72,3 @@ public:
 	UFUNCTION(Client, Unreliable)
 	void Client_BuffProcess();
 };
-

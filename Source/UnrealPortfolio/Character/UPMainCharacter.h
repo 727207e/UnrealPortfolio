@@ -147,7 +147,4 @@ public:
 	void CharacterLookMouseLocation();
 	UFUNCTION(Server, UnReliable)
 	void Server_SetActorRotation(FVector LookTargetLocation);
-	void CreateHostHudWidget();
-	void CreateHudWidget();
-	int32 HudCount;
 };

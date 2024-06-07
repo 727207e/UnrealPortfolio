@@ -395,7 +395,6 @@ void AUPMainCharacter::SetupASCClientPlayer()
 	Super::SetupASCClientPlayer();
 	SetMainCharacterTableData();
 	ActiveAbilityEquipWeapon(DEFAULT_WEAPON_ID);
-	CreateHudWidget();
 }
 
 void AUPMainCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
@@ -408,10 +407,6 @@ void AUPMainCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 	{
 		UE_LOG(LogTemp, Error, TEXT("No Controller"));
 		return;
-	}
-	if (GetController()->IsLocalController())
-	{
-		CreateHudWidget();
 	}
 }
 
@@ -503,42 +498,6 @@ void AUPMainCharacter::CharacterLookMouseLocation()
 	}
 }
 
-
-void AUPMainCharacter::CreateHostHudWidget()
-{
-		if (HasAuthority())
-		{
-			AUPPlayerController* HostController =  Cast<AUPPlayerController>(GetWorld()->GetFirstPlayerController());
-			if(HostController->PlayerState)
-			{
-				AActor* PS = HostController->PlayerState;
-				HostController->HudWidgetComponent->MainHudWidget = CastChecked<UUPMainHudWidget>(CreateWidget(GetWorld(),HostController->HudWidgetComponent->HudWidgetClass
-	,TEXT("UUPMainHudWidget")));
-				HostController->HudWidgetComponent->MainHudWidget->AddToViewport();
-				HostController->HudWidgetComponent->MainHudWidget->SetProgress(PS);
-			}
-		}
-}
-
-void AUPMainCharacter::CreateHudWidget()
-{
-	UUPGameSingleton::Get().HudCount += 1; 
-	const int32 ReHudCount = UUPGameSingleton::Get().HudCount;
-	
-	AUPPlayerState* PS = GetPlayerState<AUPPlayerState>();
-	AUPPlayerController* OwnerController = Cast<AUPPlayerController>(GetOwner());
-	if(OwnerController)
-	{
-		const FName NextSection = *FString::Printf(TEXT("%s%d"), TEXT("UUPMainHudWidget"), ReHudCount);
-		OwnerController->HudWidgetComponent->MainHudWidget = CastChecked<UUPMainHudWidget>(CreateWidget(GetWorld(),OwnerController->HudWidgetComponent->HudWidgetClass
-		,NextSection));
-		OwnerController->HudWidgetComponent->MainHudWidget->AddToViewport();
-		OwnerController->HudWidgetComponent->MainHudWidget->SetProgress(PS);
-		UE_LOG(LogTemp,Log,TEXT("신규플레이어의 허드 Controller %s"),*OwnerController->HudWidgetComponent->MainHudWidget->GetName());
-		UE_LOG(LogTemp,Log,TEXT("NewPlayer Controller %s"),*OwnerController->GetName());
-	}
-}
-
 void AUPMainCharacter::SetMoveBlock(bool bBlock)
 {
 	bLockMove = bBlock;
@@ -549,10 +508,7 @@ void AUPMainCharacter::Dodge()
 	LaunchCharacter(AvoidDirectionArrowComponent->GetForwardVector() * 2300,true,false);	
 }
 
-
-
 ECharacterControlType AUPMainCharacter::GetCharacterControl()
 {
 	return CurrentCharacterControlType;
 }
-
