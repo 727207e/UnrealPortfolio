@@ -49,7 +49,6 @@ void UUPMainCharacterAttributeSet::OnRep_MaxMp(const FGameplayAttributeData& Old
 
 void UUPMainCharacterAttributeSet::OnRep_Mp(const FGameplayAttributeData& OldMp)
 {
-	UE_LOG(LogTemp, Error, TEXT("MP Recep"))
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UUPMainCharacterAttributeSet, Mp, OldMp);
 }
 

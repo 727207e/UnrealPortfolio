@@ -19,9 +19,21 @@ class UNREALPORTFOLIO_API UUPMainHudWidget : public UUPUserWidget
 
 public:
 	UUPMainHudWidget();
-	
-public:
 
+public:
+	TArray<TObjectPtr<USlotViewWidget>> GetSkillSlotArray();
+	TTuple<bool, TObjectPtr<USlotViewWidget>>  GetLastBuffViewWidget(int32 CastingBuffId);
+
+	UFUNCTION(Server, Unreliable)
+	void Server_Receive();
+
+	void SetProgress(AActor* Owner);
+	UFUNCTION(Client, Unreliable)
+	void Client_BuffProcess();
+
+	void TargetButtonPress(int32 TargetIndex, int32 TargetCoolDown);
+
+public:
 	const FString HP_PROGRESS_WIDGET_NAME = TEXT("WBP_Pb0");
 	const FString MP_PROGRESS_WIDGET_NAME = TEXT("WBP_Pb1");
 	
@@ -38,9 +50,8 @@ protected:
 	const int32 ProgressMinId = 0;
 	const int32 ProgressMaxId = 1;
 
-	
-	
-	
+	TObjectPtr<USlotViewWidget> GetSlotViewWidgetByActionId(int32 ActionId);
+
 	virtual void NativeConstruct() override;
 	
 	UPROPERTY(EditAnywhere , Category = Widget)
@@ -60,15 +71,5 @@ protected:
 
 	UPROPERTY(EditAnywhere , Category = Widget)
 	TSubclassOf<class USlotViewWidget> BuffViewer;
-public:
-	TArray<TObjectPtr<USlotViewWidget>> GetSkillSlotArray();
-	TObjectPtr<USlotViewWidget> GetSlotViewWidgetByActionId(int32 ActionId);
-	TTuple<bool,TObjectPtr<USlotViewWidget>>  GetLastBuffViewWidget(int32 CastingBuffId);
-	
-	UFUNCTION(Server, Unreliable)
-	void Server_Receive();
-	
-	void SetProgress(AActor* Owner);
-	UFUNCTION(Client, Unreliable)
-	void Client_BuffProcess();
+
 };

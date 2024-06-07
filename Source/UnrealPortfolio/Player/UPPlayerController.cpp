@@ -39,6 +39,8 @@ void AUPPlayerController::BeginPlay()
 		UE_LOG(LogTemplateCharacter, Log, TEXT("Failed To Get PossessCharacter"));
 	}
 
+	SkillSetting();
+
 	if (IsLocalController())
 	{
 		HudWidgetComponent->MainHudWidget = CastChecked<UUPMainHudWidget>(CreateWidget(GetWorld(), HudWidgetComponent->HudWidgetClass));
@@ -210,17 +212,34 @@ void AUPPlayerController::SkillSetting()
 	SkillCoolDownData.Init(false, UUPGameSingleton::Get().SkillDataArray.Num());
 }
 
-bool AUPPlayerController::IsSkillCoolDown(int SkillNumber)
+bool AUPPlayerController::IsSkillCoolDown(int32 SkillNumber)
 {
-	if (SkillNumber - 1 > SkillCoolDownData.Num())
+	if (SkillNumber > SkillCoolDownData.Num())
 	{
 		UE_LOG(LogTemp, Error, TEXT("AUPMainCharacter::IsSkillCoolDown : SkillNumber is Higher than SkillArray"));
 		return true;
 	}
 
-	return SkillCoolDownData[SkillNumber - 1];
+	return SkillCoolDownData[SkillNumber];
 }
 
-void AUPPlayerController::SkillSettingCoolDown()
+void AUPPlayerController::SkillSettingCoolDown(int32 SkillNumber, int32 SkillCoolDown)
 {
+	if (SkillCoolDownData[SkillNumber])
+	{
+		return;
+	}
+
+	if (IsLocalController())
+	{
+		HudWidgetComponent->MainHudWidget->TargetButtonPress(SkillNumber, SkillCoolDown);
+	}
+
+	SkillCoolDownData[SkillNumber] = true;
+
+	FTimerHandle CooldownTimer;	
+	GetWorld()->GetTimerManager().SetTimer(CooldownTimer, FTimerDelegate::CreateLambda([&, SkillNumber]
+		{
+			SkillCoolDownData[SkillNumber] = false;
+		}), SkillCoolDown, false);
 }

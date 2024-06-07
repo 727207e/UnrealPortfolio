@@ -31,7 +31,6 @@ public:
 public:
 	virtual void SetData(const FSlotWidgetModelData& Model);
 	virtual void OnClickedTargetInputActionKey(int32 Cooldown);
-	virtual bool GetCooldownExist();
 	
 protected:
 	virtual void NativeConstruct() override;

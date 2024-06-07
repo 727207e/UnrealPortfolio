@@ -94,8 +94,3 @@ void USlotViewWidget::OnClickedTargetInputActionKey(int32 Cooldown)
 {
 	StartCooldown(Cooldown);
 }
-
-bool USlotViewWidget::GetCooldownExist()
-{
-	return (CooldownTimer.IsValid() ? true : false);
-}

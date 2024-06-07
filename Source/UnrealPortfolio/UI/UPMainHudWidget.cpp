@@ -109,6 +109,12 @@ void UUPMainHudWidget::SetProgress(AActor* Owner)
 	}
 }
 
+void UUPMainHudWidget::TargetButtonPress(int32 TargetIndex, int32 TargetCoolDown)
+{
+	const auto SkillWidget = GetSlotViewWidgetByActionId(TargetIndex);
+	SkillWidget->OnClickedTargetInputActionKey(TargetCoolDown);
+}
+
 void UUPMainHudWidget::Client_BuffProcess_Implementation()
 {
 	FString Message = FString::Printf(TEXT("하이, %s"), *GetName());
@@ -118,7 +124,6 @@ void UUPMainHudWidget::Client_BuffProcess_Implementation()
 	const auto CurBuffSlot = MyTuple.Get<1>();
 	CurBuffSlot->OnClickedTargetInputActionKey(10);
 	CurBuffSlot->SetVisibility(ESlateVisibility::Visible);
-	//CurBuffSlot->CooldownFinishDelegate.AddDynamic(this,&UGA_BuffTargetCheck::OnBuffEnd);
 }
 
 TTuple<bool,TObjectPtr<USlotViewWidget>> UUPMainHudWidget::GetLastBuffViewWidget(int32 CastingBuffId)

@@ -119,6 +119,6 @@ private:
 
 public:
 	void SkillSetting();
-	bool IsSkillCoolDown(int SkillNumber);
-	void SkillSettingCoolDown();
+	bool IsSkillCoolDown(int32 SkillNumber);
+	void SkillSettingCoolDown(int32 SkillNumber, int32 SkillCoolDown);
 };
