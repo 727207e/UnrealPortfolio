@@ -393,20 +393,26 @@ void AUPMainCharacter::SetMainCharacterTableData() const
 void AUPMainCharacter::SetupASCClientPlayer()
 {
 	Super::SetupASCClientPlayer();
-	CreateHudWidget();
 	SetMainCharacterTableData();
 	ActiveAbilityEquipWeapon(DEFAULT_WEAPON_ID);
+	CreateHudWidget();
 }
 
 void AUPMainCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 {
 	Super::SetupASCHostPlayer(InOwnerActor);
-	CreateHudWidget();
-	//TODO:: TEST Code 
-	//CreateHostHudWidget();
-	
 	SetMainCharacterTableData();
 	ActiveAbilityEquipWeapon(DEFAULT_WEAPON_ID);
+
+	if (nullptr == GetController())
+	{
+		UE_LOG(LogTemp, Error, TEXT("No Controller"));
+		return;
+	}
+	if (GetController()->IsLocalController())
+	{
+		CreateHudWidget();
+	}
 }
 
 

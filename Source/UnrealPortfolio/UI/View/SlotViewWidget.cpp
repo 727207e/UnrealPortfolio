@@ -99,7 +99,3 @@ bool USlotViewWidget::GetCooldownExist()
 {
 	return (CooldownTimer.IsValid() ? true : false);
 }
-
-
-
-

@@ -32,7 +32,7 @@ protected:
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
 	virtual void InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) override;
-	virtual void CooldownProcess();
+	virtual bool IsCooldownProcess();
 	virtual void SetSlotWidget(USlotViewWidget* TargetSlotWidget);
 	virtual void OnCompleteCallback() override;
 	
@@ -48,5 +48,6 @@ protected:
 	UPROPERTY(EditAnywhere , Category = GAS);
 	bool bCantLookAtMouseAbility;
 	TObjectPtr<USlotViewWidget> SkillSlotWidget;
-	void UseMp() const;
+	void UseMp(const FGameplayAbilityActivationInfo ActivationInfo);
+
 };

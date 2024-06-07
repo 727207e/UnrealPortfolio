@@ -44,7 +44,20 @@ void UGA_MainCharacterSkillBase::ActivateAbility(const FGameplayAbilitySpecHandl
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	SetData();
-	CooldownProcess();
+	//if (IsCooldownProcess())
+	//{
+	//	CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, (false));
+	//	return;
+	//}
+	//else
+	{
+		//SkillSlotWidget->OnClickedTargetInputActionKey(Cooldown);
+		UseMp(ActivationInfo);
+		if (!bCantLookAtMouseAbility)
+		{
+			Cast<ICharacterMovementInterface>(CurrentActorInfo->AvatarActor)->SetMoveBlock(true);
+		}
+	}
 }
 
 void UGA_MainCharacterSkillBase::CancelAbility(const FGameplayAbilitySpecHandle Handle,
@@ -67,7 +80,7 @@ void UGA_MainCharacterSkillBase::InputPressed(const FGameplayAbilitySpecHandle H
 	Super::InputPressed(Handle, ActorInfo, ActivationInfo);
 }
 
-void UGA_MainCharacterSkillBase::CooldownProcess()
+bool UGA_MainCharacterSkillBase::IsCooldownProcess()
 {
 	const AUPPlayerState* PlayerState = Cast<AUPPlayerState>(CurrentActorInfo->OwnerActor);
 	if(IHUDControllerInterface* HudOwner = Cast<IHUDControllerInterface>(PlayerState->GetPlayerController()))
@@ -81,21 +94,17 @@ void UGA_MainCharacterSkillBase::CooldownProcess()
 				SetSlotWidget(SkillIconWidget);
 				if(!SkillSlotWidget->GetCooldownExist())
 				{
-					SkillSlotWidget->OnClickedTargetInputActionKey(Cooldown);
-					UseMp();
-					if(!bCantLookAtMouseAbility)
-					{
-						Cast<ICharacterMovementInterface>(CurrentActorInfo->AvatarActor)->SetMoveBlock(true);
-					}
+					return false;
 				}
 				else
 				{
-					CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, (false));
-					return;
+					return true;
 				}
 			}
 		}
 	}
+
+	return false;
 }
 
 void UGA_MainCharacterSkillBase::SetSlotWidget(USlotViewWidget* TargetSlotViewWidget)
@@ -109,10 +118,10 @@ void UGA_MainCharacterSkillBase::OnCompleteCallback()
 	Cast<ICharacterMovementInterface>(GetCurrentActorInfo()->AvatarActor)->SetMoveBlock(false);
 }
 
-
-void UGA_MainCharacterSkillBase::UseMp() const
+ 
+void UGA_MainCharacterSkillBase::UseMp(const FGameplayAbilityActivationInfo ActivationInfo)
 {
-	const UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo();
+	UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo();
 	if (ASC && UseMpEffect)
 	{
 		const FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(UseMpEffect,1.0f);
