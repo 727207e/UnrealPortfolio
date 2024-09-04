@@ -20,6 +20,17 @@ Gameplay Ability System을 이용한 MultiGame
 
 ## 프로젝트 기획서
 
+[메인 기획서](https://docs.google.com/presentation/d/1cwlKl37fWNhaInjWuj4RpQXK9bhBwUu0popscYcOevo/edit?usp=drive_link) <br>
+[전투 시스템 기획서](https://docs.google.com/spreadsheets/d/1v4Qc3ydBe9_6cHXYma0PlDUwhvdcyrOV6TEPO2Z-D5E/edit?usp=drive_link) <br>
+[일반 몬스터 기획서](https://docs.google.com/presentation/d/1_JCWJWqKjJvwxH9vgYb0O3H4ld2G1TWcW3tuH3jXW90/edit?usp=drive_link) <br>
+[메인 캐릭터 Hud](https://docs.google.com/spreadsheets/d/1Yc_wg2oCSBn80cRfbZ90H58ZIyh7Krp5aPa8sPhZv2g/edit?usp=drive_link) <br>
+[전투 기획서 - 몬스터 조우](https://docs.google.com/presentation/d/1xc7Vaiw-SlNNnYn8YcKSFjaaG7NlBodqUkrFxekrhes/edit?usp=drive_link) <br>
+[메인 캐릭터 기획서](https://docs.google.com/spreadsheets/d/1Bw7U6Orpuv_wFB5LUf-iNZ7YpAwqyR6hioPi-45lgE8/edit?usp=drive_link) <br>
+[보스 몬스터 기획서](https://docs.google.com/presentation/d/14k_ZXF28wLN-Ydel4q0lQetl8HrywVUoxG5epq1asGQ/edit?usp=drive_link) <br>
+[전투 기획서 패턴](https://docs.google.com/presentation/d/1uhMCrXOKUMJQzXcrcEAk6K12O9KiaSCFnZGFrAdmSe4/edit?usp=drive_link) <br>
+
+![image](https://github.com/user-attachments/assets/35e815bd-4af9-4066-8c1f-278a73ae0491)
+
 
 <br></br>
 
