@@ -7,7 +7,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "defines/UPAIDefine.h"
-#include "Data/DataAttributeSet/EnemyDataSet/NormalEnemy/UPEnemyAttributeSet.h"
+#include "GAS/Attribute//EnemyDataSet/NormalEnemy/UPEnemyAttributeSet.h"
 
 
 UBTTask_MoveToAttackRange::UBTTask_MoveToAttackRange()

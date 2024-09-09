@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GAS/Attribute/UPMainCharacterAttributeSet.h"
+#include "GAS/Attribute/PlayerDataSet/UPMainCharacterAttributeSet.h"
 #include "Game/UPGameSingleton.h"
 #include "Data/DataAsset/MainCharacter/UPMainCharacterClassTable.h"
 #include "Net/UnrealNetwork.h"

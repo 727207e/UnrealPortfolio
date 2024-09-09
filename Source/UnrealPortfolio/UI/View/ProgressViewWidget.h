@@ -6,7 +6,7 @@
 #include "AbilitySystemInterface.h"
 #include "Data/DataTable/Widget/ProgressWidgetModelData.h"
 #include "Data/DataTable/Widget/SlotWidgetModelData.h"
-#include "GAS/Attribute/UPMainCharacterAttributeSet.h"
+#include "GAS/Attribute/PlayerDataSet/UPMainCharacterAttributeSet.h"
 #include "UI/UPUserWidget.h"
 #include "ProgressViewWidget.generated.h"
 

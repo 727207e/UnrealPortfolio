@@ -4,9 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
-#include "GAS/Attribute/UPMainCharacterAttributeSet.h"
 #include "Interface/AbilitySystemGetInterface.h"
 #include "UPPlayerState.generated.h"
+
+class UUPMainCharacterAttributeSet;
 
 /**
  * 

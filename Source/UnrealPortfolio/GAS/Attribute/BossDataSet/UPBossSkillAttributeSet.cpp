@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Data/DataAttributeSet/BossDataSet/UPBossSkillAttributeSet.h"
+#include "GAS/Attribute/BossDataSet/UPBossSkillAttributeSet.h"
 #include "Engine/DataTable.h"
 #include "Data/DataAsset/Enemy/UPBossSkillTable.h"
 #include "GameplayEffectExtension.h"

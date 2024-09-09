@@ -20,7 +20,6 @@ void AUPPersistentController::BeginPlay()
 		PersistentHudWidget = CreateWidget(GetWorld(), PersistentHUDWidgetType, TEXT("UUPPersistentHUDWidget"));
 		PersistentHudWidget->AddToViewport();
 	}
-
 }
 
 void AUPPersistentController::TryConnectToServer(const FString& Address)

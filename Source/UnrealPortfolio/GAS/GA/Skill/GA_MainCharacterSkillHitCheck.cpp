@@ -4,7 +4,7 @@
 #include "GAS/GA/Skill/GA_MainCharacterSkillHitCheck.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
-#include "Data/DataAttributeSet/EntityAttributeSet.h"
+#include "GAS/Attribute/EntityAttributeSet.h"
 #include "GAS/Actor/GameplayEventDataRequest.h"
 #include "Interface/WeaponControlInterface.h"
 

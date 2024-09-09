@@ -12,7 +12,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Character/UPMainCharacter.h"
 #include "defines/UPCollision.h"
-#include "Data/DataAttributeSet/EntityAttributeSet.h"
+#include "GAS/Attribute/EntityAttributeSet.h"
 
 AGATA_RangeEnemeyFire::AGATA_RangeEnemeyFire()
 {

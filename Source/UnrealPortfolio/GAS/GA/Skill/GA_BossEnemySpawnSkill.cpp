@@ -15,7 +15,7 @@
 #include "defines/UPAIDefine.h"
 #include "Tag/GameplayTags.h"
 #include "GAS/Actor/GameplayMultiCueEventData.h"
-#include "Data/DataAttributeSet/BossDataSet/UPBossSkillAttributeSet.h"
+#include "GAS/Attribute/BossDataSet/UPBossSkillAttributeSet.h"
 
 UGA_BossEnemySpawnSkill::UGA_BossEnemySpawnSkill()
 {

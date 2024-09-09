@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Data/DataAttributeSet/EntityAttributeSet.h"
 #include "AbilitySystemComponent.h"
+#include "GAS/Attribute/EntityAttributeSet.h"
 #include "UPBossAttributeSet.generated.h"
 
 /**

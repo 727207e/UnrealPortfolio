@@ -7,7 +7,7 @@
 #include "NiagaraComponent.h"
 #include "Engine/World.h"
 #include "Math/RandomStream.h"
-#include "Data/DataAttributeSet/BossDataSet/UPBossSkillAttributeSet.h"
+#include "GAS/Attribute/BossDataSet/UPBossSkillAttributeSet.h"
 #include "GAS/Actor/GameplaySkillEventDataRequest.h"
 #include "GameFramework/Character.h"
 #include "Character/UPBattleBaseCharacter.h"

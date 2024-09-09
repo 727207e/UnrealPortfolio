@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Data/DataAttributeSet/BossDataSet/UPBossAttributeSet.h"
+#include "GAS/Attribute/BossDataSet/UPBossAttributeSet.h"
 #include "Data/DataAsset//Enemy/UPBossTable.h"
 
 UUPBossAttributeSet::UUPBossAttributeSet()

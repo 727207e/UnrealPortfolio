@@ -2,7 +2,7 @@
 
 
 #include "GAS/GE/GE_CounterEffect.h"
-#include "Data/DataAttributeSet/EntityAttributeSet.h"
+#include "GAS/Attribute/EntityAttributeSet.h"
 #include "Character/UPBossCharacter.h"
 #include "Tag/GameplayTags.h"
 

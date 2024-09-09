@@ -9,7 +9,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "AI/UPEnemyAIController.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Data/DataAttributeSet/EntityAttributeSet.h"
+#include "GAS/Attribute/EntityAttributeSet.h"
 #include "GAS/GA/Skill/GA_SkillBase.h"
 
 

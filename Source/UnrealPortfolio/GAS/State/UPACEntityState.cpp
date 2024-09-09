@@ -4,7 +4,7 @@
 #include "GAS/State/UPACEntityState.h"
 #include "AttributeSet.h"
 #include "AbilitySystemComponent.h"
-#include "Data/DataAttributeSet/EntityAttributeSet.h"
+#include "GAS/Attribute/EntityAttributeSet.h"
 
 // Sets default values for this component's properties
 UUPACEntityState::UUPACEntityState()

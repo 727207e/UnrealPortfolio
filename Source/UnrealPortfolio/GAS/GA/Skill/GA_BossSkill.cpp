@@ -4,7 +4,7 @@
 #include "GAS/GA/Skill/GA_BossSkill.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
-#include "Data/DataAttributeSet/BossDataSet/UPBossSkillAttributeSet.h"
+#include "GAS/Attribute/BossDataSet/UPBossSkillAttributeSet.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 
 UGA_BossSkill::UGA_BossSkill()

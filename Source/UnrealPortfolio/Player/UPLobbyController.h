@@ -21,18 +21,6 @@ public :
 public :
 	virtual void BeginPlay() override;
 	
-public:
-	UPROPERTY()
-	TObjectPtr<class AUPLobbyGameState> LobbyGameState;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Game State")
-	FUPUserData MyUserData;
-
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UUserWidget> LobbyHUDWidgetType;
-	UPROPERTY()
-	TObjectPtr<class UUPLobbyHUDWidget> LobbyHUDWidget;
-
 	UFUNCTION()
 	void UserDataUpdate();
 
@@ -50,4 +38,16 @@ public:
 	UFUNCTION(Server, Unreliable)
 	void Server_TryPlayStart();
 	void TryPlayStart();
+
+public:
+	UPROPERTY()
+	TObjectPtr<class AUPLobbyGameState> LobbyGameState;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Game State")
+	FUPUserData MyUserData;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUserWidget> LobbyHUDWidgetType;
+	UPROPERTY()
+	TObjectPtr<class UUPLobbyHUDWidget> LobbyHUDWidget;
 };

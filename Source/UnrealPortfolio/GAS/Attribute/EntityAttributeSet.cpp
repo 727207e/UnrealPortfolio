@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Data/DataAttributeSet/EntityAttributeSet.h"
+#include "GAS/Attribute/EntityAttributeSet.h"
 #include "Engine/DataTable.h"
 #include "Data/DataAsset/UPBaseTable.h"
 #include "GameplayEffectExtension.h"

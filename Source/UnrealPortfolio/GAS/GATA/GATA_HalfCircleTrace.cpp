@@ -6,7 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GAS/Actor/GameplaySkillEventDataRequest.h"
-#include "Data/DataAttributeSet/BossDataSet/UPBossSkillAttributeSet.h"
+#include "GAS/Attribute/BossDataSet/UPBossSkillAttributeSet.h"
 #include "Character/UPMainCharacter.h"
 #include "defines/UPCollision.h"
 #include "Engine/DecalActor.h"

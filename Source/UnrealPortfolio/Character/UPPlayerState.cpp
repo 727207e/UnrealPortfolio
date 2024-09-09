@@ -3,7 +3,7 @@
 
 #include "Character/UPPlayerState.h"
 #include "AbilitySystemComponent.h"
-#include "GAS/Attribute/UPMainCharacterAttributeSet.h"
+#include "GAS/Attribute/PlayerDataSet/UPMainCharacterAttributeSet.h"
 
 
 AUPPlayerState::AUPPlayerState()

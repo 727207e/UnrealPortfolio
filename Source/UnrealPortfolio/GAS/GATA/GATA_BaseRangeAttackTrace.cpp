@@ -9,7 +9,7 @@
 #include "Character/UPBossCharacter.h"
 #include "Character/UPEnemyCharacter.h"
 #include "Components/SphereComponent.h"
-#include "Data/DataAttributeSet/EntityAttributeSet.h"
+#include "GAS/Attribute/EntityAttributeSet.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 

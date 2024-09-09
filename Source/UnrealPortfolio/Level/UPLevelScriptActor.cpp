@@ -9,7 +9,7 @@
 #include "Engine/LevelStreamingDynamic.h"
 #include "Kismet/GameplayStatics.h"
 #include "Character/UPBossCharacter.h"
-#include "Data/DataAttributeSet/EntityAttributeSet.h"
+#include "GAS/Attribute/EntityAttributeSet.h"
 
 AUPLevelScriptActor::AUPLevelScriptActor()
 {

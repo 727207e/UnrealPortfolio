@@ -8,7 +8,7 @@
 #include "GAS/GA/GA_FindTarget.h"
 #include "Character/UPEnemyCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "Data/DataAttributeSet/EntityAttributeSet.h"
+#include "GAS/Attribute/EntityAttributeSet.h"
 #include "defines/UPAIDefine.h"
 
 UBTTask_FindTarget::UBTTask_FindTarget()

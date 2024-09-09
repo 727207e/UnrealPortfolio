@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Data/DataAsset/MainCharacter/UPMainCharacterClassTable.h"
-#include "Data/DataAttributeSet/EntityAttributeSet.h"
+#include "GAS/Attribute/EntityAttributeSet.h"
 #include "UPMainCharacterAttributeSet.generated.h"
 
 #define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \

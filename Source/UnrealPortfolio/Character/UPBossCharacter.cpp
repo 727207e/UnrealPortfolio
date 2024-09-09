@@ -5,7 +5,7 @@
 #include "AI/UPBossAIController.h"
 #include "Tag/GameplayTags.h"
 #include "AbilitySystemBlueprintLibrary.h"
-#include "Data/DataAttributeSet/BossDataSet/UPBossSkillAttributeSet.h"
+#include "GAS/Attribute/BossDataSet/UPBossSkillAttributeSet.h"
 #include "GAS/State/UPACSkillState.h"
 
 AUPBossCharacter::AUPBossCharacter()

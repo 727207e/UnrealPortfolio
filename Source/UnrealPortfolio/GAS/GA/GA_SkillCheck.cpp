@@ -7,8 +7,8 @@
 #include "GAS/Actor/GameplaySkillEventDataRequest.h"
 #include "GAS/GATA/GATA_Trace.h"
 #include "Interface/AttackableCharacterInterface.h"
-#include "Data/DataAttributeSet/EntityAttributeSet.h"
-#include "Data/DataAttributeSet/BossDataSet/UPBossSkillAttributeSet.h"
+#include "GAS/Attribute/EntityAttributeSet.h"
+#include "GAS/Attribute/BossDataSet/UPBossSkillAttributeSet.h"
 #include "Tag/GameplayTags.h"
 
 UGA_SkillCheck::UGA_SkillCheck()

@@ -4,7 +4,7 @@
 #include "GAS/State/UPACSkillState.h"
 #include "AttributeSet.h"
 #include "AbilitySystemComponent.h"
-#include "Data/DataAttributeSet/BossDataSet/UPBossSkillAttributeSet.h"
+#include "GAS/Attribute/BossDataSet/UPBossSkillAttributeSet.h"
 
 // Sets default values for this component's properties
 UUPACSkillState::UUPACSkillState()
