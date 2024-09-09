@@ -43,6 +43,7 @@ public:
 
 
 	virtual void InitAttributeSet();
+	void SetHpValue(float Value);
 
 public:
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "Attack", Meta = (AllowPrivateAccess = true))

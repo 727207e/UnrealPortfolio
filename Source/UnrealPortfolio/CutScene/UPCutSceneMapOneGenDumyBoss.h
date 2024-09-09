@@ -21,10 +21,8 @@ public :
 public :
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<ACharacter> DumyBossType;
-	ACharacter* DumyBoss;
+	ACharacter* DummyBoss;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<AActor> GenPosition;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<class ABossManager> BossManager;
 };

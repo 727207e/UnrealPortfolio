@@ -2,14 +2,13 @@
 
 
 #include "Game/UPLobbyGameState.h"
+#include "Game/UPGameInstance.h"
 #include "Net/UnrealNetwork.h"
 #include "Kismet/GameplayStatics.h"
-#include "Level/UPLevelScriptActor.h"
 
 AUPLobbyGameState::AUPLobbyGameState()
 {
     bReplicates = true;
-    NextLevelPath = "/Game/Level/TopDownSampleScene1";
 }
 
 void AUPLobbyGameState::OnRep_PlayerDataList()
@@ -47,7 +46,7 @@ void AUPLobbyGameState::ChangeUserData(const FUPUserData& UserData)
     }
 }
 
-void AUPLobbyGameState::TryGamePlayStart()
+void AUPLobbyGameState::MoveNextLevel(FString LevelPath)
 {
     if (HasAuthority())
     {
@@ -59,28 +58,15 @@ void AUPLobbyGameState::TryGamePlayStart()
                 return;
             }
         }
-
-        NetMulti_LevelLoad();
     }
+
+    Super::MoveNextLevel(LevelPath);
 }
 
 void AUPLobbyGameState::MoveNextLevelAllUser()
 {
-    ReadyUserNumber++;
-
-    if (ReadyUserNumber == PlayerDataList.Num())
-    {
-        GetWorld()->ServerTravel(NextLevelPath);
-    }
-}
-
-void AUPLobbyGameState::NetMulti_LevelLoad_Implementation()
-{
-    AUPLevelScriptActor* UpLevelScript = Cast<AUPLevelScriptActor>(GetWorld()->GetLevelScriptActor());
-    if (UpLevelScript)
-    {
-        UpLevelScript->LoadNextLevelByAsync(NextLevelPath);
-    }
+    UpGameInstance->UserNumber = PlayerDataList.Num();
+    Super::MoveNextLevelAllUser();
 }
 
 void AUPLobbyGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

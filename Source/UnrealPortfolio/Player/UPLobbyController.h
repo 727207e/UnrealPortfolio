@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/PlayerController.h"
+#include "Player/UPBaseController.h"
 #include "Game/UPLobbyGameState.h"
 #include "UPLobbyController.generated.h"
 
@@ -11,7 +11,7 @@
  * 
  */
 UCLASS()
-class UNREALPORTFOLIO_API AUPLobbyController : public APlayerController
+class UNREALPORTFOLIO_API AUPLobbyController : public AUPBaseController
 {
 	GENERATED_BODY()
 	
@@ -50,8 +50,4 @@ public:
 	UFUNCTION(Server, Unreliable)
 	void Server_TryPlayStart();
 	void TryPlayStart();
-
-	UFUNCTION(Server, Unreliable)
-	void Server_AnnounceLevelLoadDone();
-	void AnnounceLevelLoadDone();
 };

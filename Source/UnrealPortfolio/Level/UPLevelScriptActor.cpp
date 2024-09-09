@@ -5,8 +5,11 @@
 #include "Blueprint/UserWidget.h"
 #include "UI/UPLoadLevelUserWidget.h"
 #include "Components/WidgetComponent.h"
-#include "Player/UPLobbyController.h"
+#include "Player/UPBaseController.h"
 #include "Engine/LevelStreamingDynamic.h"
+#include "Kismet/GameplayStatics.h"
+#include "Character/UPBossCharacter.h"
+#include "Data/DataAttributeSet/EntityAttributeSet.h"
 
 AUPLevelScriptActor::AUPLevelScriptActor()
 {
@@ -24,52 +27,37 @@ AUPLevelScriptActor::AUPLevelScriptActor()
 
 void AUPLevelScriptActor::LoadNextLevelByAsync(const FString& NextLevelPath)
 {
-    if (LevelLoadWidget == nullptr)
-    {
-        LevelLoadWidget = Cast<UUPLoadLevelUserWidget>(LevelLoadWidgetComp->GetWidget());
-    }
-    if (LevelLoadWidget != nullptr)
-    {
-        LevelLoadWidget->AddToViewport();
+	if (NextLevel.IsEmpty())
+	{
+		if (LevelLoadWidget == nullptr)
+		{
+			LevelLoadWidget = Cast<UUPLoadLevelUserWidget>(LevelLoadWidgetComp->GetWidget());
+		}
+		LevelLoadWidget->AddToViewport();
+		NextLevel = NextLevelPath;
 
-        if (!NextLevelPath.IsEmpty())
-        {
-            UE_LOG(LogTemp, Log, TEXT("Starting async load for level: %s"), *NextLevelPath);
+		GetWorld()->GetTimerManager().SetTimer(LevelLoadStartTimeHandle, FTimerDelegate::CreateLambda([&]
+			{
+				LoadPackageAsync((NextLevelPath),
+				FLoadPackageAsyncDelegate::CreateLambda([=, this](const FName& PackageName, UPackage* LoadedPackage, EAsyncLoadingResult::Type Result)
+					{
+						if (Result == EAsyncLoadingResult::Succeeded)
+						{
+							LevelLoadWidget->ProgressValue = 1;
+							OnLevelLoaded();
+						}
+					}), 0, PKG_ContainsMap);
+			}
+		), 1.0f, false, -1.0f);
 
-            LevelName = NextLevelPath;
-            UWorld* World = GetWorld();
-            if (World)
-            {
-                bool StreamingLevelResult = true;
-                ULevelStreamingDynamic* StreamingLevel = ULevelStreamingDynamic::LoadLevelInstance(GetWorld(), NextLevelPath, FVector::ZeroVector, FRotator::ZeroRotator, StreamingLevelResult);
-                if (StreamingLevel)
-                {
-                    StreamingLevel->OnLevelLoaded.AddDynamic(this, &AUPLevelScriptActor::OnLevelLoaded);
-                    GetWorld()->GetTimerManager().SetTimer(ProgressCheckTimeHandle, FTimerDelegate::CreateLambda([this, StreamingLevel]()
-                        {
-                            if (StreamingLevel)
-                            {
-                                float LoadProgress = StreamingLevel->GetLevelStreamingStatus() == LEVEL_Visible ? 1.0f : StreamingLevel->GetLevelStreamingStatus() / 100.0f;
-                                LevelLoadWidget->ProgressValue = LoadProgress;
-                                UE_LOG(LogTemp, Log, TEXT("Level load progress: %f"), LoadProgress);
-                            }
-                        }), 0.1f, true);
-                }
-                else
-                {
-                    UE_LOG(LogTemp, Error, TEXT("Failed to create streaming level: %s"), *NextLevelPath);
-                }
-            }
-        }
-        else
-        {
-            UE_LOG(LogTemp, Error, TEXT("NextLevelPath is empty!"));
-        }
-    }
-    else
-    {
-        UE_LOG(LogTemp, Warning, TEXT("LevelLoadWidget is null and could not be added to the viewport."));
-    }
+		UE_LOG(LogTemp, Log, TEXT("Level UI Active"));
+		GetWorld()->GetTimerManager().SetTimer(ProgressCheckTimeHandle, this, &AUPLevelScriptActor::ProgressCheck, 0.01f, true, 0.0f);
+	}
+
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("It's Already Loading Level"));
+	}
 }
 
 void AUPLevelScriptActor::OnLevelLoaded()
@@ -77,11 +65,41 @@ void AUPLevelScriptActor::OnLevelLoaded()
     UE_LOG(LogTemp, Log, TEXT("Level loaded successfully"));
     GetWorld()->GetTimerManager().ClearTimer(ProgressCheckTimeHandle);
 
-    LevelLoadWidget->ProgressValue = 1;
-
-    AUPLobbyController* LobbyController = Cast<AUPLobbyController>(GetWorld()->GetFirstPlayerController());
-    if (LobbyController)
+    AUPBaseController* BaseController = Cast<AUPBaseController>(GetWorld()->GetFirstPlayerController());
+    if (BaseController)
     {
-        LobbyController->AnnounceLevelLoadDone();
+        BaseController->AnnounceLevelLoadDone();
     }
+}
+
+void AUPLevelScriptActor::ProgressCheck()
+{
+	if (NextLevel.IsEmpty())
+	{
+		GetWorld()->GetTimerManager().ClearTimer(ProgressCheckTimeHandle);
+	}
+
+	ProgressLoad = GetAsyncLoadPercentage(FName(*NextLevel)) / 100;
+	if (ProgressLoad > OldProgressLoad)
+	{
+		OldProgressLoad = ProgressLoad;
+
+		LevelLoadWidget->ProgressValue = ProgressLoad;
+		UE_LOG(LogTemp, Log, TEXT("Progress : %f"), ProgressLoad);
+	}
+}
+
+void AUPLevelScriptActor::SetBossHp(float Value)
+{
+	if (HasAuthority())
+	{
+		TArray<AActor*> FoundActors;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AUPBossCharacter::StaticClass(), FoundActors);
+
+		if (!FoundActors.IsEmpty())
+		{
+			AUPBossCharacter* BossCharacter = Cast<AUPBossCharacter>(FoundActors[0]);
+			const_cast<UEntityAttributeSet*>(BossCharacter->GetAbilitySystemComponent()->GetSet<UEntityAttributeSet>())->SetHpValue(Value);
+		}
+	}
 }

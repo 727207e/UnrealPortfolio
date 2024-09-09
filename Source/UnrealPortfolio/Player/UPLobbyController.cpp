@@ -6,7 +6,6 @@
 #include "UI/UPLobbyHUDWidget.h"
 #include "Game/UPGameInstance.h"
 #include "Game/UPLobbyGameState.h"
-#include "UPLobbyController.h"
 
 AUPLobbyController::AUPLobbyController()
 {
@@ -19,6 +18,8 @@ AUPLobbyController::AUPLobbyController()
 
 void AUPLobbyController::BeginPlay()
 {
+	Super::BeginPlay();
+
 	LobbyGameState = Cast<AUPLobbyGameState>(GetWorld()->GetGameState());
 	if (!IsLocalController())
 	{
@@ -78,24 +79,6 @@ void AUPLobbyController::SetPlayerReady()
 	Server_SetPlayerReady(MyUserData.bIsReady);
 }
 
-void AUPLobbyController::AnnounceLevelLoadDone()
-{
-	Server_AnnounceLevelLoadDone();
-}
-
-void AUPLobbyController::Server_AnnounceLevelLoadDone_Implementation()
-{
-	if (LobbyGameState)
-	{
-		LobbyGameState->MoveNextLevelAllUser();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("UPLobbyController Server : Can't Server_TryPlayStart , No LobbyGameState"));
-		return;
-	}
-}
-
 void AUPLobbyController::Server_SetPlayerClass_Implementation(CharacterClass TargetClass)
 {
 	MyUserData.ThisCharacterClass = TargetClass;
@@ -112,7 +95,7 @@ void AUPLobbyController::Server_TryPlayStart_Implementation()
 {
 	if (LobbyGameState)
 	{
-		LobbyGameState->TryGamePlayStart();
+		LobbyGameState->MoveNextLevel("/Game/Level/Village");
 	}
 	else
 	{

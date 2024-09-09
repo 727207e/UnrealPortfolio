@@ -15,14 +15,14 @@ public:
 	FUPActionTable() : Id(0),NockbackSize(1000),ActionName(TEXT("None")) {};
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
-	int32 Id;
+	int32 Id = 0;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
-	float NockbackSize;
+	float NockbackSize = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
-	float NockbackDuration;
+	float NockbackDuration = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
-	float NockbackUpSize;
+	float NockbackUpSize = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
 	FString ActionName;
 

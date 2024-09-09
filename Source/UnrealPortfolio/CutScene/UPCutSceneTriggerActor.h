@@ -22,7 +22,7 @@ struct FCameraMoveEvent
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EStartType StartType;
+	EStartType StartType = EStartType::StartCamera;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<AActor> DestinationCameraTrans;
@@ -34,9 +34,9 @@ struct FCameraMoveEvent
 	UCurveFloat* CurveData;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float PlayTime;
+	float PlayTime = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float StayTime;
+	float StayTime = 0;
 };
 
 UCLASS()
@@ -54,21 +54,26 @@ public:
 	TArray<FCameraMoveEvent> CameraMoveEventArray;
 
 public :
+	virtual void BeginPlay() override;
+
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult);
 	UFUNCTION(NetMulticast, Unreliable)
 	void Multi_StartCutScene();
 	UFUNCTION()
-	void PlayNextCutScene();
+	virtual void PlayNextCutScene();
+	void ExecuteEvent();
 
 	FOnCutSceneEnd OnCutSceneEnd;
 
 	UPROPERTY(EditAnywhere)
 	bool bIsShareView;
 
+protected :
+	bool bIsTriggerFirst;
+
 private :
 
-	bool bIsTriggerFirst;
 	void CameraMoveTimer();
 	FTimerHandle CameraMoveTimerHandle;
 	FCameraMoveEvent CameraMoveEvent;

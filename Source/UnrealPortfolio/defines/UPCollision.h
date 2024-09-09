@@ -9,3 +9,4 @@
 #define CPROFILE_UP_CUTSCENETRIGGER TEXT("CutSceneTrigger")
 #define CPROFILE_UP_ENEMYATTACKRANGE TEXT("EnemyAttackRange")
 #define CHANNEL_UPTRACE ECC_GameTraceChannel1 
+#define CHANNEL_FLOOR ECC_GameTraceChannel8
