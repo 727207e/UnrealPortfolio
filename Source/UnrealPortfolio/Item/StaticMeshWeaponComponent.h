@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/StaticMeshComponent.h"
 #include "Data/DataAsset/Item/UPWeaponTable.h"
+#include "NiagaraComponent.h"
 #include "StaticMeshWeaponComponent.generated.h"
 
 /**
@@ -26,10 +27,16 @@ public:
 	int32 WeaponLevel;
 	UPROPERTY();
 	int32 LegendSkillIndex;
+
 	
+	void BeginPlay() override;
 	void SetWeaponData(const FUPWeaponTable& Model);
 	void SetWeaponId(int32 TargetId);
 	int32 GetWeaponId() const;
 	void Hidden();
+	
+	FName NiagaraParent;
+	UPROPERTY(EditAnywhere ,Category = "Weapon")
+	TObjectPtr<UNiagaraComponent> WeaponTrail;
 	
 };

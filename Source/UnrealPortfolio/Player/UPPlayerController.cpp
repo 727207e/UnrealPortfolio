@@ -7,6 +7,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "UI/UPACChatGenerator.h"
 #include "Engine/LocalPlayer.h"
+#include "Game/UPGameSingleton.h"
 #include "InputMappingContext.h"
 
 class AUPPlayerState;
@@ -36,6 +37,15 @@ void AUPPlayerController::BeginPlay()
 	if (nullptr == PossessCharacter)
 	{
 		UE_LOG(LogTemplateCharacter, Log, TEXT("Failed To Get PossessCharacter"));
+	}
+
+	SkillSetting();
+
+	if (IsLocalController())
+	{
+		HudWidgetComponent->MainHudWidget = CastChecked<UUPMainHudWidget>(CreateWidget(GetWorld(), HudWidgetComponent->HudWidgetClass));
+		HudWidgetComponent->MainHudWidget->AddToViewport();
+		HudWidgetComponent->MainHudWidget->SetProgress(GetPlayerState<AUPPlayerState>());
 	}
 }
 
@@ -195,4 +205,41 @@ void AUPPlayerController::OnSetDestinationReleased()
 	{
 		PossessCharacter->OnSetDestinationReleased();
 	}
+}
+
+void AUPPlayerController::SkillSetting()
+{
+	SkillCoolDownData.Init(false, UUPGameSingleton::Get().SkillDataArray.Num());
+}
+
+bool AUPPlayerController::IsSkillCoolDown(int32 SkillNumber)
+{
+	if (SkillNumber > SkillCoolDownData.Num())
+	{
+		UE_LOG(LogTemp, Error, TEXT("AUPMainCharacter::IsSkillCoolDown : SkillNumber is Higher than SkillArray"));
+		return true;
+	}
+
+	return SkillCoolDownData[SkillNumber];
+}
+
+void AUPPlayerController::SkillSettingCoolDown(int32 SkillNumber, int32 SkillCoolDown)
+{
+	if (SkillCoolDownData[SkillNumber])
+	{
+		return;
+	}
+
+	if (IsLocalController())
+	{
+		HudWidgetComponent->MainHudWidget->TargetButtonPress(SkillNumber, SkillCoolDown);
+	}
+
+	SkillCoolDownData[SkillNumber] = true;
+
+	FTimerHandle CooldownTimer;	
+	GetWorld()->GetTimerManager().SetTimer(CooldownTimer, FTimerDelegate::CreateLambda([&, SkillNumber]
+		{
+			SkillCoolDownData[SkillNumber] = false;
+		}), SkillCoolDown, false);
 }

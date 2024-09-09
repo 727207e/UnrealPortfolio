@@ -5,6 +5,7 @@
 
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Character/UPPlayerState.h"
+#include "Player/UPPlayerController.h"
 #include "Game/UPGameSingleton.h"
 #include "GAS/AbilityTask/AbilityTask_LookAtMouse.h"
 #include "GAS/AbilityTask/AbilityTask_Trace.h"
@@ -44,7 +45,22 @@ void UGA_MainCharacterSkillBase::ActivateAbility(const FGameplayAbilitySpecHandl
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	SetData();
-	CooldownProcess();
+
+	AUPPlayerController* ThisPlayerController = Cast<AUPPlayerController>(ActorInfo->AvatarActor->GetInstigatorController());
+	if (ThisPlayerController->IsSkillCoolDown(TargetSkillAbilityIndex))
+	{
+		CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, (false));
+		return;
+	}
+	else
+	{
+		ThisPlayerController->SkillSettingCoolDown(TargetSkillAbilityIndex, Cooldown);
+		UseMp(ActivationInfo);
+		if (!bCantLookAtMouseAbility)
+		{
+			Cast<ICharacterMovementInterface>(CurrentActorInfo->AvatarActor)->SetMoveBlock(true);
+		}
+	}
 }
 
 void UGA_MainCharacterSkillBase::CancelAbility(const FGameplayAbilitySpecHandle Handle,
@@ -67,37 +83,6 @@ void UGA_MainCharacterSkillBase::InputPressed(const FGameplayAbilitySpecHandle H
 	Super::InputPressed(Handle, ActorInfo, ActivationInfo);
 }
 
-void UGA_MainCharacterSkillBase::CooldownProcess()
-{
-	const AUPPlayerState* PlayerState = Cast<AUPPlayerState>(CurrentActorInfo->OwnerActor);
-	if(IHUDControllerInterface* HudOwner = Cast<IHUDControllerInterface>(PlayerState->GetPlayerController()))
-	{
-		const TObjectPtr<UUPMainHudWidget> PlayerHud = HudOwner->GetHudWidget();
-		if(PlayerHud)
-		{
-			const auto SkillIconWidget = PlayerHud->GetSlotViewWidgetByActionId(TargetSkillAbilityIndex);
-			if(SkillIconWidget)
-			{
-				SetSlotWidget(SkillIconWidget);
-				if(!SkillSlotWidget->GetCooldownExist())
-				{
-					SkillSlotWidget->OnClickedTargetInputActionKey(Cooldown);
-					UseMp();
-					if(!bCantLookAtMouseAbility)
-					{
-						Cast<ICharacterMovementInterface>(CurrentActorInfo->AvatarActor)->SetMoveBlock(true);
-					}
-				}
-				else
-				{
-					CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, (false));
-					return;
-				}
-			}
-		}
-	}
-}
-
 void UGA_MainCharacterSkillBase::SetSlotWidget(USlotViewWidget* TargetSlotViewWidget)
 {
 	SkillSlotWidget = TargetSlotViewWidget;
@@ -108,11 +93,10 @@ void UGA_MainCharacterSkillBase::OnCompleteCallback()
 	Super::OnCompleteCallback();
 	Cast<ICharacterMovementInterface>(GetCurrentActorInfo()->AvatarActor)->SetMoveBlock(false);
 }
-
-
-void UGA_MainCharacterSkillBase::UseMp() const
+ 
+void UGA_MainCharacterSkillBase::UseMp(const FGameplayAbilityActivationInfo ActivationInfo)
 {
-	const UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo();
+	UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo();
 	if (ASC && UseMpEffect)
 	{
 		const FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(UseMpEffect,1.0f);

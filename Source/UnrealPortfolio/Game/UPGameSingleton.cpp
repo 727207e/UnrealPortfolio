@@ -84,3 +84,17 @@ FUPSkillData UUPGameSingleton::GetSkillDataBySKillAbilityIndex(int32 InputAction
 	}
 	return {};
 }
+
+int32 UUPGameSingleton::GetBuffTypeCount()
+{
+	int32 Result = 0;
+	for(const auto& SkillData : SkillDataArray)
+	{
+		if(SkillData.SkillType == ESkillType::Buff)
+		{
+			Result++;
+			continue;
+		}
+	}
+	return  Result;
+}

@@ -5,6 +5,8 @@
 UWidgetHUDComponent::UWidgetHUDComponent()
 {
 	static ConstructorHelpers::FClassFinder<UUPMainHudWidget> ChatUIWidgetRef(TEXT("/Game/UI/WBP_Hud.WBP_Hud_C"));
-	HudWidgetClass = ChatUIWidgetRef.Class;
-	
+	if(ChatUIWidgetRef.Class)
+	{
+		HudWidgetClass = ChatUIWidgetRef.Class;
+	}
 }

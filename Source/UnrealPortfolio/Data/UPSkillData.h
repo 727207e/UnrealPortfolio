@@ -6,6 +6,14 @@
 #include "Engine/DataTable.h"
 #include "UPSkillData.generated.h"
 
+
+UENUM(BlueprintType)
+enum class ESkillType : uint8
+{
+	Attack UMETA(DisplayName = "Attack"),
+	Buff UMETA(DisplayName = "Buff"),
+};
+
 USTRUCT(BlueprintType)
 struct FUPSkillData : public  FTableRowBase
 {
@@ -25,5 +33,8 @@ public:
 	float CooldownTime = 0;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
-	int32 MagicPoints = 0;
+	int32 MagicPoints;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
+	ESkillType SkillType;
 };

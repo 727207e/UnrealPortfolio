@@ -181,19 +181,8 @@ void AUPMainCharacter::BeginPlay()
 		NPCDetectorSceneComponent->SetParent(GetRootComponent());
 		NPCDetectorSceneComponent->RegisterComponent();
 	}
-	if (HasAuthority())
-	{
-		AUPPlayerController* HostController =  Cast<AUPPlayerController>(GetWorld()->GetFirstPlayerController());
-		if(HostController->PlayerState)
-		{
-			AActor* PS = HostController->PlayerState;
-			HostController->HudWidgetComponent->MainHudWidget = CastChecked<UUPMainHudWidget>(CreateWidget(GetWorld(),HostController->HudWidgetComponent->HudWidgetClass
-,TEXT("UUPMainHudWidget")));
-			HostController->HudWidgetComponent->MainHudWidget->AddToViewport();
-			HostController->HudWidgetComponent->MainHudWidget->SetProgress(PS);
-		}
-	}
-	
+
+
 }
 
 void AUPMainCharacter::CallGAS(int32 GameplayAbilityInputId)
@@ -394,7 +383,6 @@ void AUPMainCharacter::SetMainCharacterTableData() const
 void AUPMainCharacter::SetupASCClientPlayer()
 {
 	Super::SetupASCClientPlayer();
-	CreateHudWidget();
 	SetMainCharacterTableData();
 	ActiveAbilityEquipWeapon(DEFAULT_WEAPON_ID);
 }
@@ -402,9 +390,14 @@ void AUPMainCharacter::SetupASCClientPlayer()
 void AUPMainCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 {
 	Super::SetupASCHostPlayer(InOwnerActor);
-	CreateHudWidget();
 	SetMainCharacterTableData();
 	ActiveAbilityEquipWeapon(DEFAULT_WEAPON_ID);
+
+	if (nullptr == GetController())
+	{
+		UE_LOG(LogTemp, Error, TEXT("No Controller"));
+		return;
+	}
 }
 
 
@@ -419,6 +412,7 @@ void AUPMainCharacter::OnDead()
 		DisableInput(DeadPlayerController);
 	}
 }
+
 
 void AUPMainCharacter::ActiveAbilityGameOverCheck()
 {
@@ -494,23 +488,6 @@ void AUPMainCharacter::CharacterLookMouseLocation()
 	}
 }
 
-void AUPMainCharacter::CreateHudWidget()
-{
-	AUPPlayerState* PS = GetPlayerState<AUPPlayerState>();
-	AUPPlayerController* MyClienetController = Cast<AUPPlayerController>(PS->GetPlayerController());
-	if(MyClienetController)
-	{
-		if(MyClienetController)
-		{
-			MyClienetController->HudWidgetComponent->MainHudWidget = CastChecked<UUPMainHudWidget>(CreateWidget(GetWorld(),MyClienetController->HudWidgetComponent->HudWidgetClass
-	,TEXT("UUPMainHudWidget")));
-			MyClienetController->HudWidgetComponent->MainHudWidget->AddToViewport();
-			MyClienetController->HudWidgetComponent->MainHudWidget->SetProgress(PS);
-			
-		}
-	}
-}
-
 void AUPMainCharacter::SetMoveBlock(bool bBlock)
 {
 	bLockMove = bBlock;
@@ -521,10 +498,7 @@ void AUPMainCharacter::Dodge()
 	LaunchCharacter(AvoidDirectionArrowComponent->GetForwardVector() * 2300,true,false);	
 }
 
-
-
 ECharacterControlType AUPMainCharacter::GetCharacterControl()
 {
 	return CurrentCharacterControlType;
 }
-

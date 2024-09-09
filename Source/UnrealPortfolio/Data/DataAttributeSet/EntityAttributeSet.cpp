@@ -98,7 +98,7 @@ void UEntityAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 }
 
 void UEntityAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth)
-{	     
+{
 	if (UAbilitySystemComponent* ASC = GetOwningASC())
 	{
 		GAMEPLAYATTRIBUTE_REPNOTIFY(UEntityAttributeSet, Hp, OldHealth);

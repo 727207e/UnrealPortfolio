@@ -24,7 +24,6 @@ private:
 	const int32 GAS_START_ABILITY_ID_GAME_RESULT = 3;
 	const int32 GAS_INPUT_ID_ATTACK_START = 0;
 	const int32 GAS_INPUT_ID_AVOID_START = 10;
-	
 public :
 	AUPMainCharacter();
 	
@@ -148,6 +147,4 @@ public:
 	void CharacterLookMouseLocation();
 	UFUNCTION(Server, UnReliable)
 	void Server_SetActorRotation(FVector LookTargetLocation);
-
-	void CreateHudWidget();
 };

@@ -17,6 +17,7 @@ UCLASS()
 class UNREALPORTFOLIO_API UUPGameSingleton : public UObject
 {
 	GENERATED_BODY()
+	
 public:
 	UUPGameSingleton();
 	static UUPGameSingleton& Get();
@@ -48,5 +49,6 @@ public:
 	template<typename T>
 	void LoadDataTableToArray(const FString& DataTablePath, TArray<T>& OutArray);
 	FUPSkillData GetSkillDataBySKillAbilityIndex(int32 InputAction);
+	int32 GetBuffTypeCount();
 };
 

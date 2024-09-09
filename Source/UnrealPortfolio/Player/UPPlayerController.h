@@ -112,4 +112,13 @@ private:
 protected:
 	void GASInputPressed(int32 InputId);
 	
+
+//Character Skill Manage
+private:
+	TArray<bool> SkillCoolDownData;
+
+public:
+	void SkillSetting();
+	bool IsSkillCoolDown(int32 SkillNumber);
+	void SkillSettingCoolDown(int32 SkillNumber, int32 SkillCoolDown);
 };

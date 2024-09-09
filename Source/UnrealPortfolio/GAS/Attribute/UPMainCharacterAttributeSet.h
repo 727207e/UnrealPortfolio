@@ -28,7 +28,6 @@ public:
 	ATTRIBUTE_ACCESSORS(UUPMainCharacterAttributeSet, MaxMp);
 
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
-	virtual bool PreGameplayEffectExecute(struct FGameplayEffectModCallbackData& Data) override;
 	virtual void GetLifetimeReplicatedProps(TArray< class FLifetimeProperty >& OutLifetimeProps) const override;
 	UFUNCTION()
 	virtual void OnRep_MaxMp(const FGameplayAttributeData& OldMaxMp);
