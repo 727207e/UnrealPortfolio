@@ -209,14 +209,6 @@ void AUPMainCharacter::CallGAS(int32 GameplayAbilityInputId)
 	}
 }
 
-void AUPMainCharacter::SetDead()
-{
-	Super::SetDead();
-	//버그 임시 주석
-	//SetCharacterMovementMod(MOVE_None);
-	PlayDeadAnimation();
-}
-
 void AUPMainCharacter::PlayDeadAnimation()
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
@@ -400,12 +392,12 @@ void AUPMainCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 	}
 }
 
-
-
-// Need refactoring for the listening server
 void AUPMainCharacter::OnDead()
 {
 	Super::OnDead();
+
+	PlayDeadAnimation();
+
 	APlayerController* DeadPlayerController = Cast<APlayerController>(GetController());
 	if(DeadPlayerController)
 	{

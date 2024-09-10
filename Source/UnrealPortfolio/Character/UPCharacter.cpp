@@ -36,15 +36,6 @@ AUPCharacter::AUPCharacter()
 	
 }
 
-void AUPCharacter::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-}
-
-void AUPCharacter::SetDead()
-{
-}
-
 void AUPCharacter::LookTarget(const FVector& TargetLocation)
 {
 	FVector TargetDirection = TargetLocation - GetActorLocation();

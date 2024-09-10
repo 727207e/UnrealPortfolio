@@ -17,11 +17,6 @@ AUPBattleBaseCharacter::AUPBattleBaseCharacter()
 	bCanAttack = true;
 }
 
-void AUPBattleBaseCharacter::SetDead()
-{
-	SetActorEnableCollision(false);
-}
-
 void AUPBattleBaseCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
@@ -177,7 +172,7 @@ void AUPBattleBaseCharacter::Knockback(TObjectPtr<class AGameplayEventDataReques
 
 void AUPBattleBaseCharacter::OnDead()
 {
-	SetDead();
+	SetActorEnableCollision(false);
 }
 
 void AUPBattleBaseCharacter::SetAttackDelay(float DelayTime)

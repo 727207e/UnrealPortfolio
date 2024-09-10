@@ -18,13 +18,12 @@ class UNREALPORTFOLIO_API AUPMeleeEnemyCharacter : public AUPEnemyCharacter
 public :
 	AUPMeleeEnemyCharacter();
 
-	virtual void SetDead() override;
-	virtual void BeginPlay() override;
+	virtual void OnDead() override;
 
 protected :
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh)
-	TObjectPtr<USkeletalMeshComponent> BeltMesh;
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh)
-	TObjectPtr<USkeletalMeshComponent> TrousersMesh;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh)
+	//TObjectPtr<USkeletalMeshComponent> BeltMesh;
+	//
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh)
+	//TObjectPtr<USkeletalMeshComponent> TrousersMesh;
 };

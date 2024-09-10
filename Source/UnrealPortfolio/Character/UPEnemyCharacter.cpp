@@ -32,11 +32,6 @@ AUPEnemyCharacter::AUPEnemyCharacter()
 	AttackDelayTime = 3;
 }
 
-void AUPEnemyCharacter::SetDead()
-{
-	Super::SetDead();
-}
-
 void AUPEnemyCharacter::PreInitializeComponents()
 {
 	Super::PreInitializeComponents();
@@ -73,13 +68,29 @@ void AUPEnemyCharacter::PostInitializeComponents()
 
 void AUPEnemyCharacter::MeshSetSimulatePhysics(USkeletalMeshComponent* targetMesh, UCapsuleComponent* targetCapsule)
 {
-	targetMesh->SetCollisionProfileName(TEXT("PhysicsActor"));
-	targetMesh->SetAnimInstanceClass(nullptr);
-	targetMesh->SetSimulatePhysics(true);
+	TArray<USkeletalMeshComponent*> singleMeshArray;
+	singleMeshArray.Add(targetMesh);
+
+	MeshSetSimulatePhysics(singleMeshArray, targetCapsule);
+}
+
+void AUPEnemyCharacter::MeshSetSimulatePhysics(TArray<USkeletalMeshComponent*> targetMeshes, UCapsuleComponent* targetCapsule)
+{
+	GetController()->UnPossess();
+
+	for (USkeletalMeshComponent* targetMesh : targetMeshes)
+	{
+		if (targetMesh)
+		{
+			targetMesh->SetCollisionProfileName(TEXT("PhysicsActor"));
+			targetMesh->SetAnimInstanceClass(nullptr);
+			targetMesh->SetSimulatePhysics(true);
+		}
+	}
 
 	if (targetCapsule)
 	{
-		targetCapsule->SetGenerateOverlapEvents(false);
+		targetCapsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 }
 
@@ -100,12 +111,6 @@ void AUPEnemyCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 	ASC->AddSpawnedAttribute(EnemyEntityState->AttributeSet);
 	ASC->InitAbilityActorInfo(InOwnerActor, this);
 	AttributeSet = EnemyEntityState->AttributeSet;
-}
-
-
-void AUPEnemyCharacter::OnDead()
-{
-	Super::OnDead();
 }
 
 void AUPEnemyCharacter::NormalAttack()

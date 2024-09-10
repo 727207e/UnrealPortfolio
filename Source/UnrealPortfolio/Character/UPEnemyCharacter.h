@@ -20,12 +20,12 @@ class UNREALPORTFOLIO_API AUPEnemyCharacter : public AUPBattleBaseCharacter
 public :
 	AUPEnemyCharacter();
 
-	virtual void SetDead() override;
 	virtual void PreInitializeComponents() override;
 	virtual void PostInitializeComponents() override;
 
 protected :
-	void MeshSetSimulatePhysics(class USkeletalMeshComponent* targetMesh, class UCapsuleComponent* targetCapsule = nullptr);
+	void MeshSetSimulatePhysics(class USkeletalMeshComponent* targetMesh, class UCapsuleComponent* targetCapsule);
+	void MeshSetSimulatePhysics(class TArray<USkeletalMeshComponent*> targetMeshes, class UCapsuleComponent* targetCapsule);
 	virtual void SetupASCHostPlayer(AActor* InOwnerActor) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Entity)
@@ -33,8 +33,6 @@ protected :
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Entity)
 	TObjectPtr<class UUPACEntityState> EnemyEntityState;
 
-	virtual void OnDead() override;
-	
 public :
 	virtual void NormalAttack() override;
 	virtual void OnSkill(int32 SkillNumber) override;
