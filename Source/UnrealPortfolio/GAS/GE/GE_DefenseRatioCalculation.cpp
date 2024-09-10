@@ -2,8 +2,7 @@
 
 
 #include "GAS/GE/GE_DefenseRatioCalculation.h"
-
-#include "Data/DataAttributeSet/EntityAttributeSet.h"
+#include "GAS/Attribute/EntityAttributeSet.h"
 #include "Tag/GameplayTags.h"
 
 

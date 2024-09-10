@@ -8,7 +8,7 @@
 #include "DrawDebugHelpers.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
-#include "Data/DataAttributeSet/EntityAttributeSet.h"
+#include "GAS/Attribute/EntityAttributeSet.h"
 #include "defines/UPCollision.h"
 
 AGATA_Trace::AGATA_Trace()

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayEffectExecutionCalculation.h"
-#include "Data/DataAttributeSet/EntityAttributeSet.h"
+#include "GAS/Attribute/EntityAttributeSet.h"
 #include "GE_DefenseRatioCalculation.generated.h"
 
 USTRUCT(Blueprintable)

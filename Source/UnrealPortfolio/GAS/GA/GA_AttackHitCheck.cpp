@@ -7,8 +7,8 @@
 #include "GAS/Actor/GameplayEventDataRequest.h"
 #include "GAS/GATA/GATA_Trace.h"
 #include "Interface/AttackableCharacterInterface.h"
-#include "Data/DataAttributeSet/EntityAttributeSet.h"
-#include "Data/DataAttributeSet/EnemyDataSet/NormalEnemy/UPEnemyAttributeSet.h"
+#include "GAS/Attribute/EntityAttributeSet.h"
+#include "GAS/Attribute/EnemyDataSet/NormalEnemy/UPEnemyAttributeSet.h"
 #include "Tag/GameplayTags.h"
 
 UGA_AttackHitCheck::UGA_AttackHitCheck()

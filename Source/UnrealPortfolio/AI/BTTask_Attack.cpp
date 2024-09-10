@@ -7,7 +7,7 @@
 #include "AIController.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
-#include "Data/DataAttributeSet/EnemyDataSet/NormalEnemy/UPEnemyAttributeSet.h"
+#include "GAS/Attribute/EnemyDataSet/NormalEnemy/UPEnemyAttributeSet.h"
 
 UBTTask_Attack::UBTTask_Attack()
 {

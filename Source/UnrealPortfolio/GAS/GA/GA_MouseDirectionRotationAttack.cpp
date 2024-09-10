@@ -5,7 +5,7 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
-#include "Data/DataAttributeSet/EntityAttributeSet.h"
+#include "GAS/Attribute/EntityAttributeSet.h"
 #include "GAS/AbilityTask/AbilityTask_LookAtMouse.h"
 
 class UAbilityTask_LookAtMouse;

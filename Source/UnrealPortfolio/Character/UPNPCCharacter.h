@@ -29,7 +29,6 @@ struct FTakeWidgetDelegateWrapper
 };
 
 
-
 UCLASS()
 class UNREALPORTFOLIO_API AUPNPCCharacter : public ACharacter ,public IUPUINpcInterface, public IUPEntityInterface
 {
@@ -43,13 +42,13 @@ public:
 	TArray<FTakeWidgetDelegateWrapper> TakeUiActions;
 public:
 	UFUNCTION()
-	virtual  void TakeNPCWidgetShow() override;
-	virtual  void TakeNPCWidgetHide() override;
+	virtual void TakeNPCWidgetShow() override;
+	virtual void TakeNPCWidgetHide() override;
 
-	virtual  void BeginPlay() override;
-	virtual	 FTransform GetNPCCameraTransform() override;
-	virtual  void LookTarget(const FVector& TargetLocation) override;
-	virtual  FVector GetCurLocation() override;
+	virtual void BeginPlay() override;
+	virtual FTransform GetNPCCameraTransform() override;
+	virtual void LookTarget(const FVector& TargetLocation) override;
+	virtual FVector GetCurLocation() override;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class USceneComponent> NPCCameraTransform;
@@ -70,7 +69,4 @@ public:
 	void ShowInteractionAlarm();
 	UFUNCTION(BlueprintCallable)
 	void HideInterActionAlarm();
-
-	
-	
 };

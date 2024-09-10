@@ -31,10 +31,6 @@ void UUPLobbyHUDWidget::UpdateUserInfo()
     
 }
 
-void UUPLobbyHUDWidget::InitLobbyHud_Implementation()
-{
-
-}
 
 void UUPLobbyHUDWidget::AddUpdateEventToGameState()
 {
@@ -61,6 +57,10 @@ void UUPLobbyHUDWidget::OnBtnStart()
     UPLobbyController->TryPlayStart();
 }
 
+
+void UUPLobbyHUDWidget::InitLobbyHud_Implementation()
+{
+}
 
 void UUPLobbyHUDWidget::AddUserDataInfo_Implementation(const FUPUserData& NickName)
 {

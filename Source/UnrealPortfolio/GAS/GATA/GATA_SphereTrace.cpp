@@ -8,7 +8,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GAS/Actor/GameplaySkillEventDataRequest.h"
-#include "Data/DataAttributeSet/BossDataSet/UPBossSkillAttributeSet.h"
+#include "GAS/Attribute/BossDataSet/UPBossSkillAttributeSet.h"
 #include "Character/UPMainCharacter.h"
 #include "GameFramework/Character.h"
 #include "Components/DecalComponent.h"

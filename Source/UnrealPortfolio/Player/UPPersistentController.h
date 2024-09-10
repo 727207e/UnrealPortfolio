@@ -16,9 +16,10 @@ class UNREALPORTFOLIO_API AUPPersistentController : public APlayerController
 	
 public :
 	AUPPersistentController();
-	void TryConnectToServer(const FString& Address);
 
 	virtual void BeginPlay() override;
+	
+	void TryConnectToServer(const FString& Address);
 
 public:
 	UPROPERTY(EditAnywhere)
@@ -27,6 +28,8 @@ public:
 	TObjectPtr<class UUserWidget> PersistentHudWidget;
 
 private:
-	FTimerHandle IPCheckTimerHandle;
 	void ConnectTimeOver();
+	
+private:
+	FTimerHandle IPCheckTimerHandle;
 };

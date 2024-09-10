@@ -19,15 +19,16 @@ class UNREALPORTFOLIO_API AUPLobbyGameState : public AUPGameState
 public :
     AUPLobbyGameState();
 
-    UPROPERTY(ReplicatedUsing = OnRep_PlayerDataList, VisibleAnywhere, BlueprintReadOnly, Category = "Game State")
-    TArray<FUPUserData> PlayerDataList;
-
     UFUNCTION()
     void OnRep_PlayerDataList();
 
     void AddUserData(const FUPUserData& UserData);
     void ChangeUserData(const FUPUserData& UserData);
     virtual void MoveNextLevel(FString LevelPath) override;
+
+public :
+    UPROPERTY(ReplicatedUsing = OnRep_PlayerDataList, VisibleAnywhere, BlueprintReadOnly, Category = "Game State")
+    TArray<FUPUserData> PlayerDataList;
 
     FOnPlayerDataListChanged OnPlayerDataListChanged;
 

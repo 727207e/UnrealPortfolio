@@ -4,9 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
-#include "GAS/Attribute/UPMainCharacterAttributeSet.h"
 #include "Interface/AbilitySystemGetInterface.h"
 #include "UPPlayerState.generated.h"
+
+class UUPMainCharacterAttributeSet;
+class UAbilitySystemComponent;
 
 /**
  * 
@@ -19,12 +21,12 @@ class UNREALPORTFOLIO_API AUPPlayerState : public APlayerState, public IAbilityS
 public:
 	AUPPlayerState();
 
-	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-	UUPMainCharacterAttributeSet* GetMainCharacterAttributeSet() const;
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	class UEntityAttributeSet* GetMainCharacterAttributeSet() const;
 
 protected:
 	UPROPERTY(EditAnywhere, Category = GAS)
-	TObjectPtr<class UAbilitySystemComponent> ASC;
+	TObjectPtr<UAbilitySystemComponent> ASC;
 	UPROPERTY(EditAnywhere,Category = GAS)
-	TObjectPtr<class UUPMainCharacterAttributeSet> AttributeSet;
+	TObjectPtr<UUPMainCharacterAttributeSet> AttributeSet;
 };

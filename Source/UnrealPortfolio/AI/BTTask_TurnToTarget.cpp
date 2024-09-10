@@ -6,7 +6,7 @@
 #include "AIController.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
-#include "Data/DataAttributeSet/EnemyDataSet/NormalEnemy/UPEnemyAttributeSet.h"
+#include "GAS/Attribute/EnemyDataSet/NormalEnemy/UPEnemyAttributeSet.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 UBTTask_TurnToTarget::UBTTask_TurnToTarget()

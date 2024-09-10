@@ -8,7 +8,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
-#include "Data/DataAttributeSet/EnemyDataSet/NormalEnemy/UPEnemyAttributeSet.h"
+#include "GAS/Attribute/EnemyDataSet/NormalEnemy/UPEnemyAttributeSet.h"
 #include "DrawDebugHelpers.h"
 
 UBTService_Detect::UBTService_Detect()
