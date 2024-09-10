@@ -5,18 +5,18 @@
 #include "Interface/UPEntityInterface.h"
 #include "UPCharacter.generated.h"
 
-UCLASS(Blueprintable)
+UCLASS(Abstract)
 class AUPCharacter : public ACharacter, public IUPEntityInterface
 {
 	GENERATED_BODY()
 
-	public:
+public:
 	AUPCharacter();
-	// Called every frame.
-	virtual void Tick(float DeltaSeconds) override;
 
 public:
-	virtual void SetDead();
+	UFUNCTION()
+	virtual void OnDead() PURE_VIRTUAL(ACharacter::OnDead(), );
+
 	virtual void LookTarget(const FVector& TargetLocation) override;
 	virtual FVector GetCurLocation() override;
 };

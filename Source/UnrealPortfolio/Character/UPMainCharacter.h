@@ -43,7 +43,6 @@ public :
 	virtual void CallGAS(int32 GameplayAbilityInputId) override;	
 public:
 	/* Animation */
-	virtual void SetDead() override;
 	void PlayDeadAnimation();
 	
 	/** Time Threshold to know if it was a short press */

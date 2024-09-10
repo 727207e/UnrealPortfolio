@@ -32,11 +32,6 @@ AUPEnemyCharacter::AUPEnemyCharacter()
 	AttackDelayTime = 3;
 }
 
-void AUPEnemyCharacter::SetDead()
-{
-	Super::SetDead();
-}
-
 void AUPEnemyCharacter::PreInitializeComponents()
 {
 	Super::PreInitializeComponents();
@@ -100,12 +95,6 @@ void AUPEnemyCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 	ASC->AddSpawnedAttribute(EnemyEntityState->AttributeSet);
 	ASC->InitAbilityActorInfo(InOwnerActor, this);
 	AttributeSet = EnemyEntityState->AttributeSet;
-}
-
-
-void AUPEnemyCharacter::OnDead()
-{
-	Super::OnDead();
 }
 
 void AUPEnemyCharacter::NormalAttack()

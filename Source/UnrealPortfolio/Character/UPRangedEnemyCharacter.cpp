@@ -25,15 +25,11 @@ AUPRangedEnemyCharacter::AUPRangedEnemyCharacter()
 	}
 }
 
-void AUPRangedEnemyCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-void AUPRangedEnemyCharacter::SetDead()
+void AUPRangedEnemyCharacter::OnDead()
 {
 	if (GetMesh())
 	{
+		Super::OnDead();
 		MeshSetSimulatePhysics(GetMesh(), GetCapsuleComponent());
 	}
 }

@@ -47,20 +47,12 @@ AUPMeleeEnemyCharacter::AUPMeleeEnemyCharacter()
 }
 
 
-
-void AUPMeleeEnemyCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-
-	//FTimerHandle DeadTimerHandle;
-	//GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, this, &AUPMeleeEnemyCharacter::SetDead, 5.0f, false);
-}
-
-
-void AUPMeleeEnemyCharacter::SetDead()
+void AUPMeleeEnemyCharacter::OnDead()
 {
 	if (GetMesh() && BeltMesh && TrousersMesh)
 	{
+		Super::OnDead();
+
 		MeshSetSimulatePhysics(GetMesh(), GetCapsuleComponent());
 		MeshSetSimulatePhysics(BeltMesh);
 		MeshSetSimulatePhysics(TrousersMesh);

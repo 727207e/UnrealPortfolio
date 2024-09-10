@@ -81,7 +81,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
 	TObjectPtr<class  UAnimMontage> DeadMontage;
 	
-	virtual void SetDead() override;
 	virtual UAnimMontage* GetComboActionMontage() override;
 	FORCEINLINE virtual UUPComboActionData* GetComboActionData() const { return ComboActionData; }
 
@@ -113,7 +112,7 @@ public :
 	
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UEntityAttributeSet> AttributeSet;
-	UFUNCTION()
-	virtual void OnDead();
+
+	virtual void OnDead() override;
 	
 };

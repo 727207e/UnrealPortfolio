@@ -17,7 +17,6 @@ class UNREALPORTFOLIO_API AUPRangedEnemyCharacter : public AUPEnemyCharacter
 public :
 	AUPRangedEnemyCharacter();
 
-	virtual void BeginPlay() override;
-	virtual void SetDead() override;
+	virtual void OnDead() override;
 
 };
