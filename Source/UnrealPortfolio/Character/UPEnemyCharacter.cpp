@@ -68,13 +68,29 @@ void AUPEnemyCharacter::PostInitializeComponents()
 
 void AUPEnemyCharacter::MeshSetSimulatePhysics(USkeletalMeshComponent* targetMesh, UCapsuleComponent* targetCapsule)
 {
-	targetMesh->SetCollisionProfileName(TEXT("PhysicsActor"));
-	targetMesh->SetAnimInstanceClass(nullptr);
-	targetMesh->SetSimulatePhysics(true);
+	TArray<USkeletalMeshComponent*> singleMeshArray;
+	singleMeshArray.Add(targetMesh);
+
+	MeshSetSimulatePhysics(singleMeshArray, targetCapsule);
+}
+
+void AUPEnemyCharacter::MeshSetSimulatePhysics(TArray<USkeletalMeshComponent*> targetMeshes, UCapsuleComponent* targetCapsule)
+{
+	GetController()->UnPossess();
+
+	for (USkeletalMeshComponent* targetMesh : targetMeshes)
+	{
+		if (targetMesh)
+		{
+			targetMesh->SetCollisionProfileName(TEXT("PhysicsActor"));
+			targetMesh->SetAnimInstanceClass(nullptr);
+			targetMesh->SetSimulatePhysics(true);
+		}
+	}
 
 	if (targetCapsule)
 	{
-		targetCapsule->SetGenerateOverlapEvents(false);
+		targetCapsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 }
 

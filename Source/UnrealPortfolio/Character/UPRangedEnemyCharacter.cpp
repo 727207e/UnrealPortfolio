@@ -29,7 +29,6 @@ void AUPRangedEnemyCharacter::OnDead()
 {
 	if (GetMesh())
 	{
-		Super::OnDead();
 		MeshSetSimulatePhysics(GetMesh(), GetCapsuleComponent());
 	}
 }

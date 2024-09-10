@@ -21,9 +21,9 @@ public :
 	virtual void OnDead() override;
 
 protected :
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh)
-	TObjectPtr<USkeletalMeshComponent> BeltMesh;
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh)
-	TObjectPtr<USkeletalMeshComponent> TrousersMesh;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh)
+	//TObjectPtr<USkeletalMeshComponent> BeltMesh;
+	//
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh)
+	//TObjectPtr<USkeletalMeshComponent> TrousersMesh;
 };
