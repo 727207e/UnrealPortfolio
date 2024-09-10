@@ -6,50 +6,29 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
-#include "Character/UPBossCharacter.h"
-#include "Character/UPEnemyCharacter.h"
 #include "Components/SphereComponent.h"
 #include "GAS/Attribute/EntityAttributeSet.h"
+#include "Character/UPBattleBaseCharacter.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Components/CapsuleComponent.h"
 
 AGATA_BaseRangeAttackTrace::AGATA_BaseRangeAttackTrace()
 {
-	SocketName = "Hand_r";
+	Capsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule"));
+	Capsule->InitCapsuleSize(50.0f, 800.0f);
+	SetRootComponent(Capsule);
 
-	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
-	SetRootComponent(Sphere);
-
-	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> MuzzleFXRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/DownloadAssets/Pack_VFX/VFX_Niagara/Stylized_Projectiles/Muzzle/NS_Stylized_Projectiles_Muzzle17.NS_Stylized_Projectiles_Muzzle17'"));
-	if (MuzzleFXRef.Object)
-	{
-		MuzzleFX = MuzzleFXRef.Object;
-	}
-
-	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> ProjectileFXRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/DownloadAssets/Pack_VFX/VFX_Niagara/Stylized_Projectiles/Projectile/NS_Stylized_Projectiles_Projectile17.NS_Stylized_Projectiles_Projectile17'"));
-	if (ProjectileFXRef.Object)
-	{
-		ProjectileFX = ProjectileFXRef.Object;
-	}
-
-	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> HitFXRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/DownloadAssets/Pack_VFX/VFX_Niagara/Stylized_Projectiles/Hit/NS_Stylized_Projectiles_Hit17.NS_Stylized_Projectiles_Hit17'"));
-	if (HitFXRef.Object)
-	{
-		HitFX = HitFXRef.Object;
-	}
+	MuzzleFX = CreateDefaultSubobject<UNiagaraSystem>(TEXT("Muzzle"));
+	ProjectileFX = CreateDefaultSubobject<UNiagaraSystem>(TEXT("ProjectileFX"));
+	HitFX = CreateDefaultSubobject<UNiagaraSystem>(TEXT("HitFX"));
 
 	ProjectTileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
-	ProjectTileMovement->InitialSpeed = 1000;
-	ProjectTileMovement->MaxSpeed = 1000;
-	ProjectTileMovement->bShouldBounce = true;
-	ProjectTileMovement->ProjectileGravityScale = 0;
-	ProjectTileMovement->Velocity = FVector(1000, 0, 0);
 
 	MuzzleComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("MuzzleComponent"));
 	MuzzleComponent->SetupAttachment(RootComponent);
 
 	bReplicates = true;
-	
 }
 
 void AGATA_BaseRangeAttackTrace::ConfirmTargetingAndContinue()
@@ -59,7 +38,7 @@ void AGATA_BaseRangeAttackTrace::ConfirmTargetingAndContinue()
 	SettingProjectile();
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), MuzzleFX, GetActorLocation());
 	MuzzleComponent->SetAsset(ProjectileFX);
-	Sphere->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnOverlapBegin);
+	Capsule->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnOverlapBegin);
 
 	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(SourceActor);
 	if (nullptr == TargetASC)
@@ -79,17 +58,10 @@ void AGATA_BaseRangeAttackTrace::ConfirmTargetingAndContinue()
 	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, this, &ThisClass::AutoDestroy, AttributeSet->GetAttackRadius(), false);
 }
 
-void AGATA_BaseRangeAttackTrace::Destroyed()
+void AGATA_BaseRangeAttackTrace::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult)
 {
-	Super::Destroyed();
-}
-
-void AGATA_BaseRangeAttackTrace::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-                                                UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult)
-{
-	const AUPEnemyCharacter* HitEnemyCharacter = Cast<AUPEnemyCharacter>(OtherActor);
-	const AUPBossCharacter* HitBossCharacter = Cast<AUPBossCharacter>(OtherActor);
-	if (HitEnemyCharacter == nullptr && HitBossCharacter == nullptr)
+	const AUPBattleBaseCharacter* HitEnemyCharacter = Cast<AUPBattleBaseCharacter>(OtherActor);
+	if (HitEnemyCharacter == nullptr)
 	{
 		return;
 	}
@@ -99,6 +71,8 @@ void AGATA_BaseRangeAttackTrace::OnOverlapBegin(UPrimitiveComponent* OverlappedC
 	FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit(SweepHitResult);
 	DataHandle.Add(TargetData);
 	TargetDataReadyDelegate.Broadcast(DataHandle);
+	Destroyed();
+
 	return;
 }
 

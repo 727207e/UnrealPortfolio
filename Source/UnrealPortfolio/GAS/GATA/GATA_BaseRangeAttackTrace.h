@@ -4,21 +4,21 @@
 
 #include "CoreMinimal.h"
 #include "NiagaraSystem.h"
-#include "GAS/GATA/GATA_Trace.h"
+#include "GAS/GATA/GATA_SkillTrace.h"
 #include "GATA_BaseRangeAttackTrace.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class UNREALPORTFOLIO_API AGATA_BaseRangeAttackTrace : public AGATA_Trace
+class UNREALPORTFOLIO_API AGATA_BaseRangeAttackTrace : public AGATA_SkillTrace
 {
 	GENERATED_BODY()
 public:
 
 	AGATA_BaseRangeAttackTrace();
 	
-protected:
+public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS", meta = (BoneName = "true"))
 	FName SocketName;
@@ -34,17 +34,16 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UProjectileMovementComponent> ProjectTileMovement;
-
+	
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<class USphereComponent> Sphere;
+	TObjectPtr<class UCapsuleComponent> Capsule;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UNiagaraComponent> MuzzleComponent;
 	
 protected :
 	virtual void ConfirmTargetingAndContinue() override;
-	virtual void Destroyed() override;
-	
+
 	UFUNCTION()
 	virtual void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult);
 

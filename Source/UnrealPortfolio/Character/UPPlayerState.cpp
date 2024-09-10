@@ -16,13 +16,12 @@ AUPPlayerState::AUPPlayerState()
 	NetUpdateFrequency = 60;
 }
 
-UAbilitySystemComponent* AUPPlayerState::GetAbilitySystemComponent() const
+class UAbilitySystemComponent* AUPPlayerState::GetAbilitySystemComponent() const
 {
 	return ASC;
 }
 
-UUPMainCharacterAttributeSet* AUPPlayerState::GetMainCharacterAttributeSet() const
+class UEntityAttributeSet* AUPPlayerState::GetMainCharacterAttributeSet() const
 {
 	return  AttributeSet;
 }
-
