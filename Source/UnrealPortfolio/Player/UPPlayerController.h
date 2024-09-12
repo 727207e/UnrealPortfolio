@@ -74,7 +74,7 @@ public:
 	UPROPERTY()
 	TObjectPtr<class UWidgetHUDComponent> HudWidgetComponent;
 	
-	virtual  TObjectPtr<class UUPMainHudWidget> GetHudWidget() override;
+	FORCEINLINE TObjectPtr<class UUPMainHudWidget> GetHudWidget() { return HudWidgetComponent->MainHudWidget; }
 
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
@@ -121,4 +121,8 @@ public:
 	void SkillSetting();
 	bool IsSkillCoolDown(int32 SkillNumber);
 	void SkillSettingCoolDown(int32 SkillNumber, int32 SkillCoolDown);
+	void BuffIconActive();
+
+	UFUNCTION(Client, Unreliable)
+	void Client_BuffIconActive();
 };

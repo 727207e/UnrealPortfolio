@@ -30,30 +30,6 @@ void UGA_BuffTargetCheck::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 	UAbilityTask_LivingPlayerTracker * AttackTraceTask = UAbilityTask_LivingPlayerTracker::CreateTask(this, CurrentTA);
 	AttackTraceTask->OnComplete.AddDynamic(this, &UGA_BuffTargetCheck::OnTraceResultCallback);
 	AttackTraceTask->ReadyForActivation();
-	//서버가 수정된 정보를 리시브한다.
-	Server_SendMessageBuffSlot();
-}
-
-void UGA_BuffTargetCheck::Server_SendMessageBuffSlot_Implementation()
-{
-	for (const auto& player : GetWorld()->GetGameState()->PlayerArray)
-	{
-		auto HudOwner = Cast<AUPPlayerController>(player->GetOwningController());
-		auto Hud = HudOwner->GetHudWidget();
-		if(Hud == nullptr)
-		{
-			UE_LOG(LogTemp,Log,TEXT("Hud Null"));
-			continue;
-		}
-		else
-		{
-			Hud->Client_BuffProcess();
-			// UE_LOG(LogTemp,Log,TEXT("Component %s"),*Hud->GetName());
-			// UE_LOG(LogTemp,Log,TEXT("Player %s"),*player->GetName());
-			// UE_LOG(LogTemp,Log,TEXT("Controler %s"),*HudOwner->GetName());
-		}
-		
-	}
 }
 
 void UGA_BuffTargetCheck::CancelAbility(const FGameplayAbilitySpecHandle Handle,
@@ -67,6 +43,7 @@ void UGA_BuffTargetCheck::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	bool bReplicateEndAbility, bool bWasCancelled)
 {
+	UE_LOG(LogTemp, Error, TEXT("Buff GA Delete"));
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
@@ -82,10 +59,30 @@ void UGA_BuffTargetCheck::OnBuffEnd()
 
 void UGA_BuffTargetCheck::OnTraceResultCallback(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
+	TArray<TWeakObjectPtr<AActor>> TargetArray = TargetDataHandle.Get(0)->GetActors();
+	if (TargetArray.Num() <= 0 || !HasAuthority(&CurrentActivationInfo))
+	{
+		return;
+	}
+
+	BuffAfterProcess();
 	BuffCount = 10;
 	const FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(AttackDamageEffect);
 	if (EffectSpecHandle.IsValid())
 	{
-		ApplyGameplayEffectSpecToTarget(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo,EffectSpecHandle,TargetDataHandle);
+		ApplyGameplayEffectSpecToTarget(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, EffectSpecHandle, TargetDataHandle);
+	}
+}
+
+void UGA_BuffTargetCheck::BuffAfterProcess()
+{
+	for (const auto& player : GetWorld()->GetGameState()->PlayerArray)
+	{
+		auto HudOwner = Cast<AUPPlayerController>(player->GetOwningController());
+		if (HudOwner == nullptr)
+		{
+			continue;
+		}
+		HudOwner->BuffIconActive();
 	}
 }

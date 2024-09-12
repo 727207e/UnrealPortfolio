@@ -178,11 +178,6 @@ void AUPPlayerController::ChatScroll(bool bUp)
 	}
 }
 
-TObjectPtr<UUPMainHudWidget> AUPPlayerController::GetHudWidget()
-{
-	return  HudWidgetComponent->MainHudWidget;
-}
-
 void AUPPlayerController::OnInputStarted()
 {
 	if (PossessCharacter)
@@ -243,3 +238,21 @@ void AUPPlayerController::SkillSettingCoolDown(int32 SkillNumber, int32 SkillCoo
 			SkillCoolDownData[SkillNumber] = false;
 		}), SkillCoolDown, false);
 }
+
+void AUPPlayerController::BuffIconActive()
+{
+	if (IsLocalController())
+	{
+		GetHudWidget()->BuffProcess();
+	}
+	else if(HasAuthority())
+	{
+		Client_BuffIconActive();
+	}
+}
+
+void AUPPlayerController::Client_BuffIconActive_Implementation()
+{
+	BuffIconActive();
+}
+

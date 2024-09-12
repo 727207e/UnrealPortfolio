@@ -20,6 +20,4 @@ class UHUDControllerInterface : public UInterface
 class UNREALPORTFOLIO_API IHUDControllerInterface
 {
 	GENERATED_BODY()
-public:
-	virtual TObjectPtr<UUPMainHudWidget> GetHudWidget() = 0;
 };

@@ -115,10 +115,8 @@ void UUPMainHudWidget::TargetButtonPress(int32 TargetIndex, int32 TargetCoolDown
 	SkillWidget->OnClickedTargetInputActionKey(TargetCoolDown);
 }
 
-void UUPMainHudWidget::Client_BuffProcess_Implementation()
+void UUPMainHudWidget::BuffProcess()
 {
-	FString Message = FString::Printf(TEXT("하이, %s"), *GetName());
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, Message);
 	TTuple<bool, TObjectPtr<USlotViewWidget>> MyTuple =  GetLastBuffViewWidget(0);
 	const bool bUsedBuff = MyTuple.Get<0>();
 	const auto CurBuffSlot = MyTuple.Get<1>();
@@ -149,10 +147,4 @@ TTuple<bool,TObjectPtr<USlotViewWidget>> UUPMainHudWidget::GetLastBuffViewWidget
 	}
 
 	return {};
-}
-
-
-void UUPMainHudWidget::Server_Receive_Implementation()
-{
-	Client_BuffProcess();
 }

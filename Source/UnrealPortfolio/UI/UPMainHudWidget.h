@@ -24,12 +24,8 @@ public:
 	TArray<TObjectPtr<USlotViewWidget>> GetSkillSlotArray();
 	TTuple<bool, TObjectPtr<USlotViewWidget>>  GetLastBuffViewWidget(int32 CastingBuffId);
 
-	UFUNCTION(Server, Unreliable)
-	void Server_Receive();
-
 	void SetProgress(AActor* Owner);
-	UFUNCTION(Client, Unreliable)
-	void Client_BuffProcess();
+	void BuffProcess();
 
 	void TargetButtonPress(int32 TargetIndex, int32 TargetCoolDown);
 
