@@ -19,10 +19,6 @@ AGATA_BaseRangeAttackTrace::AGATA_BaseRangeAttackTrace()
 	Capsule->InitCapsuleSize(50.0f, 800.0f);
 	SetRootComponent(Capsule);
 
-	MuzzleFX = CreateDefaultSubobject<UNiagaraSystem>(TEXT("Muzzle"));
-	ProjectileFX = CreateDefaultSubobject<UNiagaraSystem>(TEXT("ProjectileFX"));
-	HitFX = CreateDefaultSubobject<UNiagaraSystem>(TEXT("HitFX"));
-
 	ProjectTileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
 
 	MuzzleComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("MuzzleComponent"));
