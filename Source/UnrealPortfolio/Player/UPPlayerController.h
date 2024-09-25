@@ -67,13 +67,13 @@ public:
 		
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> ScrollDownAction;
-
+	
 	UPROPERTY()
 	TObjectPtr<class UUPACChatGenerator> ChatActorComponent;
 
 	UPROPERTY()
 	TObjectPtr<class UWidgetHUDComponent> HudWidgetComponent;
-	
+
 	FORCEINLINE TObjectPtr<class UUPMainHudWidget> GetHudWidget() { return HudWidgetComponent->MainHudWidget; }
 
 protected:

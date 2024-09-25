@@ -22,6 +22,7 @@
 #include "defines/UPServerLogDefine.h"
 #include "defines/UPCollision.h"
 #include "Tag/GameplayTags.h"
+#include "UI/Componenet/UPInventoryAC.h"
 
 AUPMainCharacter::AUPMainCharacter()
 {
@@ -56,6 +57,8 @@ AUPMainCharacter::AUPMainCharacter()
 	{
 		ComboActionData = ComboActionDataRef.Object;
 	}
+
+	InventoryAC = CreateDefaultSubobject<UUPInventoryAC>(TEXT("InventoryAC"));
 
 	CreateWeaponComponent();
 
@@ -111,7 +114,7 @@ void AUPMainCharacter::OnMenuStart()
 
 void AUPMainCharacter::OnInventoryStart()
 {
-	UE_LOG(LogTemplateCharacter, Log, TEXT("InventoryStart"));
+	InventoryAC->OpenInventory();
 }
 
 void AUPMainCharacter::OnInputStart()

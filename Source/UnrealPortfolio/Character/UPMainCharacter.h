@@ -146,4 +146,7 @@ public:
 	void CharacterLookMouseLocation();
 	UFUNCTION(Server, UnReliable)
 	void Server_SetActorRotation(FVector LookTargetLocation);
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UUPInventoryAC> InventoryAC;
 };
