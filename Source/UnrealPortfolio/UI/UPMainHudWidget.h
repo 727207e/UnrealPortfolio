@@ -21,7 +21,6 @@ public:
 	UUPMainHudWidget();
 
 public:
-	TArray<TObjectPtr<USlotViewWidget>> GetSkillSlotArray();
 	TTuple<bool, TObjectPtr<USlotViewWidget>>  GetLastBuffViewWidget(int32 CastingBuffId);
 
 	void SetProgress(AActor* Owner);

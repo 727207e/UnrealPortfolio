@@ -23,6 +23,7 @@
 #include "defines/UPCollision.h"
 #include "Tag/GameplayTags.h"
 #include "UI/Componenet/UPInventoryAC.h"
+#include "AbilitySystemBlueprintLibrary.h"
 
 AUPMainCharacter::AUPMainCharacter()
 {
@@ -99,7 +100,7 @@ void AUPMainCharacter::OnSkillRelease(int32 Index)
 
 void AUPMainCharacter::OnConsumableStart(int32 Index)
 {
-	UE_LOG(LogTemplateCharacter, Log, TEXT("ConsumableItem : %d"), Index);
+	ConsumableCallGas(Index);
 }
 
 void AUPMainCharacter::OnAvoidStart()
@@ -210,6 +211,17 @@ void AUPMainCharacter::CallGAS(int32 GameplayAbilityInputId)
 			Super::CallGAS(GameplayAbilityInputId);
 		}
 	}
+}
+
+void AUPMainCharacter::ConsumableCallGas(int32 Index)
+{
+	InventoryAC->ItemGamePlayEffect(Index);
+	TSubclassOf<UGameplayEffect> TargetEffect = InventoryAC->GetGameplayEffect;
+
+	FGameplayEventData PayloadData;
+	PayloadData.OptionalObject = TargetEffect.Get();
+
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, TAG_CHARACTER_CONSUMABLE, PayloadData);
 }
 
 void AUPMainCharacter::PlayDeadAnimation()

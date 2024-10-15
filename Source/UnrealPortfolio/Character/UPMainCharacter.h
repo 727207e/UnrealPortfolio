@@ -41,6 +41,9 @@ public :
 	virtual void OnNPCInteraction() override;
 	virtual void BeginPlay() override;
 	virtual void CallGAS(int32 GameplayAbilityInputId) override;	
+	
+	void ConsumableCallGas(int32 Index);
+
 public:
 	/* Animation */
 	void PlayDeadAnimation();
