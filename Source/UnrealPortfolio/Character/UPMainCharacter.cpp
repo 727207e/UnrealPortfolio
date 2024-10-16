@@ -215,8 +215,9 @@ void AUPMainCharacter::CallGAS(int32 GameplayAbilityInputId)
 
 void AUPMainCharacter::ConsumableCallGas(int32 Index)
 {
-	InventoryAC->ItemGamePlayEffect(Index);
-	TSubclassOf<UGameplayEffect> TargetEffect = InventoryAC->GetGameplayEffect;
+	UUPMainHudWidget* MainHUD = Cast<AUPPlayerController>(GetController())->GetHudWidget();
+	MainHUD->ItemGamePlayEffect(Index);
+	TSubclassOf<UGameplayEffect> TargetEffect = MainHUD->GetGameplayEffect;
 
 	FGameplayEventData PayloadData;
 	PayloadData.OptionalObject = TargetEffect.Get();
