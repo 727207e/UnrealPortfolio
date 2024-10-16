@@ -368,6 +368,10 @@ void AUPMainCharacter::ServerSetControllerMovementMod_Implementation(EMovementMo
 
 void AUPMainCharacter::SetControllerMovementMod(EMovementMode MovementMode, APlayerController* PlayerController)
 {
+	if (PlayerController == nullptr)
+	{
+		return;
+	}
 	if (MovementMode == EMovementMode::MOVE_None)
 	{
 		DisableInput(PlayerController);
@@ -376,6 +380,7 @@ void AUPMainCharacter::SetControllerMovementMod(EMovementMode MovementMode, APla
 	{
 		EnableInput(PlayerController);
 	}
+
 	PlayerController->GetCharacter()->GetCharacterMovement()->SetMovementMode(MovementMode);
 }
 
