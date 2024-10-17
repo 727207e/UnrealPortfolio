@@ -43,10 +43,6 @@ AUPNPCCharacter::AUPNPCCharacter()
 		InteractionAlarmCompo->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 	
-	TakeUiActions.Add(FTakeWidgetDelegateWrapper(FOnShowNPCWidgetDelegate::CreateUObject(this,&AUPNPCCharacter::ShowWeaponShopWidget)));
-	TakeUiActions.Add(FTakeWidgetDelegateWrapper(FOnShowNPCWidgetDelegate::CreateUObject(this,&AUPNPCCharacter::ShowItemShopWidget)));
-	TakeUiActions.Add(FTakeWidgetDelegateWrapper(FOnShowNPCWidgetDelegate::CreateUObject(this,&AUPNPCCharacter::ShowRaiderSelector)));
-
 	NPCCameraTransform = CreateDefaultSubobject<USceneComponent>(TEXT("CameraTransform"));
 	NPCCameraTransform->SetupAttachment(RootComponent);
 	SetReplicateMovement(false);
@@ -54,14 +50,23 @@ AUPNPCCharacter::AUPNPCCharacter()
 
 void AUPNPCCharacter::TakeNPCWidgetShow()
 {
-	UE_LOG(LogTemp,Log,TEXT("Show Type"));
-	TakeUiActions[static_cast<uint8>(widgetType)].OnTakeWidget.ExecuteIfBound();
+	if (NPCUI != nullptr)
+	{
+		NPCUI->SetVisibility(ESlateVisibility::Visible);
+	}
+	else
+	{
+		NPCUI = CreateWidget(GetWorld(), NPCUIType);
+		NPCUI->AddToViewport();
+	}
 }
 
 void AUPNPCCharacter::TakeNPCWidgetHide()
 {
-	UE_LOG(LogTemp,Log,TEXT("Hide Type"));
-	TakeUiActions[static_cast<uint8>(widgetType)].OnTakeWidget.ExecuteIfBound();
+	if (NPCUI != nullptr)
+	{
+		NPCUI->SetVisibility(ESlateVisibility::Hidden);
+	}
 }
 
 void AUPNPCCharacter::BeginPlay()
@@ -87,31 +92,6 @@ void AUPNPCCharacter::LookTarget(const FVector& TargetLocation)
 FVector AUPNPCCharacter::GetCurLocation()
 {
 	return GetActorLocation();
-}
-
-void AUPNPCCharacter::ShowWeaponShopWidget()
-{
-	UE_LOG(LogTemp,Log,TEXT("ShowWeaponShopWidget"));
-}
-
-void AUPNPCCharacter::ShowItemShopWidget()
-{
-	UE_LOG(LogTemp,Log,TEXT("ShowItemShopWidget"));
-}
-
-void AUPNPCCharacter::ShowRaiderSelector()
-{
-	UE_LOG(LogTemp,Log,TEXT("ShowRaiderSelector"));
-
-
-	//버튼 생성까지 주석으로 비활성화
-	// AUPLevelScriptActor* UpLevelScript = Cast<AUPLevelScriptActor>(GetWorld()->GetLevelScriptActor());
-	// if (UpLevelScript)
-	// {
-	// 	UE_LOG(LogTemp, Log, TEXT("ShowRaiderSelector22222"));
-	// 	UpLevelScript->LoadNextLevelByAsync(NextLevelPath);
-	// }
-
 }
 
 void AUPNPCCharacter::ShowInteractionAlarm()

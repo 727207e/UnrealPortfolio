@@ -10,13 +10,6 @@
 
 DECLARE_DELEGATE(FOnShowNPCWidgetDelegate);
 
-UENUM(BlueprintType)
-enum class ENPCWidgetType : uint8
-{
-	WeaponShop UMETA(DisplayName = "WeaponShop"),
-	ItemShop UMETA(DisplayName = "ItemShop"),
-	RaidSelector UMETA(DisplayName = "RaidSelector"),
-};
 
 USTRUCT(BlueprintType)
 struct FTakeWidgetDelegateWrapper
@@ -37,8 +30,6 @@ class UNREALPORTFOLIO_API AUPNPCCharacter : public ACharacter ,public IUPUINpcIn
 public:
 	AUPNPCCharacter();
 public:
-	UPROPERTY(EditAnywhere, Category = NPC)
-	ENPCWidgetType widgetType;
 	TArray<FTakeWidgetDelegateWrapper> TakeUiActions;
 public:
 	UFUNCTION()
@@ -56,10 +47,10 @@ public:
 	UPROPERTY(EditAnywhere, Category = Level)
 	FString NextLevelPath;
 
-protected:
-	void ShowWeaponShopWidget();
-	void ShowItemShopWidget();
-	void ShowRaiderSelector();
+	UPROPERTY(EditAnywhere, BlueprintReadwrite)
+	TSubclassOf<class UUserWidget> NPCUIType;
+
+	TObjectPtr<class UUserWidget> NPCUI;
 
 protected:
 	UPROPERTY(VisibleAnywhere, Category = UI)
