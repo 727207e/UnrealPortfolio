@@ -60,6 +60,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	bool bIsSpawnImmediately = false;
 
+	TObjectPtr<class AUPCutSceneTriggerActor> StruggleActor;
+
 public :
 	void GenBoss();
 	virtual void BeginPlay() override;
