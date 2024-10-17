@@ -50,14 +50,8 @@ void UUPMainHudWidget::NativeConstruct()
 		const FName SlotItemName = *FString::Printf(TEXT("%s%d"),TEXT("WBP_ItemSlot") ,i);
 		if(auto ItemSlotView = Cast<UItemSlotViewWidget>(GetWidgetFromName(SlotItemName)))
 		{
-			UE_LOG(LogTemp,Log,TEXT("Check"));
 			ItemSlotView->SetData(UUPGameSingleton::Get().SlotWidgetModelDataArray[i]);
 			ItemSlotViewArray.Add(ItemSlotView);
-		}
-		else
-		{
-			UE_LOG(LogTemp,Log,TEXT("Not Exsit"));
-			
 		}
 	}
 
@@ -69,11 +63,6 @@ void UUPMainHudWidget::NativeConstruct()
 			PbViewWidget->SetData(UUPGameSingleton::Get().ProgressWidgetModelDataArray[i]);
 		}
 	}
-}
-
-TArray<TObjectPtr<USlotViewWidget>> UUPMainHudWidget::GetSkillSlotArray()
-{
-	return SkillSlotViewArray;
 }
 
 TObjectPtr<USlotViewWidget> UUPMainHudWidget::GetSlotViewWidgetByActionId(int32 ActionId)

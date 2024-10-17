@@ -21,7 +21,6 @@ public:
 	UUPMainHudWidget();
 
 public:
-	TArray<TObjectPtr<USlotViewWidget>> GetSkillSlotArray();
 	TTuple<bool, TObjectPtr<USlotViewWidget>>  GetLastBuffViewWidget(int32 CastingBuffId);
 
 	void SetProgress(AActor* Owner);
@@ -32,7 +31,13 @@ public:
 public:
 	const FString HP_PROGRESS_WIDGET_NAME = TEXT("WBP_Pb0");
 	const FString MP_PROGRESS_WIDGET_NAME = TEXT("WBP_Pb1");
-	
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Inventory")
+	void ItemGamePlayEffect(int32 Index);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class UGameplayEffect> GetGameplayEffect;
+
 protected:
 	const FString PROGRESS_WIDGET_NAME = TEXT("WBP_Pb");
 	const FString WIDGET_BUFF_VIEW  = TEXT("BuffSlot");

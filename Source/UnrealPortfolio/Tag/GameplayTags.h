@@ -21,3 +21,4 @@
 #define TAG_SPAWNEFFECT FGameplayTag::RequestGameplayTag(FName("GameplayCue.Character.EnemySpawn"))
 #define TAG_HEAD_ATTACK_HIT FGameplayTag::RequestGameplayTag(FName("Character.Action.HeadAttackHitPossible"))
 #define TAG_BACK_ATTACK_HIT FGameplayTag::RequestGameplayTag(FName("Character.Action.BackAttackHitPossible"))
+#define TAG_CHARACTER_CONSUMABLE FGameplayTag::RequestGameplayTag(FName("Character.Action.Consumable"))
