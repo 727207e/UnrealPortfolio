@@ -85,6 +85,9 @@ protected:
 	virtual void CallGAS(int32 GameplayAbilityInputId);
 	virtual void Hit(FVector TargetLocation, TObjectPtr<class AGameplayEventDataRequest> ActionData) override;
 	virtual void PlayHitAnimation() override;
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void NetMulti_PlayHitAnimation(FVector TargetLocation);
 	
 	void Knockback(TObjectPtr<class AGameplayEventDataRequest> ActionData);
 

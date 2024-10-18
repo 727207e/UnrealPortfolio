@@ -121,9 +121,7 @@ TArray<FGameplayAbilitySpec> AUPBattleBaseCharacter::GetUsingGas(int32 GameplayA
 
 void AUPBattleBaseCharacter::Hit(FVector TargetLocation, TObjectPtr<class AGameplayEventDataRequest> ActionData)
 {
-	LookTarget(TargetLocation);
-	//Knockback(ActionData);
-	PlayHitAnimation();
+	NetMulti_PlayHitAnimation(TargetLocation);
 }
 
 void AUPBattleBaseCharacter::PlayHitAnimation()
@@ -135,6 +133,12 @@ void AUPBattleBaseCharacter::PlayHitAnimation()
 	}
 
 	OnHitDelegate.Broadcast();
+}
+
+void AUPBattleBaseCharacter::NetMulti_PlayHitAnimation_Implementation(FVector TargetLocation)
+{
+	LookTarget(TargetLocation);
+	PlayHitAnimation();
 }
 
 void AUPBattleBaseCharacter::Knockback(TObjectPtr<class AGameplayEventDataRequest> ActionData)
