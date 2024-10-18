@@ -185,8 +185,6 @@ void AUPMainCharacter::BeginPlay()
 		NPCDetectorSceneComponent->SetParent(GetRootComponent());
 		NPCDetectorSceneComponent->RegisterComponent();
 	}
-
-
 }
 
 void AUPMainCharacter::CallGAS(int32 GameplayAbilityInputId)
