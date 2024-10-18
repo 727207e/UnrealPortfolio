@@ -44,7 +44,7 @@ void AUPEnemyCharacter::PreInitializeComponents()
 			this->AddOwnedComponent(EnemyEntityState);
 			EnemyEntityState->RegisterComponent();
 			EnemyEntityState->InitEntityState(this);
-			EnemyEntityState->AttributeSet->OnDead.AddDynamic(this,&ThisClass::OnDead);
+			EnemyEntityState->AttributeSet->OnDead.AddDynamic(this,&ThisClass::NetMulti_OnDead);
 		}
 	}
 }
@@ -60,7 +60,6 @@ void AUPEnemyCharacter::PostInitializeComponents()
 		{
 			EnemyEntityState->PostInitialize();
 
-
 			GetCharacterMovement()->MaxWalkSpeed *= TargetASC->GetSet<UEntityAttributeSet>()->GetMovementSpeed();
 		}
 	}
@@ -68,6 +67,7 @@ void AUPEnemyCharacter::PostInitializeComponents()
 
 void AUPEnemyCharacter::MeshSetSimulatePhysics(USkeletalMeshComponent* targetMesh, UCapsuleComponent* targetCapsule)
 {
+
 	TArray<USkeletalMeshComponent*> singleMeshArray;
 	singleMeshArray.Add(targetMesh);
 
@@ -76,7 +76,10 @@ void AUPEnemyCharacter::MeshSetSimulatePhysics(USkeletalMeshComponent* targetMes
 
 void AUPEnemyCharacter::MeshSetSimulatePhysics(TArray<USkeletalMeshComponent*> targetMeshes, UCapsuleComponent* targetCapsule)
 {
-	GetController()->UnPossess();
+	if (HasAuthority())
+	{
+		GetController()->UnPossess();
+	}
 
 	for (USkeletalMeshComponent* targetMesh : targetMeshes)
 	{
@@ -104,10 +107,7 @@ void AUPEnemyCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 
 	ASC = EnemyEntityState->ASC;
 
-	if (HasAuthority())
-	{
-		Super::SetupASCHostPlayer(InOwnerActor);
-	}
+	Super::SetupASCHostPlayer(InOwnerActor);
 	ASC->AddSpawnedAttribute(EnemyEntityState->AttributeSet);
 	ASC->InitAbilityActorInfo(InOwnerActor, this);
 	AttributeSet = EnemyEntityState->AttributeSet;
@@ -147,8 +147,12 @@ void AUPEnemyCharacter::OnFindTargetEnd()
 	OnEndAnimDelegate.ExecuteIfBound();
 }
 
+void AUPEnemyCharacter::NetMulti_OnDead_Implementation()
+{
+	OnDead();
+}
+
 void AUPEnemyCharacter::SetDelegate(const FOnEndAnimDelegate& OnEndAnim)
 {
 	OnEndAnimDelegate = OnEndAnim;
 }
-

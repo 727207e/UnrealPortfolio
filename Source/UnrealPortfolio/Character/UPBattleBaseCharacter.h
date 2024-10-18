@@ -37,10 +37,7 @@ protected:
 	virtual void PossessedBy(AController* NewController) override;
 	/** When use to Client Character Initialize **/
 	virtual void OnRep_PlayerState() override;
-
-	UFUNCTION(Server, Unreliable)
-	void ServerASCSyncRequest();
-
+	
 	/** Game Ability System **/
 	/** Game Ability System **/
 	

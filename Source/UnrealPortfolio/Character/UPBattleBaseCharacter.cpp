@@ -36,15 +36,7 @@ void AUPBattleBaseCharacter::PossessedBy(AController* NewController)
 
 	else // AI Controller
 	{
-		if(HasAuthority())
-		{
-			SetupASCHostPlayer(this);
-		}
-
-		else
-		{
-			ServerASCSyncRequest();
-		}
+		SetupASCHostPlayer(this);
 	}
 }
 
@@ -53,13 +45,6 @@ void AUPBattleBaseCharacter::OnRep_PlayerState()
 	Super::OnRep_PlayerState();
 	SetupASCClientPlayer();
 }
-
-void AUPBattleBaseCharacter::ServerASCSyncRequest_Implementation()
-{
-	//Need Refactoring 
-	SetupASCHostPlayer(this);
-}
-
 
 void AUPBattleBaseCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 {
@@ -168,7 +153,6 @@ void AUPBattleBaseCharacter::Knockback(TObjectPtr<class AGameplayEventDataReques
 		LaunchCharacter(BreakVector,true,false);
 	}
 }
-
 
 void AUPBattleBaseCharacter::OnDead()
 {
