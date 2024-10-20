@@ -61,9 +61,8 @@ public:
 	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	TArray<FGameplayAbilitySpec> GetUsingGas(int32 GameplayAbilityInputId);
 
-	/** Character Animation **/
-	/** Character Animation **/
-	
+	TObjectPtr<class UGA_SkillBase> CurSkillGA;
+
 protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)

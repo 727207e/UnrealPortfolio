@@ -31,6 +31,8 @@ public:
 
 	FOnSkillEndDelegate OnEndSkillDelegate;
 
+	void EndGA();
+
 protected:
 	virtual auto ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 							 const FGameplayAbilityActivationInfo ActivationInfo,

@@ -42,7 +42,10 @@ void UGA_SkillBase::EndAbility(const FGameplayAbilitySpecHandle Handle, const FG
 	AttackableCharacter->SkillEndCallBack();
 }
 
-
+void UGA_SkillBase::EndGA()
+{
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+}
 
 void UGA_SkillBase::InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 	const FGameplayAbilityActivationInfo ActivationInfo)
