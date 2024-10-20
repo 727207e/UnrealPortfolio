@@ -5,6 +5,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "GAS/Attribute/BossDataSet/UPBossSkillAttributeSet.h"
+#include "Character/UPBattleBaseCharacter.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 
 UGA_BossSkill::UGA_BossSkill()
@@ -45,6 +46,12 @@ void UGA_BossSkill::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 	}
 
+	AUPBattleBaseCharacter* CurCharacter = Cast<AUPBattleBaseCharacter>(ActorInfo->OwnerActor);
+	if (CurCharacter != nullptr)
+	{
+		CurCharacter->CurSkillGA = this;
+	}
+	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 

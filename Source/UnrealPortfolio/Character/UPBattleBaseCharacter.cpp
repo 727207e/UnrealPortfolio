@@ -36,15 +36,7 @@ void AUPBattleBaseCharacter::PossessedBy(AController* NewController)
 
 	else // AI Controller
 	{
-		if(HasAuthority())
-		{
-			SetupASCHostPlayer(this);
-		}
-
-		else
-		{
-			ServerASCSyncRequest();
-		}
+		SetupASCHostPlayer(this);
 	}
 }
 
@@ -53,13 +45,6 @@ void AUPBattleBaseCharacter::OnRep_PlayerState()
 	Super::OnRep_PlayerState();
 	SetupASCClientPlayer();
 }
-
-void AUPBattleBaseCharacter::ServerASCSyncRequest_Implementation()
-{
-	//Need Refactoring 
-	SetupASCHostPlayer(this);
-}
-
 
 void AUPBattleBaseCharacter::SetupASCHostPlayer(AActor* InOwnerActor)
 {
@@ -136,9 +121,7 @@ TArray<FGameplayAbilitySpec> AUPBattleBaseCharacter::GetUsingGas(int32 GameplayA
 
 void AUPBattleBaseCharacter::Hit(FVector TargetLocation, TObjectPtr<class AGameplayEventDataRequest> ActionData)
 {
-	LookTarget(TargetLocation);
-	//Knockback(ActionData);
-	PlayHitAnimation();
+	NetMulti_PlayHitAnimation(TargetLocation);
 }
 
 void AUPBattleBaseCharacter::PlayHitAnimation()
@@ -150,6 +133,12 @@ void AUPBattleBaseCharacter::PlayHitAnimation()
 	}
 
 	OnHitDelegate.Broadcast();
+}
+
+void AUPBattleBaseCharacter::NetMulti_PlayHitAnimation_Implementation(FVector TargetLocation)
+{
+	LookTarget(TargetLocation);
+	PlayHitAnimation();
 }
 
 void AUPBattleBaseCharacter::Knockback(TObjectPtr<class AGameplayEventDataRequest> ActionData)
@@ -168,7 +157,6 @@ void AUPBattleBaseCharacter::Knockback(TObjectPtr<class AGameplayEventDataReques
 		LaunchCharacter(BreakVector,true,false);
 	}
 }
-
 
 void AUPBattleBaseCharacter::OnDead()
 {

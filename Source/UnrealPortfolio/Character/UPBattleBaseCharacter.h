@@ -37,10 +37,7 @@ protected:
 	virtual void PossessedBy(AController* NewController) override;
 	/** When use to Client Character Initialize **/
 	virtual void OnRep_PlayerState() override;
-
-	UFUNCTION(Server, Unreliable)
-	void ServerASCSyncRequest();
-
+	
 	/** Game Ability System **/
 	/** Game Ability System **/
 	
@@ -64,9 +61,8 @@ public:
 	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	TArray<FGameplayAbilitySpec> GetUsingGas(int32 GameplayAbilityInputId);
 
-	/** Character Animation **/
-	/** Character Animation **/
-	
+	TObjectPtr<class UGA_SkillBase> CurSkillGA;
+
 protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
@@ -88,6 +84,9 @@ protected:
 	virtual void CallGAS(int32 GameplayAbilityInputId);
 	virtual void Hit(FVector TargetLocation, TObjectPtr<class AGameplayEventDataRequest> ActionData) override;
 	virtual void PlayHitAnimation() override;
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void NetMulti_PlayHitAnimation(FVector TargetLocation);
 	
 	void Knockback(TObjectPtr<class AGameplayEventDataRequest> ActionData);
 

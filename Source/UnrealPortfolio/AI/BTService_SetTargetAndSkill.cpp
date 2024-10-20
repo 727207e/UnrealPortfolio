@@ -77,7 +77,7 @@ int32 UBTService_SetTargetAndSkill::ChangeSkillNumber(UBehaviorTreeComponent& Ow
 	TArray<FGameplayAbilitySpecHandle> ActivatedAbilities;
 	FGameplayTagContainer tags(TAG_CHARACTER_SKILL);
 	TargetASC->FindAllAbilitiesWithTags(ActivatedAbilities, FGameplayTagContainer(TAG_CHARACTER_SKILL));
-
+	
 	Result = std::rand() % ActivatedAbilities.Num();
 
 	return Result;

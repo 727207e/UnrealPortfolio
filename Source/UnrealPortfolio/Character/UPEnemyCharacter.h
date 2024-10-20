@@ -46,6 +46,9 @@ public :
 
 	void OnFindTargetEnd();
 
+	UFUNCTION(NetMulticast, Unreliable)
+	void NetMulti_OnDead();
+
 protected :
 	int32 AttackDelayTime;
 };

@@ -40,7 +40,7 @@ void UGA_BossEnemySpawnSkill::SpawnEnemies()
     for (int index = 0; index < SpawnArray.Num(); index++)
     {
         FVector Location = SpawnArray[index];
-        Location.Z += 20.0f;
+        Location.Z += 50.0f;
         FRotator Rotation = CurrentActorInfo->AvatarActor->GetActorQuat().Rotator();
         AUPEnemyCharacter* Enemy = GetWorld()->SpawnActor<AUPEnemyCharacter>(EnemyArray[TargetEnemyIndex], Location, Rotation);
 

@@ -7,6 +7,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GAS/Attribute/BossDataSet/UPBossSkillAttributeSet.h"
 #include "GAS/State/UPACSkillState.h"
+#include "GAS/GA/Skill/GA_SkillBase.h"
 
 AUPBossCharacter::AUPBossCharacter()
 {
@@ -97,6 +98,11 @@ void AUPBossCharacter::CounterAttackHit()
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	AnimInstance->Montage_Play(GroggyMontage);
 	AnimInstance->OnMontageEnded.AddDynamic(this, &AUPBossCharacter::MontageEndEvent);
+
+	if (CurSkillGA != nullptr)
+	{
+		CurSkillGA->EndGA();
+	}
 }
 
 void AUPBossCharacter::UpdatePhaseNumber(int32 PhaseNumber)
